@@ -13,5 +13,5 @@ https://github.com/CicholDax/uni-dax.git?path=Assets/UniDax
 
 ### メモ
 DoTweenProが必要  
-UPM対応したらpackage.jsonに依存として追加する
+DoTweenProがUPM対応したらpackage.jsonに依存として追加する
 https://github.com/Demigiant/dotween/issues/395
