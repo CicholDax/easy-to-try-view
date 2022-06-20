@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using Cysharp.Threading.Tasks;
 
-namespace UniDax
+namespace ETTView
 {
 	//DOTweenをまとめて再生
 	[System.Serializable]

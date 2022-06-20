@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UniDax.Data
+namespace ETTView.Data
 {
 	public interface IMasterData
 	{

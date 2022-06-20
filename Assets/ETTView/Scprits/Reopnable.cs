@@ -1,7 +1,7 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
-namespace UniDax.UI
+namespace ETTView.UI
 {
 	[RequireComponent(typeof(Reopener))]
 	public abstract class Reopnable : MonoBehaviour

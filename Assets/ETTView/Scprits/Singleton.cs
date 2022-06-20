@@ -1,4 +1,4 @@
-namespace UniDax
+namespace ETTView
 {
 	public class Singleton<T> where T : class, new()
 	{

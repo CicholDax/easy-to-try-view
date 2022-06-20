@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
-namespace UniDax.UI
+namespace ETTView.UI
 {
 	public class UIViewManager : SingletonMonoBehaviour<UIViewManager>
 	{

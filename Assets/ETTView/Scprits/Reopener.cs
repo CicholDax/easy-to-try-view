@@ -3,7 +3,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 
 
-namespace UniDax.UI
+namespace ETTView.UI
 {
 	[DisallowMultipleComponent]
 	public class Reopener : MonoBehaviour

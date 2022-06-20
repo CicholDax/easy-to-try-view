@@ -4,9 +4,9 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using DG.Tweening;
-using UniDax;
+using ETTView;
 
-namespace UniDax.UI
+namespace ETTView.UI
 {
 	public class TweenTransition : Reopnable
 	{

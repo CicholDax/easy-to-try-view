@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using UniDax.Data;
+using ETTView.Data;
 
-namespace UniDax.Editor
+namespace ETTView.Editor
 {
 	[CreateAssetMenu(fileName = "UserDataBundle", menuName = "Data/UserDataBundle")]
 	public class UserDataBundle : ScriptableObject

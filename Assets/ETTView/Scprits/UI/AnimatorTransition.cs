@@ -1,7 +1,7 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
-namespace UniDax.UI
+namespace ETTView.UI
 {
 	public class AnimatorTransition : Reopnable
 	{

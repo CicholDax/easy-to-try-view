@@ -3,7 +3,7 @@ using UnityEngine.UI;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-namespace UniDax.UI
+namespace ETTView.UI
 {
 	/// <summary>
 	///UIのセーフエリア調整クラス

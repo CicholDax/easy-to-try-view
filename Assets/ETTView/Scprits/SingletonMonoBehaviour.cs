@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace UniDax
+namespace ETTView
 {
 	public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : SingletonMonoBehaviour<T>
 	{

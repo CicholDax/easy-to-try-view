@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace UniDax.Math
+namespace ETTView.Math
 {
 	public static class VectorUtilty
 	{

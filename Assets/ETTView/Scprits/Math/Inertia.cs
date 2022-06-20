@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace UniDax.Math
+namespace ETTView.Math
 {
 	public abstract class Inertia<T>
 	{
