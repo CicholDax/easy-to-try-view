@@ -15,11 +15,10 @@ https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask
 
 4. ScriptDefineSynbolsにUNITASK_DOTWEEN_SUPPORTを追加
 
-5. PackageManagerからDoTweenProを導入
+## 以下、DoTweenProを使用する場合
+
+1. PackageManagerからDoTweenProを導入
+2. ettview-dotweenpro.unitypackageをインポート
 
 ### メモ
-- DoTweenProが必要  
-DoTweenProがUPM対応したらpackage.jsonに依存として追加する
-https://github.com/Demigiant/dotween/issues/395
-
 - 依存としてUniTaskがうまく追加できない
