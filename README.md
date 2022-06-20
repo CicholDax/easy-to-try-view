@@ -5,7 +5,7 @@ Unityプロダクトの汎用ゲーム基盤
 1. Windows PowerShellから下記でGitHubCliをインストール  
 winget install --id GitHub.cli
 
-2. 下記コマンドでGitアカウントにログイン  
+2. コマンドプロンプトから下記コマンドでGitアカウントにログイン  
 gh auth login
 
 3. 導入したいUnityプロジェクトを立ち上げて、Window→PackageManager→AddPackageFromGitURLで下記  
