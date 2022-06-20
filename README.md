@@ -6,11 +6,12 @@
 winget install --id GitHub.cli
 
 2. コマンドプロンプトから下記コマンドでGitアカウントにログイン  
-gh auth login
+gh auth login  
+もしかしたらSSHでログインする必要があるかも
 
 3. 導入したいUnityプロジェクトを立ち上げて、Window→PackageManager→AddPackageFromGitURLで下記  
 https://github.com/RexLabo/easy-to-try-view.git?path=Assets/ETTView  
-https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask
+https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask  
 
 4. ScriptDefineSynbolsにUNITASK_DOTWEEN_SUPPORTを追加
 
