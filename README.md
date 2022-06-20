@@ -15,7 +15,7 @@ https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask
 
 4. ScriptDefineSynbolsにUNITASK_DOTWEEN_SUPPORTを追加
 
-## 以下、DoTweenProを使用する場合
+#### 以下、DoTweenProを使用する場合
 
 1. PackageManagerからDoTweenProを導入
 2. ettview-dotweenpro.unitypackageをインポート
