@@ -1,13 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using System.Threading;
-using DG.Tweening;
-using UniDax;
 
 namespace UniDax.UI
 {
