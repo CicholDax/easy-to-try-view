@@ -1,5 +1,5 @@
-# uni-dax
-Unityプロダクトの汎用ゲーム基盤
+# easy-to-try-view
+デバッグ指向のUnity汎用ゲーム基盤
 
 ### 導入方法
 1. Windows PowerShellから下記でGitHubCliをインストール  
@@ -9,7 +9,7 @@ winget install --id GitHub.cli
 gh auth login
 
 3. 導入したいUnityプロジェクトを立ち上げて、Window→PackageManager→AddPackageFromGitURLで下記  
-https://github.com/CicholDax/uni-dax.git?path=Assets/UniDax  
+https://github.com/CicholDax/easy-to-try-view.git?path=Assets/ETTView  
 https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask
 
 4. ScriptDefineSynbolsにUNITASK_DOTWEEN_SUPPORTを追加
