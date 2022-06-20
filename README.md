@@ -1,4 +1,4 @@
-# easy-to-try-view
+# easy-to-try-view(ETTView)
 デバッグ指向のUnity汎用ゲーム基盤
 
 ### 導入方法
