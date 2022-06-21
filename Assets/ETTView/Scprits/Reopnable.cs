@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 namespace ETTView.UI
 {
 	[RequireComponent(typeof(Reopener))]
-	public abstract class Reopnable : MonoBehaviour
+	public class Reopnable : MonoBehaviour
 	{
 		Reopener _reopener;
 		Reopener Reopener
