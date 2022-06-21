@@ -22,5 +22,5 @@ https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask
 
 ### メモ
 - 依存としてUniTaskがうまく追加できない
-- パッケージキャッシュにシンボリックリンクを貼っちゃうと編集が楽だよ
+- パッケージキャッシュにシンボリックリンクを貼っちゃうと編集が楽だよ  
 mklink /J com.rexlabo.ettview@0084c994dd C:\work\RexLabo\easy-to-try-view\Assets\ETTView
