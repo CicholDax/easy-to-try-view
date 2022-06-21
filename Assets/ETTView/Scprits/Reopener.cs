@@ -3,7 +3,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 
 
-namespace ETTView.UI
+namespace ETTView
 {
 	public static class StateTypeEx
     {
