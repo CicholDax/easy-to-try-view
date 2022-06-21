@@ -35,7 +35,7 @@ namespace ETTView
 		{
 			await Reopener.Close();
 
-			if (destroy) Destroy(gameObject);
+			if (destroy && this != null) Destroy(gameObject);
 		}
 
 		//生成時に一度だけ実行する処理

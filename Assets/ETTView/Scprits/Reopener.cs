@@ -44,6 +44,7 @@ namespace ETTView
 
 		public async UniTask Open()
 		{
+			if (this == null) return;
 			enabled = true;
 
 			await UniTask.WaitUntil(() => State == StateType.Opened);
@@ -53,6 +54,7 @@ namespace ETTView
 		{
 			//ロード中だったら待つ
 			await UniTask.WaitWhile(() => State == StateType.Loading);
+			if (this == null) return;
 			enabled = false;
 
 			await UniTask.WaitUntil(() => State == StateType.Closed);
