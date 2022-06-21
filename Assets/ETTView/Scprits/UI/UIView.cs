@@ -69,7 +69,7 @@ namespace ETTView.UI
 			return true;
 		}
 
-		public virtual async UniTask BackView( bool isRootView, bool isClosePopup, bool isForceBackView, Func<UniTask> onNextView = null )
+		internal virtual async UniTask BackView( bool isRootView, bool isClosePopup, bool isForceBackView, Func<UniTask> onNextView = null )
 		{
 			var lastPopup = LastPopup;
 			if (lastPopup != null && isClosePopup)
