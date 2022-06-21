@@ -52,6 +52,11 @@ namespace ETTView.UI
 			return ins;
 		}
 
+		public async UniTask WaitUntil(Reopener.StateType state)
+		{
+			await UniTask.WaitUntil(() => Current.State >= state);
+		}		
+
 		public async UniTask BackView(bool isClosePopup = true, bool isForceBackView = false)
 		{
 			await Current.BackView(

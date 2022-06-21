@@ -5,14 +5,6 @@ using Cysharp.Threading.Tasks;
 
 namespace ETTView
 {
-	public static class StateTypeEx
-    {
-		public static async UniTask WaitUntil(this Reopener.StateType now, Reopener.StateType state)
-        {
-			await UniTask.WaitUntil(() => now >= state);
-		}
-    }
-
 	[DisallowMultipleComponent]
 	public class Reopener : MonoBehaviour
 	{
