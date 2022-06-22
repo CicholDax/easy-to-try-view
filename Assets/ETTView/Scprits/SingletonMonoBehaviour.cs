@@ -23,12 +23,11 @@ namespace ETTView
 				var type = typeof(T);
 				var go = new GameObject(type.Name, type);
 
+				_instance = go.GetComponent<T>();
 				if (_instance.IsDontDestroy)
 				{
 					DontDestroyOnLoad(go);
 				}
-
-				_instance = go.GetComponent<T>();
 
 				return _instance;
 			}
