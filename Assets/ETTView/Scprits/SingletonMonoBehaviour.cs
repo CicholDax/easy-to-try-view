@@ -2,7 +2,12 @@ using UnityEngine;
 
 namespace ETTView
 {
-	public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : SingletonMonoBehaviour<T>
+	public interface ISingletonMono
+    {
+		public bool IsDontDestroy { get; }
+    }
+
+	public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : SingletonMonoBehaviour<T>, ISingletonMono
 	{
 		static T _instance = null;
 
@@ -17,7 +22,11 @@ namespace ETTView
 
 				var type = typeof(T);
 				var go = new GameObject(type.Name, type);
-				DontDestroyOnLoad(go);
+
+				if (_instance.IsDontDestroy)
+				{
+					DontDestroyOnLoad(go);
+				}
 
 				_instance = go.GetComponent<T>();
 

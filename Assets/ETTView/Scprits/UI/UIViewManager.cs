@@ -4,8 +4,10 @@ using Cysharp.Threading.Tasks;
 
 namespace ETTView.UI
 {
-	public class UIViewManager : SingletonMonoBehaviour<UIViewManager>
+	public class UIViewManager : SingletonMonoBehaviour<UIViewManager>, ISingletonMono
 	{
+		public bool IsDontDestroy { get; } = true;
+
 		Stack<UIView> _history = new Stack<UIView>();
 
 		public UIView Current
