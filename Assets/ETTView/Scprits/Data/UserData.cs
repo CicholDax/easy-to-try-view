@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,17 @@ namespace ETTView.Data
 			if (jsonText != null)
 			{
 				ret = JsonUtility.FromJson<T>(jsonText);
+			}
+			return ret;
+		}
+
+		public static UserData LoadFromPrefs(Type type)
+		{
+			UserData ret = default(UserData);
+			var jsonText = PlayerPrefs.GetString(type.Name);
+			if (jsonText != null)
+			{
+				ret = JsonUtility.FromJson(jsonText, type) as UserData;
 			}
 			return ret;
 		}

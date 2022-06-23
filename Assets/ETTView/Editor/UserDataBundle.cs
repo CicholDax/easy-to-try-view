@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,13 +12,9 @@ namespace ETTView.Editor
 	[CreateAssetMenu(fileName = "UserDataBundle", menuName = "Data/UserDataBundle")]
 	public class UserDataBundle : ScriptableObject
 	{
-		//外部に依存しちゃってるので治す TODO
-		//[SerializeField] UserCommonData _userCommonData;
-		//[SerializeField] UserLevelData _userLevelData;
-		//[SerializeField] UserGameData _userGameData;
+		[SerializeReference] List<UserData> _userDatas = new List<UserData>();
 
-	
-		[SerializeField] List<UserData> _userDatas;
+		static Type[] _cashUserDataTypes;
 
 		[SettingsProvider]
 		public static SettingsProvider CreatProvider()
@@ -25,10 +24,28 @@ namespace ETTView.Editor
 				label = "ユーザーデータ書き換え",
 				guiHandler = searchContext =>
 				{
+					//アセンブリで定義されている型をすべて取得してそこからUserDataを継承しているクラスを探す
+					if (_cashUserDataTypes == null || _cashUserDataTypes.Length <= 0)
+					{
+						_cashUserDataTypes = AppDomain.CurrentDomain.GetAssemblies()
+						.OrderBy(o => o.FullName)
+						.SelectMany(o => o.GetTypes())
+						.Where(o => o.IsPublic)
+						.OrderBy(o => o.Name)
+						.Where(o =>
+						{
+							return o.IsSubclassOf(typeof(UserData));
+						})
+						.ToArray();
+					}
+
 					UserDataBundle bundle = CreateInstance<UserDataBundle>();
-					//bundle._userCommonData = UserData.LoadFromPrefs<UserCommonData>();
-					//bundle._userLevelData = UserData.LoadFromPrefs<UserLevelData>();
-					//bundle._userGameData = UserData.LoadFromPrefs<UserGameData>();
+
+					//PlayerPrefasからユーザーデータの呼び出し
+					foreach (var userDataType in _cashUserDataTypes)
+					{
+						bundle._userDatas.Add(UserData.LoadFromPrefs(userDataType));
+					}
 
 					var so = new SerializedObject(bundle);
 
@@ -46,15 +63,19 @@ namespace ETTView.Editor
 
 					if (GUILayout.Button("初期化"))
 					{
-						//bundle._userCommonData = new UserCommonData();
-						//bundle._userLevelData = new UserLevelData();
-						//bundle._userGameData = new UserGameData();
+						bundle._userDatas = new List<UserData>();
+					}
+
+					if(GUILayout.Button("型キャッシュ削除（UserData型追加したら押してね）"))
+					{
+						_cashUserDataTypes = null;
 					}
 
 					//保存
-					//bundle._userCommonData.SaveToPrefs();
-					//bundle._userGameData.SaveToPrefs();
-					//bundle._userLevelData.SaveToPrefs();
+					foreach (var userData in bundle._userDatas)
+					{
+						userData.SaveToPrefs();
+					}
 				}
 			};
 			return provider;
