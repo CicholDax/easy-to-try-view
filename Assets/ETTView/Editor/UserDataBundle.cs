@@ -12,6 +12,12 @@ namespace ETTView.Editor
 	[CreateAssetMenu(fileName = "UserDataBundle", menuName = "Data/UserDataBundle")]
 	public class UserDataBundle : ScriptableObject
 	{
+		public class DummyUserData : UserData
+		{
+			[SerializeField,HideInInspector]string _name;
+			public string Name { set { _name = value; } }
+		}
+
 		[SerializeReference] List<UserData> _userDatas = new List<UserData>();
 
 		static Type[] _cashUserDataTypes;
@@ -21,7 +27,7 @@ namespace ETTView.Editor
 		{
 			var provider = new SettingsProvider("Project/UserDataBundle", SettingsScope.Project)
 			{
-				label = "ユーザーデータ書き換え",
+				label = "ETTView/ユーザーデータ書き換え",
 				guiHandler = searchContext =>
 				{
 					//アセンブリで定義されている型をすべて取得してそこからUserDataを継承しているクラスを探す
@@ -44,6 +50,7 @@ namespace ETTView.Editor
 					//PlayerPrefasからユーザーデータの呼び出し
 					foreach (var userDataType in _cashUserDataTypes)
 					{
+						bundle._userDatas.Add(new DummyUserData() { Name = userDataType.Name });
 						bundle._userDatas.Add(UserData.LoadFromPrefs(userDataType));
 					}
 
