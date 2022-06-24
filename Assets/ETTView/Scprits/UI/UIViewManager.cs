@@ -37,19 +37,18 @@ namespace ETTView.UI
 
 
 		//新しいビューを生成する
-		//TODO トランジションのタイプとかを指定する
 		public async UniTask<T> Create<T>() where T : UIView
 		{
-			var tasks = new List<UniTask>();
+			//var tasks = new List<UniTask>();
 
-			//現在のビューを閉じる
-			tasks.Add(Current.Close());
+			//現在のビューを閉じる	メモ：生成したあとのRegistでどうせCloseするから消してみる。UIViewに初期値入れるため
+			//tasks.Add(Current.Close());
 
 			var parent = Current != null ? Current.transform.parent : null;
 			var req = await Resources.LoadAsync<T>(typeof(T).Name) as T;
 			var ins = Instantiate(req, parent);
 
-			await UniTask.WhenAll(tasks);
+			//await UniTask.WhenAll(tasks);
 
 			return ins;
 		}
