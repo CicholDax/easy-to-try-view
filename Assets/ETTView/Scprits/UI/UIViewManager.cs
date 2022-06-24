@@ -38,7 +38,7 @@ namespace ETTView.UI
 
 		//新しいビューを生成する
 		//TODO トランジションのタイプとかを指定する
-		public async UniTask<UIView> Create<T>() where T : UIView
+		public async UniTask<T> Create<T>() where T : UIView
 		{
 			var tasks = new List<UniTask>();
 
