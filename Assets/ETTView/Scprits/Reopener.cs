@@ -76,7 +76,7 @@ namespace ETTView
 			await UniTask.Create(async () =>
 			{
 				//ロード完了まで待つ
-				await UniTask.WaitWhile(() => State == StateType.Loaded);
+				await UniTask.WaitWhile(() => State == StateType.Loading);
 
 				State = StateType.Preopening;
 
