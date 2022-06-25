@@ -13,10 +13,10 @@ namespace ETTView.Data
 		{
 			
 		}
-		
-		public static T LoadFromPrefs<T>() where T : UserData
+
+		public static T LoadFromPrefs<T>() where T : UserData, new()
 		{
-			T ret = default(T);
+			T ret = new T();
 			var jsonText = PlayerPrefs.GetString(typeof(T).Name);
 			if (jsonText != null)
 			{
@@ -25,14 +25,17 @@ namespace ETTView.Data
 			return ret;
 		}
 
-		public static UserData LoadFromPrefs(Type type)
+		public static UserData LoadFromPrefs(Type type, Func<UserData> createDefault)
 		{
-			UserData ret = default(UserData);
+			UserData ret = null;
 			var jsonText = PlayerPrefs.GetString(type.Name);
 			if (jsonText != null)
 			{
 				ret = JsonUtility.FromJson(jsonText, type) as UserData;
 			}
+
+			if (ret == null) ret = createDefault.Invoke();
+
 			return ret;
 		}
 
