@@ -73,7 +73,6 @@ namespace ETTView.UI
 				isForceBackView,
 				async () =>
 				{
-					_history.Pop();
 					Current.SetRewind(true);
 					await Current.Open();
 					Current.SetRewind(false);
