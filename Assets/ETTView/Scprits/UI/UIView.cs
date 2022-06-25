@@ -42,6 +42,16 @@ namespace ETTView.UI
 			}
 		}
 
+		public override UniTask Close(bool destroy = false)
+		{
+			if(destroy)
+			{
+				UIViewManager.Instance.Remove(this);
+			}
+
+			return base.Close(destroy);
+		}
+
 		public void SetRewind(bool flag)
 		{
 			IsRewind = flag;
@@ -97,7 +107,7 @@ namespace ETTView.UI
 			}
 		}
 
-		public async void BackView()
+		public async void BackView()	//OnBackView　院ベント用なんだったらOnBackViewにしたいな
 		{
 			if (State == Reopener.StateType.Opened)
 			{

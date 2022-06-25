@@ -35,6 +35,13 @@ namespace ETTView.UI
 			await UniTask.WhenAll(tasks);
 		}
 
+		//履歴から削除
+		public void Remove(UIView view)
+		{
+			var list = new List<UIView>(_history);
+			list.Remove(view);
+			_history = new Stack<UIView>(list);
+		}
 
 		//新しいビューを生成する
 		public async UniTask<T> Create<T>() where T : UIView

@@ -26,12 +26,12 @@ namespace ETTView
 		public Reopener.StateType State { get { return Reopener.State; } }
 		protected bool ReopenerEnable { get => Reopener.enabled; }
 
-		public async UniTask Open()
+		public virtual async UniTask Open()
 		{
 			await Reopener.Open();
 		}
 
-		public async UniTask Close(bool destroy = false)
+		public virtual async UniTask Close(bool destroy = false)
 		{
 			await Reopener.Close();
 
