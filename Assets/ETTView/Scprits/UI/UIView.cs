@@ -95,7 +95,7 @@ namespace ETTView.UI
 
 					//View自身が閉じる
 					SetRewind(true);
-					tasks.Add(Close(true));
+					tasks.Add(base.Close(true));
 					if (onNextView != null) tasks.Add(onNextView());
 
 					await UniTask.WhenAll(tasks);
