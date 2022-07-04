@@ -9,7 +9,7 @@ namespace ETTView.UI
 {
 	public class UIView : Reopnable
 	{
-		//シーンに最初から置かれてるビューかどうか
+		//シーンに最初からRootに置かれてるビューかどうか
 		[SerializeField] bool _isSceneTopView;
 
 		//ポップアップの親
@@ -112,6 +112,26 @@ namespace ETTView.UI
 			if (State == Reopener.StateType.Opened)
 			{
 				await UIViewManager.Instance.BackView();
+			}
+		}
+
+		//このビューが存在するシーンを読み込み
+		public Scene? GetScene()
+		{
+			if (!_isSceneTopView) return null;
+
+			//読み込み済みのシーンからこのViewが含まれるシーンを探す
+			for (var i = 0; i < SceneManager.sceneCount; i++)
+			{
+				var scene = SceneManager.GetSceneAt(i);
+
+				foreach (var go in scene.GetRootGameObjects())
+				{
+					if (go == transform.root.gameObject)
+					{
+						return scene;
+					}
+				}
 			}
 		}
 
