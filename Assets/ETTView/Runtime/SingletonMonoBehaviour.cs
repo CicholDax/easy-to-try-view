@@ -21,12 +21,23 @@ namespace ETTView
 				}
 
 				var type = typeof(T);
-				var go = new GameObject(type.Name, type);
 
-				_instance = go.GetComponent<T>();
+				//同名プレハブがResourceにあるか確認
+				var prefab = Resources.Load<T>(type.Name);
+				if (prefab != null)
+				{
+					//プレハブが指定されてたら生成
+					_instance = Instantiate(prefab);
+				}
+				else
+				{
+					var go = new GameObject(type.Name, type);
+					_instance = go.GetComponent<T>();
+				}
+				
 				if (_instance.IsDontDestroy)
 				{
-					DontDestroyOnLoad(go);
+					DontDestroyOnLoad(_instance.gameObject);
 				}
 
 				return _instance;
