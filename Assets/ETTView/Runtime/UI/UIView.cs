@@ -42,6 +42,7 @@ namespace ETTView.UI
 			}
 		}
 
+		/*
 		public override async UniTask Closing()
 		{
 			//トップビューのクローズ後処理
@@ -64,6 +65,7 @@ namespace ETTView.UI
 				
 			}
 		}
+		*/
 
 		public override UniTask Close(bool destroy = false)
 		{
