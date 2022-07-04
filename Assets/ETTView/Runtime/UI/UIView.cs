@@ -42,6 +42,29 @@ namespace ETTView.UI
 			}
 		}
 
+		public override async UniTask Closing()
+		{
+			//トップビューのクローズ後処理
+			if(_isSceneTopView)
+			{
+				//読み込み済みのシーンからこのViewが含まれるシーンを探す
+				for (var i = 0; i < SceneManager.sceneCount; i++)
+				{
+					var scene = SceneManager.GetSceneAt(i);
+
+					foreach (var go in scene.GetRootGameObjects())
+					{
+						if (go == transform.root.gameObject)
+						{
+							//シーンごと破棄する
+							await SceneManager.UnloadSceneAsync(scene);
+						}
+					}
+				}
+				
+			}
+		}
+
 		public override UniTask Close(bool destroy = false)
 		{
 			if(destroy)
@@ -116,6 +139,7 @@ namespace ETTView.UI
 		}
 
 		//このビューが存在するシーンを読み込み
+		/*
 		public Scene? GetScene()
 		{
 			if (!_isSceneTopView) return null;
@@ -136,6 +160,7 @@ namespace ETTView.UI
 
 			return null;
 		}
+		*/
 
 		public void OnDestroy()
 		{
