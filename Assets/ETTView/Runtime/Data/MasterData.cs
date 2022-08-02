@@ -15,7 +15,8 @@ namespace ETTView.Data
 		//リモートの場合ここでDBアクセスして作ってAB配信したりする
 		public abstract List<T> CreateDataList();
 
-		public void Awake()
+		[ContextMenu("CreateData")]
+		public void CreateData()
 		{
 			_dataList = CreateDataList();
 		}
