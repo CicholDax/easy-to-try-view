@@ -25,14 +25,14 @@ public class CubeController : Reopnable
 
 	public void Update()
 	{
-		if(Input.GetKeyDown(KeyCode.D))
+		if(Input.GetKeyDown(KeyCode.F1))
 		{
 			var userData = UserDataManager.Instance.Get<UserSceneReenactData>();
 			userData.Save();
 		}
 
 
-		if (Input.GetKeyDown(KeyCode.E))
+		if (Input.GetKeyDown(KeyCode.F2))
 		{
 			var userData = UserDataManager.Instance.Get<UserSceneReenactData>();
 			userData.Load();

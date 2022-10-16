@@ -46,41 +46,41 @@ public class UserSceneReenactData : UserData
 
 		[SerializeField] List<MonoBehaviorReenactData> _monoBehaviors = new List<MonoBehaviorReenactData>();
 
-		public GameObjectReenactData(Reenactable reenactable)
+		public GameObjectReenactData(GameObject go)
 		{
-			_instanceId = reenactable.GetInstanceID();
-			_name = reenactable.name;
-			_active = reenactable.gameObject.activeSelf;
-			_pos = reenactable.transform.position;
-			_rot = reenactable.transform.rotation;
-			_scl = reenactable.transform.localScale;
+			_instanceId = go.GetInstanceID();
+			_name = go.name;
+			_active = go.gameObject.activeSelf;
+			_pos = go.transform.position;
+			_rot = go.transform.rotation;
+			_scl = go.transform.localScale;
 
 			//アタッチされてるMonoBehaviorをすべて取得
 			_monoBehaviors.Clear();
-			var monos = reenactable.GetComponents<MonoBehaviour>();
+			var monos = go.GetComponents<MonoBehaviour>();
 			foreach(var mono in monos)
 			{
 				_monoBehaviors.Add(new MonoBehaviorReenactData(mono));
 			}
 		}
 
-		public bool IsMatch(Reenactable reenactable)
+		public bool IsMatch(GameObject go)
 		{
-			return _instanceId == reenactable.GetInstanceID();
+			return _instanceId == go.GetInstanceID();
 		}
 
-		public void Reenact(Reenactable target)
+		public void Reenact(GameObject go)
 		{
-			target.name = _name;
-			target.gameObject.SetActive(_active);
+			go.name = _name;
+			go.gameObject.SetActive(_active);
 
 			//Tranceform情報を復元（TranmsformはMonoじゃなくてシリアライズされないから別途対応）
-			target.transform.position = _pos;
-			target.transform.rotation = _rot;
-			target.transform.localScale = _scl;
+			go.transform.position = _pos;
+			go.transform.rotation = _rot;
+			go.transform.localScale = _scl;
 
 			//アタッチされてるMonoBehaviorをすべて取得
-			var targetMonos = target.GetComponents<MonoBehaviour>();
+			var targetMonos = go.GetComponents<MonoBehaviour>();
 
 			foreach (var dest in targetMonos)
 			{
@@ -101,11 +101,24 @@ public class UserSceneReenactData : UserData
 		_dataList.Clear();
 
 		//再現対象のオブジェクトをリストに
-		var list = GameObject.FindObjectsOfType<Reenactable>();
+		var targets = GameObject.FindObjectsOfType<Reenactable>();
 
-		foreach(var target in list)
+		void GetDataList( List<GameObjectReenactData> list, GameObject go, bool isRecursive)
 		{
-			_dataList.Add(new GameObjectReenactData(target));
+			list.Add(new GameObjectReenactData(go));
+
+			if (isRecursive)
+			{
+				foreach (Transform child in go.transform)
+				{
+					GetDataList(list, child.gameObject, isRecursive);
+				}
+			}
+		};
+
+		foreach(var target in targets)
+		{
+			GetDataList(_dataList, target.gameObject, target.IsRecursive);
 		}
 
 		SaveToPrefs();
@@ -114,15 +127,16 @@ public class UserSceneReenactData : UserData
 	public void Load()
 	{
 		//DataListを走査しながら、ロード済みのオブジェクトのインスタンスIDと照合して反映
-		var list = GameObject.FindObjectsOfType<Reenactable>();
+		var list = GameObject.FindObjectsOfType<GameObject>();
 
-		foreach (var dest in list)
+		//再現データを走査して
+		foreach(var data in _dataList)
 		{
-			//インスタンスIDが一致したデータをGameObjectに反映
-			var src = _dataList.Find((d) => d.IsMatch(dest));
-			if (src != null)
+			//インスタンスIDが一致したら反映
+			var desc = list.ToList().Find((d) => data.IsMatch(d));
+			if(desc != null)
 			{
-				src.Reenact(dest);
+				data.Reenact(desc);
 			}
 		}
 	}
