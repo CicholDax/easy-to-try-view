@@ -101,7 +101,7 @@ public class UserSceneReenactData : UserData
 		_dataList.Clear();
 
 		//再現対象のオブジェクトをリストに
-		var targets = GameObject.FindObjectsOfType<Reenactable>();
+		var targets = Resources.FindObjectsOfTypeAll<Reenactable>();
 
 		void GetDataList( List<GameObjectReenactData> list, GameObject go, bool isRecursive)
 		{
@@ -127,7 +127,7 @@ public class UserSceneReenactData : UserData
 	public void Load()
 	{
 		//DataListを走査しながら、ロード済みのオブジェクトのインスタンスIDと照合して反映
-		var list = GameObject.FindObjectsOfType<GameObject>();
+		var list = Resources.FindObjectsOfTypeAll<GameObject>();
 
 		//再現データを走査して
 		foreach(var data in _dataList)
