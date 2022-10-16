@@ -11,7 +11,7 @@ namespace ETTView.Data
 	{
 		public virtual void Reset()
 		{
-			
+			PlayerPrefs.DeleteKey(this.GetType().Name);
 		}
 
 		public static T LoadFromPrefs<T>() where T : UserData, new()
