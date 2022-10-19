@@ -141,7 +141,7 @@ public class UserSceneReenactData : UserData
 #if UNITY_EDITOR
 			if (EditorUtility.IsPersistent(target)) continue;
 #endif
-
+			target.OnDataSave();
 			GetDataList(_dataList, target.gameObject, target.IsRecursive);
 		}
 
@@ -161,6 +161,12 @@ public class UserSceneReenactData : UserData
 			if(desc != null)
 			{
 				data.Reenact(desc);
+
+				var reenactable = desc.GetComponent<Reenactable>();
+				if (reenactable != null)
+				{
+					reenactable.OnDataLoad();
+				}
 			}
 			else
 			{
