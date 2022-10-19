@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using ETTView.Data;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 [System.Serializable]
 public class UserSceneReenactData : UserData
 {
@@ -43,6 +47,7 @@ public class UserSceneReenactData : UserData
 		[SerializeField] Vector3 _pos;
 		[SerializeField] Quaternion _rot;
 		[SerializeField] Vector3 _scl;
+		[SerializeField] string _prefabPath;
 
 		[SerializeField] List<MonoBehaviorReenactData> _monoBehaviors = new List<MonoBehaviorReenactData>();
 
@@ -54,6 +59,13 @@ public class UserSceneReenactData : UserData
 			_pos = go.transform.position;
 			_rot = go.transform.rotation;
 			_scl = go.transform.localScale;
+
+			//プレハブ情報を保持してたらそれも保存
+			var prefabData = go.GetComponent<ReenactablePrefab>();
+			if(prefabData != null)
+			{
+				_prefabPath = prefabData.Path;
+			}
 
 			//アタッチされてるMonoBehaviorをすべて取得
 			_monoBehaviors.Clear();
@@ -67,6 +79,12 @@ public class UserSceneReenactData : UserData
 		public bool IsMatch(GameObject go)
 		{
 			return _instanceId == go.GetInstanceID();
+		}
+
+		public void ReenactPrefab()
+		{
+			var prefab = Object.Instantiate(Resources.Load<ReenactablePrefab>(_prefabPath));
+			Reenact(prefab.gameObject);
 		}
 
 		public void Reenact(GameObject go)
@@ -103,7 +121,7 @@ public class UserSceneReenactData : UserData
 		//再現対象のオブジェクトをリストに
 		var targets = Resources.FindObjectsOfTypeAll<Reenactable>();
 
-		void GetDataList( List<GameObjectReenactData> list, GameObject go, bool isRecursive)
+		void GetDataList(List<GameObjectReenactData> list, GameObject go, bool isRecursive)
 		{
 			list.Add(new GameObjectReenactData(go));
 
@@ -116,8 +134,14 @@ public class UserSceneReenactData : UserData
 			}
 		};
 
-		foreach(var target in targets)
+		foreach (var target in targets)
 		{
+
+			//Editgorだとプレハブファイルも入っちゃうみたいなので除外
+#if UNITY_EDITOR
+			if (EditorUtility.IsPersistent(target)) continue;
+#endif
+
 			GetDataList(_dataList, target.gameObject, target.IsRecursive);
 		}
 
@@ -137,6 +161,11 @@ public class UserSceneReenactData : UserData
 			if(desc != null)
 			{
 				data.Reenact(desc);
+			}
+			else
+			{
+				//一致するIDがなかったら
+				data.ReenactPrefab();
 			}
 		}
 	}
