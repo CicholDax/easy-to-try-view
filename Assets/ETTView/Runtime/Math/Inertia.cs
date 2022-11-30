@@ -126,6 +126,19 @@ namespace ETTView.Math
 		{
 			return a * value;
 		}
+
+		/// <summary>
+		/// 慣性体の衝突
+		/// </summary>
+		/// <returns></returns>
+		public void Collision(Vector3 currentPos, Vector3 targetPos, VectorInertia target)
+		{
+			var c = (targetPos - currentPos).normalized;   //衝突軸ベクトル
+			var dot = Vector3.Dot(Speed - target.Speed, c);
+			Speed = c * dot + Speed;
+			target.Speed = c * dot + target.Speed;
+		}
+
 	}
 	//実数型慣性値
 	public class FloatInertia : ComparableInertia<float>
