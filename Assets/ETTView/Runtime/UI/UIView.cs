@@ -19,6 +19,9 @@ namespace ETTView.UI
 		[SerializeField] List<Reopnable> _forwardTransitions;
 		[SerializeField] List<Reopnable> _rewindTransitions;
 
+		//このビューが有効な時に開いたポップアップのリスト
+		Stack<Popup> _openedPopupList = new Stack<Popup>();
+
 		//BackSceneで戻ってきた場合にtrue
 		public bool IsRewind
 		{
@@ -33,13 +36,24 @@ namespace ETTView.UI
 			}
 		}
 
+		//最後に開いたポップアップ
 		protected Popup LastPopup
 		{
 			get
 			{
-				var ret = PopupParent.GetComponentsInChildren<Popup>().LastOrDefault();
-				return ret;
+				if (_openedPopupList.Count <= 0) return null;
+				Popup pop = null;
+				do
+				{
+					pop = _openedPopupList.Pop();
+				} while (pop == null || Reopener.StateType.Opened != pop.State);
+				return pop;
 			}
+		}
+
+		public void RegistPopup(Popup popup)
+		{
+			_openedPopupList.Push(popup);
 		}
 
 		/*
@@ -110,7 +124,7 @@ namespace ETTView.UI
 			if (lastPopup != null && isClosePopup)
 			{
 				//ポップアップが開いてたら閉じる
-				await lastPopup.Close(true);
+				await lastPopup.ClosePopup();
 			}
 			else if (OnBackView() || isForceBackView)
 			{
