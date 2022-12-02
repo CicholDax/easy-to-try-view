@@ -27,8 +27,8 @@ namespace ETTView
 		}
 
 		[SerializeField] UnityEvent _onLoaded;
-		[SerializeField] UnityEvent _onOpened;
-		[SerializeField] UnityEvent _onClosed;
+		[SerializeField] UnityEvent _onOpen;
+		[SerializeField] UnityEvent _onClose;
 
 		public StateType State { get; private set; } = StateType.Loading;
 
@@ -90,7 +90,7 @@ namespace ETTView
 
 				State = StateType.Opening;
 
-				_onOpened?.Invoke();
+				_onOpen?.Invoke();
 
 				await Opening();
 
@@ -100,11 +100,12 @@ namespace ETTView
 
 				State = StateType.Closing;
 
+				_onClose?.Invoke();
+
 				await Closing();
 
 				State = StateType.Closed;
 
-				_onClosed?.Invoke();
 			});
 		}
 
