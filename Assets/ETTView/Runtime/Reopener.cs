@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using Cysharp.Threading.Tasks;
-
 
 namespace ETTView
 {
@@ -25,6 +25,10 @@ namespace ETTView
 			Closing,
 			Closed,
 		}
+
+		[SerializeField] UnityEvent _onLoaded;
+		[SerializeField] UnityEvent _onOpened;
+		[SerializeField] UnityEvent _onClosed;
 
 		public StateType State { get; private set; } = StateType.Loading;
 
@@ -78,11 +82,15 @@ namespace ETTView
 				//ロード完了まで待つ
 				await UniTask.WaitWhile(() => State == StateType.Loading);
 
+				_onLoaded?.Invoke();
+
 				State = StateType.Preopening;
 
 				await Preopning();
 
 				State = StateType.Opening;
+
+				_onOpened?.Invoke();
 
 				await Opening();
 
@@ -95,6 +103,8 @@ namespace ETTView
 				await Closing();
 
 				State = StateType.Closed;
+
+				_onClosed?.Invoke();
 			});
 		}
 
