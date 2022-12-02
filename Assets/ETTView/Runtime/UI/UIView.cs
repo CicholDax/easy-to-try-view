@@ -46,7 +46,8 @@ namespace ETTView.UI
 				do
 				{
 					pop = _openedPopupList.Pop();
-				} while (pop == null || Reopener.StateType.Opened != pop.State);
+				} while (pop == null || pop.gameObject == null || Reopener.StateType.Opened != pop.State);
+				if (pop == null || pop.gameObject == null) pop = null;
 				return pop;
 			}
 		}
