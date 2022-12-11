@@ -20,7 +20,7 @@ namespace ETTView.UI
 		[SerializeField] List<Reopnable> _rewindTransitions;
 
 		//このビューが有効な時に開いたポップアップのリスト
-		Stack<Popup> _openedPopupList = new Stack<Popup>();
+		[SerializeField]List<Popup> _openedPopupList = new List<Popup>();
 
 		//BackSceneで戻ってきた場合にtrue
 		public bool IsRewind
@@ -41,25 +41,36 @@ namespace ETTView.UI
 		{
 			get
 			{
-				if (_openedPopupList.Count <= 0) return null;
 				Popup pop = null;
-				do
+				for(var i = _openedPopupList.Count-1; i >= 0; i-- )		
 				{
-					_openedPopupList.TryPeek(out pop);
-					if (pop == null || pop.gameObject == null || pop.State <= Reopener.StateType.Opened)
+					pop = _openedPopupList[i];
+
+					//Nullだったりまだ開いてなかったら無視
+					if (pop.gameObject == null || pop.State != Reopener.StateType.Opened)
 					{
-						_openedPopupList.Pop();
 						pop = null;
 					}
-				} while (pop == null);
-				if (pop == null || pop.gameObject == null) pop = null;
+
+					if (pop != null) break;
+				}
+
+
+				//不要な要素を削除
+				_openedPopupList.RemoveAll((data) => data == null || data.gameObject == null);
+
 				return pop;
 			}
 		}
 
 		public void RegistPopup(Popup popup)
 		{
-			_openedPopupList.Push(popup);
+			if (_openedPopupList.Contains(popup))
+			{
+				_openedPopupList.Remove(popup);
+			}
+
+			_openedPopupList.Add(popup);
 		}
 
 		/*
