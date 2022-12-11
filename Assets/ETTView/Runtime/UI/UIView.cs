@@ -45,7 +45,10 @@ namespace ETTView.UI
 				Popup pop = null;
 				do
 				{
-					pop = _openedPopupList.Pop();
+					if(!_openedPopupList.TryPop(out pop))
+					{
+						break;
+					}
 				} while (pop == null || pop.gameObject == null || Reopener.StateType.Opened != pop.State);
 				if (pop == null || pop.gameObject == null) pop = null;
 				return pop;
