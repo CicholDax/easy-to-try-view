@@ -46,7 +46,7 @@ namespace ETTView.UI
 				do
 				{
 					_openedPopupList.TryPeek(out pop);
-					if (pop == null || pop.gameObject == null || Reopener.StateType.Opened != pop.State)
+					if (pop == null || pop.gameObject == null || pop.State <= Reopener.StateType.Opened)
 					{
 						_openedPopupList.Pop();
 						pop = null;
