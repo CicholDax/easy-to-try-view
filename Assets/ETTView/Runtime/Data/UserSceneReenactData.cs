@@ -112,12 +112,29 @@ public class UserSceneReenactData : UserData
 		}
 	}
 
-	[SerializeField] List<GameObjectReenactData> _dataList = new List<GameObjectReenactData>();
+	[SerializeField] List<string> _dataKeys;
+	[SerializeField] List<List<GameObjectReenactData>> _dataValueList = new List<List<GameObjectReenactData>>();
 
-
-	public void Save()
+	List<GameObjectReenactData> GetDataValueList(string key)
 	{
-		_dataList.Clear();
+		var index = _dataKeys.FindLastIndex((d) => d == key);
+		if (index < 0)
+		{
+			_dataKeys.Add(key);	//なかったら追加
+			index = _dataKeys.Count-1;
+		}
+
+		if( _dataValueList.Count <= index )
+		{
+			_dataValueList.Add(new List<GameObjectReenactData>());
+		}
+
+		return _dataValueList[index];
+	}
+
+	public void Save(string key = "")
+	{
+		GetDataValueList(key).Clear();
 
 		//再現対象のオブジェクトをリストに
 		var targets = Resources.FindObjectsOfTypeAll<Reenactable>();
@@ -143,19 +160,19 @@ public class UserSceneReenactData : UserData
 			if (EditorUtility.IsPersistent(target)) continue;
 #endif
 			target.OnDataSave();
-			GetDataList(_dataList, target.gameObject, target.IsRecursive);
+			GetDataList(GetDataValueList(key), target.gameObject, target.IsRecursive);
 		}
 
 		SaveToPrefs();
 	}
 
-	public void Load()
+	public void Load(string key = "")
 	{
 		//DataListを走査しながら、ロード済みのオブジェクトのインスタンスIDと照合して反映
 		var list = Resources.FindObjectsOfTypeAll<GameObject>();
 
 		//再現データを走査して
-		foreach(var data in _dataList)
+		foreach(var data in GetDataValueList(key))
 		{
 			//インスタンスIDが一致したら反映
 			var desc = list.ToList().Find((d) => data.IsMatch(d));
