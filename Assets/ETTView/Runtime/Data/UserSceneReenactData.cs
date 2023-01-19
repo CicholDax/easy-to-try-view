@@ -72,7 +72,8 @@ public class UserSceneReenactData : UserData
 			var monos = go.GetComponents<MonoBehaviour>();
 			foreach(var mono in monos)
 			{
-				_monoBehaviors.Add(new MonoBehaviorReenactData(mono));
+				if(mono != null)
+					_monoBehaviors.Add(new MonoBehaviorReenactData(mono));
 			}
 		}
 
