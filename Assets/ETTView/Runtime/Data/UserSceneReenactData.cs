@@ -115,7 +115,7 @@ public class UserSceneReenactData : UserData
 	[System.Serializable]
 	class DataSet
 	{
-		[SerializeField] List<GameObjectReenactData> _dataList;
+		[SerializeField] List<GameObjectReenactData> _dataList = new List<GameObjectReenactData>();
 		public List<GameObjectReenactData> DataList => _dataList;
 	}
 
