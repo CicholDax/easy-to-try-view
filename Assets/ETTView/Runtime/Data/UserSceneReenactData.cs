@@ -11,6 +11,36 @@ using UnityEditor;
 [System.Serializable]
 public class UserSceneReenactData : UserData
 {
+	static public string GetHierarchyPath(MonoBehaviour target)
+	{
+		string path = "";
+		Transform current = target.transform;
+		while (current != null)
+		{
+			// 同じ階層に同名のオブジェクトがある場合があるので、それを回避する
+			int index = current.GetSiblingIndex();
+			path = "/" + current.name + index + path;
+			current = current.parent;
+		}
+
+		return "/" + target.gameObject.scene.name + path + "/" + target.GetType().Name;
+	}
+
+	static public string GetHierarchyPath(GameObject target)
+	{
+		string path = "";
+		Transform current = target.transform;
+		while (current != null)
+		{
+			// 同じ階層に同名のオブジェクトがある場合があるので、それを回避する
+			int index = current.GetSiblingIndex();
+			path = "/" + current.name + index + path;
+			current = current.parent;
+		}
+
+		return "/" + target.gameObject.scene.name + path + "/" + target.GetType().Name;
+	}
+
 	//Reenactableコンポーネントがハンドルするシリアライズされた情報を格納
 	[System.Serializable]
 	class GameObjectReenactData
@@ -18,20 +48,20 @@ public class UserSceneReenactData : UserData
 		[System.Serializable]
 		class MonoBehaviorReenactData
 		{
-			[SerializeField] int _instanceId;
+			[SerializeField] string _uniId;	//ユニークID
 			[SerializeField] string _json;
 			[SerializeField] bool _enable;
 
 			public MonoBehaviorReenactData(MonoBehaviour mono)
 			{
-				_instanceId = mono.GetInstanceID();
+				_uniId = GetHierarchyPath(mono);
 				_enable = mono.enabled;
 				_json = JsonUtility.ToJson(mono);
 			}
 
 			public bool IsMatch(MonoBehaviour mono)
 			{
-				return _instanceId == mono.GetInstanceID();
+				return _uniId == GetHierarchyPath(mono);
 			}
 
 			public void Reenact(MonoBehaviour target)
@@ -41,7 +71,7 @@ public class UserSceneReenactData : UserData
 			}
 		}
 
-		[SerializeField] int _instanceId;
+		[SerializeField] string _uniId;
 		[SerializeField] string _name;
 		[SerializeField] bool _active;
 		[SerializeField] Vector3 _pos;
@@ -53,7 +83,7 @@ public class UserSceneReenactData : UserData
 
 		public GameObjectReenactData(GameObject go)
 		{
-			_instanceId = go.transform.GetInstanceID();
+			_uniId = GetHierarchyPath(go);
 			_name = go.name;
 			_active = go.gameObject.activeSelf;
 			_pos = go.transform.position;
@@ -79,7 +109,7 @@ public class UserSceneReenactData : UserData
 
 		public bool IsMatch(GameObject go)
 		{
-			return _instanceId == go.transform.GetInstanceID();
+			return _uniId == GetHierarchyPath(go);
 		}
 
 		public void ReenactPrefab()
