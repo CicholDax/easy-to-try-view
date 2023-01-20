@@ -53,7 +53,7 @@ public class UserSceneReenactData : UserData
 
 		public GameObjectReenactData(GameObject go)
 		{
-			_instanceId = go.GetInstanceID();
+			_instanceId = go.transform.GetInstanceID();
 			_name = go.name;
 			_active = go.gameObject.activeSelf;
 			_pos = go.transform.position;
@@ -79,7 +79,7 @@ public class UserSceneReenactData : UserData
 
 		public bool IsMatch(GameObject go)
 		{
-			return _instanceId == go.GetInstanceID();
+			return _instanceId == go.transform.GetInstanceID();
 		}
 
 		public void ReenactPrefab()
