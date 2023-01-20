@@ -35,6 +35,22 @@ namespace ETTView.UI
 			await UniTask.WhenAll(tasks);
 		}
 
+		public async UniTask Interrupt(UIView view)
+		{
+			await view.Close();
+
+			var list = new List<UIView>(_history.ToArray());
+			list.Reverse();
+
+			_history.Clear();
+
+			_history.Push(view);
+			foreach(var v in list)
+			{
+				_history.Push(v);
+			}
+		}
+
 		//履歴から削除
 		public void Remove(UIView view)
 		{
