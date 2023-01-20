@@ -112,8 +112,15 @@ public class UserSceneReenactData : UserData
 		}
 	}
 
+	[System.Serializable]
+	class DataSet
+	{
+		[SerializeField] List<GameObjectReenactData> _dataList;
+		public List<GameObjectReenactData> DataList => _dataList;
+	}
+
 	[SerializeField] List<string> _dataKeys;
-	[SerializeField] List<List<GameObjectReenactData>> _dataValueList = new List<List<GameObjectReenactData>>();
+	[SerializeField] List<DataSet> _dataSetList = new List<DataSet>();
 
 	List<GameObjectReenactData> GetDataValueList(string key)
 	{
@@ -124,12 +131,12 @@ public class UserSceneReenactData : UserData
 			index = _dataKeys.Count-1;
 		}
 
-		if( _dataValueList.Count <= index )
+		if(_dataSetList.Count <= index )
 		{
-			_dataValueList.Add(new List<GameObjectReenactData>());
+			_dataSetList.Add(new DataSet());
 		}
 
-		return _dataValueList[index];
+		return _dataSetList[index].DataList;
 	}
 
 	public void Save(string key = "")
