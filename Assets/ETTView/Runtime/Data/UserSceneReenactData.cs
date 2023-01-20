@@ -119,7 +119,7 @@ public class UserSceneReenactData : UserData
 		public List<GameObjectReenactData> DataList => _dataList;
 	}
 
-	[SerializeField] List<string> _dataKeys;
+	[SerializeField] List<string> _dataKeys = new List<string>();
 	[SerializeField] List<DataSet> _dataSetList = new List<DataSet>();
 
 	List<GameObjectReenactData> GetDataValueList(string key)
