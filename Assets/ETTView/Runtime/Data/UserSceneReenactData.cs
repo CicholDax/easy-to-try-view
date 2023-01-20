@@ -81,7 +81,7 @@ public class UserSceneReenactData : UserData
 
 		[SerializeField] List<MonoBehaviorReenactData> _monoBehaviors = new List<MonoBehaviorReenactData>();
 
-		public GameObjectReenactData(GameObject go)
+		public GameObjectReenactData(GameObject go, bool isRecursive)
 		{
 			_uniId = GetHierarchyPath(go);
 			_name = go.name;
@@ -98,12 +98,25 @@ public class UserSceneReenactData : UserData
 			}
 
 			//アタッチされてるMonoBehaviorをすべて取得
-			_monoBehaviors.Clear();
-			var monos = go.GetComponents<MonoBehaviour>();
-			foreach(var mono in monos)
+			if (isRecursive)
 			{
-				if(mono != null)
-					_monoBehaviors.Add(new MonoBehaviorReenactData(mono));
+				_monoBehaviors.Clear();
+				var monos = go.GetComponents<MonoBehaviour>();
+				foreach (var mono in monos)
+				{
+					if (mono != null)
+						_monoBehaviors.Add(new MonoBehaviorReenactData(mono));
+				}
+			}
+			else
+			{
+				//再帰的設定じゃなかったらReenactableのみ
+				var monos = go.GetComponents<Reenactable>();
+				foreach (var mono in monos)
+				{
+					if (mono != null)
+						_monoBehaviors.Add(new MonoBehaviorReenactData(mono));
+				}
 			}
 		}
 
@@ -178,7 +191,7 @@ public class UserSceneReenactData : UserData
 
 		void GetDataList(List<GameObjectReenactData> list, GameObject go, bool isRecursive)
 		{
-			list.Add(new GameObjectReenactData(go));
+			list.Add(new GameObjectReenactData(go, isRecursive));
 
 			if (isRecursive)
 			{
