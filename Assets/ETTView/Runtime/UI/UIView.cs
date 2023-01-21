@@ -204,14 +204,10 @@ namespace ETTView.UI
 				{
 					var scene = SceneManager.GetSceneAt(i);
 
-					foreach (var go in scene.GetRootGameObjects())
+					if( gameObject.scene == scene )
 					{
-						if (go == transform.root.gameObject)
-						{
-							//シーンごと破棄する
-							SceneManager.UnloadSceneAsync(scene);
-							return;
-						}
+						//シーンごと破棄する
+						SceneManager.UnloadSceneAsync(scene);
 					}
 				}
 			}
