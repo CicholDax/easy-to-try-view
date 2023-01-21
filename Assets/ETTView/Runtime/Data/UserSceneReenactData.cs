@@ -77,11 +77,10 @@ public class UserSceneReenactData : UserData
 		[SerializeField] Vector3 _pos;
 		[SerializeField] Quaternion _rot;
 		[SerializeField] Vector3 _scl;
-		[SerializeField] string _prefabPath;
 
 		[SerializeField] List<MonoBehaviorReenactData> _monoBehaviors = new List<MonoBehaviorReenactData>();
 
-		public GameObjectReenactData(GameObject go, bool isRecursive)
+		public GameObjectReenactData(GameObject go)
 		{
 			_uniId = GetHierarchyPath(go);
 			_name = go.name;
@@ -90,45 +89,18 @@ public class UserSceneReenactData : UserData
 			_rot = go.transform.rotation;
 			_scl = go.transform.localScale;
 
-			//プレハブ情報を保持してたらそれも保存
-			var prefabData = go.GetComponent<ReenactablePrefab>();
-			if(prefabData != null)
+			//Reenactableのみ
+			var monos = go.GetComponents<Reenactable>();
+			foreach (var mono in monos)
 			{
-				_prefabPath = prefabData.Path;
-			}
-
-			//アタッチされてるMonoBehaviorをすべて取得
-			if (isRecursive)
-			{
-				_monoBehaviors.Clear();
-				var monos = go.GetComponents<MonoBehaviour>();
-				foreach (var mono in monos)
-				{
-					if (mono != null)
-						_monoBehaviors.Add(new MonoBehaviorReenactData(mono));
-				}
-			}
-			else
-			{
-				//再帰的設定じゃなかったらReenactableのみ
-				var monos = go.GetComponents<Reenactable>();
-				foreach (var mono in monos)
-				{
-					if (mono != null)
-						_monoBehaviors.Add(new MonoBehaviorReenactData(mono));
-				}
+				if (mono != null)
+					_monoBehaviors.Add(new MonoBehaviorReenactData(mono));
 			}
 		}
 
 		public bool IsMatch(GameObject go)
 		{
 			return _uniId == GetHierarchyPath(go);
-		}
-
-		public void ReenactPrefab()
-		{
-			var prefab = Object.Instantiate(Resources.Load<ReenactablePrefab>(_prefabPath));
-			Reenact(prefab.gameObject);
 		}
 
 		public void Reenact(GameObject go)
@@ -141,8 +113,8 @@ public class UserSceneReenactData : UserData
 			go.transform.rotation = _rot;
 			go.transform.localScale = _scl;
 
-			//アタッチされてるMonoBehaviorをすべて取得
-			var targetMonos = go.GetComponents<MonoBehaviour>();
+			//アタッチされてるReenactableをすべて取得
+			var targetMonos = go.GetComponents<Reenactable>();
 
 			foreach (var dest in targetMonos)
 			{
@@ -189,19 +161,6 @@ public class UserSceneReenactData : UserData
 		//再現対象のオブジェクトをリストに
 		var targets = Resources.FindObjectsOfTypeAll<Reenactable>();
 
-		void GetDataList(List<GameObjectReenactData> list, GameObject go, bool isRecursive)
-		{
-			list.Add(new GameObjectReenactData(go, isRecursive));
-
-			if (isRecursive)
-			{
-				foreach (Transform child in go.transform)
-				{
-					GetDataList(list, child.gameObject, isRecursive);
-				}
-			}
-		};
-
 		foreach (var target in targets)
 		{
 
@@ -210,7 +169,8 @@ public class UserSceneReenactData : UserData
 			if (EditorUtility.IsPersistent(target)) continue;
 #endif
 			target.OnDataSave();
-			GetDataList(GetDataValueList(key), target.gameObject, target.IsRecursive);
+			//GetDataList(GetDataValueList(key), target.gameObject, false);
+			GetDataValueList(key).Add(new GameObjectReenactData(target.gameObject));
 		}
 
 		SaveToPrefs();
@@ -219,27 +179,17 @@ public class UserSceneReenactData : UserData
 	public void Load(string key = "")
 	{
 		//DataListを走査しながら、ロード済みのオブジェクトのインスタンスIDと照合して反映
-		var list = Resources.FindObjectsOfTypeAll<GameObject>();
+		var list = Resources.FindObjectsOfTypeAll<Reenactable>();
 
 		//再現データを走査して
 		foreach(var data in GetDataValueList(key))
 		{
 			//インスタンスIDが一致したら反映
-			var desc = list.ToList().Find((d) => data.IsMatch(d));
+			var desc = list.ToList().Find((d) => data.IsMatch(d.gameObject));
 			if(desc != null)
 			{
-				data.Reenact(desc);
-
-				var reenactable = desc.GetComponent<Reenactable>();
-				if (reenactable != null)
-				{
-					reenactable.OnDataLoad();
-				}
-			}
-			else
-			{
-				//一致するIDがなかったら
-				data.ReenactPrefab();
+				data.Reenact(desc.gameObject);
+				desc.OnDataLoad();
 			}
 		}
 	}
