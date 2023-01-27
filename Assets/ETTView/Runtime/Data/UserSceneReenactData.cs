@@ -168,7 +168,7 @@ public class UserSceneReenactData : UserData
 #if UNITY_EDITOR
 			if (EditorUtility.IsPersistent(target)) continue;
 #endif
-			target.OnDataSave();
+			target.OnDataSave(key);
 			//GetDataList(GetDataValueList(key), target.gameObject, false);
 			GetDataValueList(key).Add(new GameObjectReenactData(target.gameObject));
 		}
@@ -189,7 +189,7 @@ public class UserSceneReenactData : UserData
 			if(desc != null)
 			{
 				data.Reenact(desc.gameObject);
-				desc.OnDataLoad();
+				desc.OnDataLoad(key);
 			}
 		}
 	}

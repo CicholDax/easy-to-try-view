@@ -12,12 +12,12 @@ public class Reenactable : MonoBehaviour
 
 	public bool IsRecursive => _isRecursive;
 
-	public virtual void OnDataSave()
+	public virtual void OnDataSave(string key)
 	{
 		_onDataSave?.Invoke();
 	}
 
-	public virtual void OnDataLoad()
+	public virtual void OnDataLoad(string key)
 	{
 		_onDataLoad?.Invoke();
 	}
