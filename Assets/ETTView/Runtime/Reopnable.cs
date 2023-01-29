@@ -24,7 +24,7 @@ namespace ETTView
 		}
 
 		public Reopener.StateType State { get { return Reopener.State; } }
-		protected bool ReopenerEnable { get => Reopener.enabled; }
+		public bool IsOpen { get => Reopener.enabled; }
 
 		public virtual async UniTask Open()
 		{
