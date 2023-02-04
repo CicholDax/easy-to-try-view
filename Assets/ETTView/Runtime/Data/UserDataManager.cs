@@ -26,6 +26,15 @@ namespace ETTView.Data
 			return _loadedList[key] as T;
 		}
 
+		public void Delete<T>() where T : UserData, new()
+		{ 
+			var key = typeof(T).Name;
+			if (_loadedList.ContainsKey(key))
+			{
+				_loadedList.Remove(key);
+			}
+		}
+
 		public void Reset<T>() where T : UserData, new()
 		{
 			var key = typeof(T).Name;
