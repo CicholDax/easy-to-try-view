@@ -35,6 +35,11 @@ namespace ETTView.Data
 			}
 		}
 
+		public void DeleteAll()
+		{
+			_loadedList = new Dictionary<string, UserData>();
+		}
+
 		public void Reset<T>() where T : UserData, new()
 		{
 			var key = typeof(T).Name;
