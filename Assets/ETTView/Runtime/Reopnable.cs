@@ -25,7 +25,7 @@ namespace ETTView
 
 		public Reopener.StateType State { get { return Reopener.State; } }
 		public bool IsOpen { get => Reopener.enabled; }
-		public bool IsFixed { get => State == Reopener.StateType.Closed || State == Reopener.StateType.Opened; }
+		public bool IsFixed { get => State == Reopener.StateType.Closed || State == Reopener.StateType.Opened || State == Reopener.StateType.Loaded; }
 
 		public virtual async UniTask Open()
 		{
