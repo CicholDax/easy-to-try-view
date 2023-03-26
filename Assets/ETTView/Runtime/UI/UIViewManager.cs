@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
-using DG.DemiEditor;
 
 namespace ETTView.UI
 {
