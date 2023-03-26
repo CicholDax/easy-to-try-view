@@ -37,6 +37,8 @@ public class CubeController : Reopnable
 			var userData = UserDataManager.Instance.Get<UserSceneReenactData>();
 			userData.Load();
 		}
+
+
 	}
 
 }

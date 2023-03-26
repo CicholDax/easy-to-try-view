@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using DG.DemiEditor;
 
 namespace ETTView.UI
 {
@@ -26,6 +27,11 @@ namespace ETTView.UI
 			var tasks = new List<UniTask>();
 			foreach (var view in _history)
 			{
+				if(view == null)
+				{
+					Debug.LogWarning("破棄されたUIViewがHistoryに残っています。SingleでSceneLoadする場合は戻れなくなるのでUIViewManager.ClearHistoryしてください。");
+					continue;
+				}
 				//ビューはひとつしかOpenにならないので、他はClose
 				tasks.Add(view.Close());
 			}

@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Cysharp.Threading.Tasks;
+using System.Threading;
+using System;
 
 namespace ETTView
 {
@@ -45,9 +47,11 @@ namespace ETTView
 			}
 		}
 
+		CancellationTokenSource _cts;
+
 		public async UniTask Open()
 		{
-			if (this == null) return;
+			if (_cts.IsCancellationRequested) return;
 			if (enabled) return;
 			enabled = true;
 
@@ -56,9 +60,9 @@ namespace ETTView
 
 		public async UniTask Close()
 		{
+			if (_cts.IsCancellationRequested) return;
 			//ロード中だったら待つ
 			await UniTask.WaitWhile(() => State == StateType.Loading);
-			if (this == null) return;
 			if (!enabled) return;
 			enabled = false;
 
@@ -68,6 +72,8 @@ namespace ETTView
 
 		protected virtual async void Awake()
 		{
+			_cts = new CancellationTokenSource();
+
 			UniTaskScheduler.UnobservedExceptionWriteLogType = LogType.Warning;
 
 			await UniTask.Create(async () =>
@@ -79,36 +85,43 @@ namespace ETTView
 
 		protected virtual async void OnEnable()
 		{
-			await UniTask.Create(async () =>
+			try
 			{
-				//ロード完了まで待つ
-				await UniTask.WaitWhile(() => State == StateType.Loading);
+				await UniTask.Create(async () =>
+				{
+					//ロード完了まで待つ
+					await UniTask.WaitWhile(() => State == StateType.Loading);
 
-				_onLoaded?.Invoke();
+					_onLoaded?.Invoke();
 
-				State = StateType.Preopening;
+					State = StateType.Preopening;
 
-				await Preopning();
+					await Preopning();
 
-				State = StateType.Opening;
+					State = StateType.Opening;
 
-				_onOpen?.Invoke();
+					_onOpen?.Invoke();
 
-				await Opening();
+					await Opening();
 
-				State = StateType.Opened;
+					State = StateType.Opened;
 
-				await UniTask.WaitWhile(() => this != null && enabled);
+					await UniTask.WaitWhile(() => enabled, cancellationToken: _cts.Token);
 
-				State = StateType.Closing;
+					State = StateType.Closing;
 
-				_onClose?.Invoke();
+					_onClose?.Invoke();
 
-				await Closing();
+					await Closing();
 
-				State = StateType.Closed;
+					State = StateType.Closed;
 
-			});
+				});
+			}
+			catch(OperationCanceledException e)
+			{
+
+			}
 		}
 
 		public async void Update()
@@ -119,7 +132,7 @@ namespace ETTView
 
 		async UniTask Load()
 		{
-			if (this == null) return;
+			_cts.Token.ThrowIfCancellationRequested();
 			Debug.Log(name + " Load Start");
 
 			var tasks = new List<UniTask>();
@@ -136,7 +149,7 @@ namespace ETTView
 
 		async UniTask Preopning()
 		{
-			if (this == null) return;
+			_cts.Token.ThrowIfCancellationRequested();
 			Debug.Log(name + " Preopning Start");
 
 			var tasks = new List<UniTask>();
@@ -153,7 +166,7 @@ namespace ETTView
 
 		async UniTask Opening()
 		{
-			if (this == null) return;
+			_cts.Token.ThrowIfCancellationRequested();
 			Debug.Log(name + " Opening Start");
 
 			var tasks = new List<UniTask>();
@@ -170,7 +183,7 @@ namespace ETTView
 
 		async UniTask OnLoadedUpdate()
 		{
-			if (this == null) return;
+			_cts.Token.ThrowIfCancellationRequested();
 			var tasks = new List<UniTask>();
 			foreach (var reopnable in Reopnables)
 			{
@@ -183,7 +196,7 @@ namespace ETTView
 
 		async UniTask Closing()
 		{
-			if (this == null) return;
+			_cts.Token.ThrowIfCancellationRequested();
 			Debug.Log(name + " Closing Start");
 
 			var tasks = new List<UniTask>();
@@ -196,6 +209,16 @@ namespace ETTView
 			await UniTask.WhenAll(tasks);
 
 			Debug.Log(name + " Closing End");
+		}
+
+		public void OnDestroy()
+		{
+			if (_cts != null)
+			{
+				_cts.Cancel();
+				_cts.Dispose();
+				_cts = null;
+			}
 		}
 	}
 }
