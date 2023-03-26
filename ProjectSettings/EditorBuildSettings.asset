@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/ETTView/Sample/Scenes/BView.unity
+    guid: 22ea93311385a4c46a0fa3783db05063
   m_configObjects: {}
