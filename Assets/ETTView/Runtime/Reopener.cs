@@ -138,8 +138,10 @@ namespace ETTView
 			var tasks = new List<UniTask>();
 			foreach (var reopnable in Reopnables)
 			{
-				if (this != null && reopnable.enabled)
+				if (reopnable.enabled)
 					tasks.Add(reopnable.Load());
+
+				_cts.Token.ThrowIfCancellationRequested();
 			}
 
 			await UniTask.WhenAll(tasks);
@@ -155,8 +157,10 @@ namespace ETTView
 			var tasks = new List<UniTask>();
 			foreach (var reopnable in Reopnables)
 			{
-				if (this != null && reopnable.enabled)
+				if (reopnable.enabled)
 					tasks.Add(reopnable.Preopning());
+
+				_cts.Token.ThrowIfCancellationRequested();
 			}
 
 			await UniTask.WhenAll(tasks);
@@ -172,8 +176,10 @@ namespace ETTView
 			var tasks = new List<UniTask>();
 			foreach (var reopnable in Reopnables)
 			{
-				if (this != null && reopnable.enabled)
+				if (reopnable.enabled)
 					tasks.Add(reopnable.Opening());
+
+				_cts.Token.ThrowIfCancellationRequested();
 			}
 
 			await UniTask.WhenAll(tasks);
@@ -187,8 +193,10 @@ namespace ETTView
 			var tasks = new List<UniTask>();
 			foreach (var reopnable in Reopnables)
 			{
-				if (this != null && reopnable.enabled)
+				if (reopnable.enabled)
 					tasks.Add(reopnable.OnLoadedUpdate());
+
+				_cts.Token.ThrowIfCancellationRequested();
 			}
 
 			await UniTask.WhenAll(tasks);
@@ -202,8 +210,10 @@ namespace ETTView
 			var tasks = new List<UniTask>();
 			foreach (var reopnable in Reopnables)
 			{
-				if (this != null && reopnable.enabled)
+				if (reopnable.enabled)
 					tasks.Add(reopnable.Closing());
+
+				_cts.Token.ThrowIfCancellationRequested();
 			}
 
 			await UniTask.WhenAll(tasks);
