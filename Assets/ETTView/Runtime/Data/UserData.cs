@@ -25,6 +25,11 @@ namespace ETTView.Data
 			return ret;
 		}
 
+		public static void Delete<T>() where T : UserData, new()
+		{
+			PlayerPrefs.DeleteKey(typeof(T).Name);
+		}
+
 		public static UserData LoadFromPrefs(Type type, Func<UserData> createDefault)
 		{
 			UserData ret = null;

@@ -29,6 +29,7 @@ namespace ETTView.Data
 		public void Delete<T>() where T : UserData, new()
 		{ 
 			var key = typeof(T).Name;
+			UserData.Delete<T>();
 			if (_loadedList.ContainsKey(key))
 			{
 				_loadedList.Remove(key);
