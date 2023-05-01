@@ -7,6 +7,7 @@ using ETTView.Data;
 using System.Text.RegularExpressions;
 using Unity.Plastic.Newtonsoft.Json;
 using DG.DemiEditor;
+using UnityEditor;
 
 public class Reenactable : MonoBehaviour
 {
@@ -47,7 +48,11 @@ public class Reenactable : MonoBehaviour
 
 		public bool IsMatch(Reenactable target)
 		{
-			return _uniId == target._uniId;
+			return
+#if UNITY_EDITOR
+			!EditorUtility.IsPersistent(target) && 
+#endif
+			_uniId == target._uniId;
 		}
 
 		//ƒpƒX‚ğ•Û‚µ‚Ä‚¢‚½‚ç¶¬‚µ‚Ä•œŒ³
