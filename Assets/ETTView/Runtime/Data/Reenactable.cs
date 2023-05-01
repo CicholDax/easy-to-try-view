@@ -4,8 +4,6 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 using ETTView.Data;
-using System.Text.RegularExpressions;
-using Unity.Plastic.Newtonsoft.Json;
 using DG.DemiEditor;
 using UnityEditor;
 
