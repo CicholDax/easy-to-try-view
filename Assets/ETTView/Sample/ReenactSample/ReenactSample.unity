@@ -251,21 +251,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uniId: a21ba146-b7c5-4389-ad92-d853763f4c63
+  _prefabPath: 
   _onDataLoad:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1608293898}
-        m_TargetAssemblyTypeName: UnityEngine.Object, UnityEngine
-        m_MethodName: set_name
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: test
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
   _onDataSave:
     m_PersistentCalls:
       m_Calls: []
@@ -368,6 +357,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uniId: e6ddeb99-80ed-4650-be82-00facd2f9825
+  _prefabPath: 
   _onDataLoad:
     m_PersistentCalls:
       m_Calls: []

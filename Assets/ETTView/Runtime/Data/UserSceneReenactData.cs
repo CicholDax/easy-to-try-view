@@ -69,10 +69,15 @@ public class UserSceneReenactData : UserData
 		{
 			//インスタンスIDが一致したら反映
 			var desc = list.ToList().Find((d) => data.IsMatch(d));
-			if(desc != null)
+			if (desc != null)
 			{
 				data.Reenact(desc);
 				desc.OnDataLoadAfter(key);
+			}
+			else
+			{
+				//一致するインスタンスIDがなくてかつPrefab情報を保持してたら生成して復元
+				data.InstantiateAndReenactIfPathExists(key);
 			}
 			list.Remove(desc);
 		}

@@ -16,6 +16,7 @@ public class Reenactable : MonoBehaviour
 		public Data(Reenactable reenactable)
 		{
 			_uniId = reenactable._uniId;
+			_prefabPath = reenactable._prefabPath;
 
 			_json = JsonUtility.ToJson(reenactable);
 
@@ -49,9 +50,22 @@ public class Reenactable : MonoBehaviour
 			return _uniId == target._uniId;
 		}
 
+		//パスを保持していたら生成して復元
+		public Reenactable InstantiateAndReenactIfPathExists(string key)
+		{
+			if (string.IsNullOrEmpty(_prefabPath)) return null;
+			var prefab = Resources.Load<Reenactable>(_prefabPath);
+			if (prefab == null) return null;
+			var instance = Instantiate(prefab);
+			Reenact(instance);
+			instance.OnDataLoadAfter(key);
+			return instance;
+		}
+
 		[SerializeField] string _uniId; //ユニークID
 		[SerializeField] string _json;
 		[SerializeField] bool _enable;
+		[SerializeField] string _prefabPath;
 
 		//GameObject情報　複数アタッチの場合冗長になるが許容
 		[SerializeField] string _name;
@@ -62,6 +76,7 @@ public class Reenactable : MonoBehaviour
 	}
 
 	[SerializeField] string _uniId = Guid.NewGuid().ToString();
+	[SerializeField] string _prefabPath;    //プレハブの場合
 	[SerializeField] UnityEvent _onDataLoad;
 	[SerializeField] UnityEvent _onDataSave;
 
