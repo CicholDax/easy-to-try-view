@@ -4,8 +4,10 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 using ETTView.Data;
-using DG.DemiEditor;
+
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 public class Reenactable : MonoBehaviour
 {
@@ -31,11 +33,11 @@ public class Reenactable : MonoBehaviour
 			target.enabled = _enable;
 
 			//コールバックはシリアライズしたくない
-			var onDataLoad = target._onDataLoad.Clone();
-			var onDataSave = target._onDataSave.Clone();
+			//var onDataLoad = target._onDataLoad.Clone();
+			//var onDataSave = target._onDataSave.Clone();
 			JsonUtility.FromJsonOverwrite(_json, target);
-			target._onDataLoad = onDataLoad;
-			target._onDataSave = onDataSave;
+			//target._onDataLoad = onDataLoad;
+			//target._onDataSave = onDataSave;
 
 			target.gameObject.name = _name;
 			target.gameObject.SetActive(_active);
