@@ -49,18 +49,18 @@ namespace ETTView
 
 		CancellationTokenSource _cts;
 
-		public async UniTask Open(CancellationToken token)
+		public async UniTask Open()
 		{
-			if (token.IsCancellationRequested) return;
+			if (_cts.Token.IsCancellationRequested) return;
 			if (enabled) return;
 			enabled = true;
 
 			await UniTask.WaitUntil(() => State == StateType.Opened);
 		}
 
-		public async UniTask Close(CancellationToken token)
+		public async UniTask Close()
 		{
-			if (token.IsCancellationRequested) return;
+			if (_cts.Token.IsCancellationRequested) return;
 			//ロード中だったら待つ
 			await UniTask.WaitWhile(() => State == StateType.Loading);
 			if (!enabled) return;
