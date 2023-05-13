@@ -25,7 +25,7 @@ namespace ETTView
 
 		public Reopener.StateType State { get { return Reopener.State; } }
 		public bool IsOpen { get => Reopener.enabled; }
-		public bool IsFixed { get => State == Reopener.StateType.Closed || State == Reopener.StateType.Opened || State == Reopener.StateType.Loaded; }
+		public bool IsStateStable { get => State == Reopener.StateType.Closed || State == Reopener.StateType.Opened || State == Reopener.StateType.Loaded; }
 
 		public virtual async UniTask Open()
 		{
@@ -42,34 +42,24 @@ namespace ETTView
 		//Ex.付随するプレハブの生成、初期化とか
 		public virtual async UniTask Load()
 		{
-			//await UniTask.WaitForEndOfFrame();
 		}
 
 		//スタート、再スタート時に毎回実行する処理のうち、他より先に行いたいもの
 		//Ex.状態の初期化とか、データの更新とか
 		public virtual async UniTask Preopning()
 		{
-
 		}
 
 		//スタート、再スタート時に毎回実行する処理
 		//Ex.開始時のアニメーションなど
 		public virtual async UniTask Opening()
 		{
-			//await UniTask.WaitForEndOfFrame();
-		}
-
-		//更新処理
-		public virtual async UniTask OnLoadedUpdate()
-		{
-			//await UniTask.Yield(PlayerLoopTiming.Update);
 		}
 
 		//終了時の処理
 		//Ex.終了時のアニメーションとか
 		public virtual async UniTask Closing()
 		{
-			//await UniTask.WaitForEndOfFrame();
 		}
 	}
 }

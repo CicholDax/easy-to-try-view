@@ -281,7 +281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf5d62bc28607024dbc4879cd56f76fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _duration: 0
+  _duration: 1
   _targetGraphic: {fileID: 1093797734}
   _way: 1
 --- !u!114 &566443280

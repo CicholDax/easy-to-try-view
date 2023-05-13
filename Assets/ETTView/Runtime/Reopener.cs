@@ -76,58 +76,45 @@ namespace ETTView
 
 			UniTaskScheduler.UnobservedExceptionWriteLogType = LogType.Warning;
 
-			await UniTask.Create(async () =>
-			{
-				await Load();
-				State = StateType.Loaded;
-			});
+			await Load();
+			State = StateType.Loaded;
 		}
 
 		protected virtual async void OnEnable()
 		{
 			try
 			{
-				await UniTask.Create(async () =>
-				{
-					//ロード完了まで待つ
-					await UniTask.WaitWhile(() => State == StateType.Loading);
+				//ロード完了まで待つ
+				await UniTask.WaitWhile(() => State == StateType.Loading);
 
-					_onLoaded?.Invoke();
+				_onLoaded?.Invoke();
 
-					State = StateType.Preopening;
+				State = StateType.Preopening;
 
-					await Preopning();
+				await Preopning();
 
-					State = StateType.Opening;
+				State = StateType.Opening;
 
-					_onOpen?.Invoke();
+				_onOpen?.Invoke();
 
-					await Opening();
+				await Opening();
 
-					State = StateType.Opened;
+				State = StateType.Opened;
 
-					await UniTask.WaitWhile(() => enabled, cancellationToken: _cts.Token);
+				await UniTask.WaitWhile(() => enabled, cancellationToken: _cts.Token);
 
-					State = StateType.Closing;
+				State = StateType.Closing;
 
-					_onClose?.Invoke();
+				_onClose?.Invoke();
 
-					await Closing();
+				await Closing();
 
-					State = StateType.Closed;
-
-				});
+				State = StateType.Closed;
 			}
 			catch(OperationCanceledException e)
 			{
-
+				Debug.Log("Reopner. " + e.Message);
 			}
-		}
-
-		public async void Update()
-		{
-			if (State != StateType.Loading)
-				await OnLoadedUpdate();
 		}
 
 		async UniTask Load()
@@ -146,6 +133,7 @@ namespace ETTView
 
 			await UniTask.WhenAll(tasks);
 
+			_cts.Token.ThrowIfCancellationRequested();
 			Debug.Log(name + " Load End");
 		}
 
@@ -165,6 +153,7 @@ namespace ETTView
 
 			await UniTask.WhenAll(tasks);
 
+			_cts.Token.ThrowIfCancellationRequested();
 			Debug.Log(name + " Preopning End");
 		}
 
@@ -184,22 +173,8 @@ namespace ETTView
 
 			await UniTask.WhenAll(tasks);
 
-			Debug.Log(name + " Opening End");
-		}
-
-		async UniTask OnLoadedUpdate()
-		{
 			_cts.Token.ThrowIfCancellationRequested();
-			var tasks = new List<UniTask>();
-			foreach (var reopnable in Reopnables)
-			{
-				if (reopnable.enabled)
-					tasks.Add(reopnable.OnLoadedUpdate());
-
-				_cts.Token.ThrowIfCancellationRequested();
-			}
-
-			await UniTask.WhenAll(tasks);
+			Debug.Log(name + " Opening End");
 		}
 
 		async UniTask Closing()
@@ -218,6 +193,7 @@ namespace ETTView
 
 			await UniTask.WhenAll(tasks);
 
+			_cts.Token.ThrowIfCancellationRequested();
 			Debug.Log(name + " Closing End");
 		}
 

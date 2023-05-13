@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class AView : UIView
 {
-	public override async UniTask OnLoadedUpdate()
+	public async void Update()
 	{
 		if(Input.GetKeyDown(KeyCode.D))
 		{
