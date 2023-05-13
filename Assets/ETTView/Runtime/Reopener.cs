@@ -49,18 +49,18 @@ namespace ETTView
 
 		CancellationTokenSource _cts;
 
-		public async UniTask Open()
+		public async UniTask Open(CancellationToken token)
 		{
-			if (_cts.IsCancellationRequested) return;
+			if (token.IsCancellationRequested) return;
 			if (enabled) return;
 			enabled = true;
 
 			await UniTask.WaitUntil(() => State == StateType.Opened);
 		}
 
-		public async UniTask Close()
+		public async UniTask Close(CancellationToken token)
 		{
-			if (_cts.IsCancellationRequested) return;
+			if (token.IsCancellationRequested) return;
 			//ロード中だったら待つ
 			await UniTask.WaitWhile(() => State == StateType.Loading);
 			if (!enabled) return;
@@ -76,7 +76,7 @@ namespace ETTView
 
 			UniTaskScheduler.UnobservedExceptionWriteLogType = LogType.Warning;
 
-			await Load();
+			await Load(_cts.Token);
 			State = StateType.Loaded;
 		}
 
@@ -91,13 +91,13 @@ namespace ETTView
 
 				State = StateType.Preopening;
 
-				await Preopning();
+				await Preopning(_cts.Token);
 
 				State = StateType.Opening;
 
 				_onOpen?.Invoke();
 
-				await Opening();
+				await Opening(_cts.Token);
 
 				State = StateType.Opened;
 
@@ -107,7 +107,7 @@ namespace ETTView
 
 				_onClose?.Invoke();
 
-				await Closing();
+				await Closing(_cts.Token);
 
 				State = StateType.Closed;
 			}
@@ -117,9 +117,9 @@ namespace ETTView
 			}
 		}
 
-		async UniTask Load()
+		async UniTask Load(CancellationToken token)
 		{
-			_cts.Token.ThrowIfCancellationRequested();
+			token.ThrowIfCancellationRequested();
 			Debug.Log(name + " Load Start");
 
 			var tasks = new List<UniTask>();
@@ -128,18 +128,18 @@ namespace ETTView
 				if (reopnable.enabled)
 					tasks.Add(reopnable.Load());
 
-				_cts.Token.ThrowIfCancellationRequested();
+				token.ThrowIfCancellationRequested();
 			}
 
 			await UniTask.WhenAll(tasks);
 
-			_cts.Token.ThrowIfCancellationRequested();
+			token.ThrowIfCancellationRequested();
 			Debug.Log(name + " Load End");
 		}
 
-		async UniTask Preopning()
+		async UniTask Preopning(CancellationToken token)
 		{
-			_cts.Token.ThrowIfCancellationRequested();
+			token.ThrowIfCancellationRequested();
 			Debug.Log(name + " Preopning Start");
 
 			var tasks = new List<UniTask>();
@@ -148,18 +148,18 @@ namespace ETTView
 				if (reopnable.enabled)
 					tasks.Add(reopnable.Preopning());
 
-				_cts.Token.ThrowIfCancellationRequested();
+				token.ThrowIfCancellationRequested();
 			}
 
 			await UniTask.WhenAll(tasks);
 
-			_cts.Token.ThrowIfCancellationRequested();
+			token.ThrowIfCancellationRequested();
 			Debug.Log(name + " Preopning End");
 		}
 
-		async UniTask Opening()
+		async UniTask Opening(CancellationToken token)
 		{
-			_cts.Token.ThrowIfCancellationRequested();
+			token.ThrowIfCancellationRequested();
 			Debug.Log(name + " Opening Start");
 
 			var tasks = new List<UniTask>();
@@ -168,18 +168,18 @@ namespace ETTView
 				if (reopnable.enabled)
 					tasks.Add(reopnable.Opening());
 
-				_cts.Token.ThrowIfCancellationRequested();
+				token.ThrowIfCancellationRequested();
 			}
 
 			await UniTask.WhenAll(tasks);
 
-			_cts.Token.ThrowIfCancellationRequested();
+			token.ThrowIfCancellationRequested();
 			Debug.Log(name + " Opening End");
 		}
 
-		async UniTask Closing()
+		async UniTask Closing(CancellationToken token)
 		{
-			_cts.Token.ThrowIfCancellationRequested();
+			token.ThrowIfCancellationRequested();
 			Debug.Log(name + " Closing Start");
 
 			var tasks = new List<UniTask>();
@@ -188,12 +188,12 @@ namespace ETTView
 				if (reopnable.enabled)
 					tasks.Add(reopnable.Closing());
 
-				_cts.Token.ThrowIfCancellationRequested();
+				token.ThrowIfCancellationRequested();
 			}
 
 			await UniTask.WhenAll(tasks);
 
-			_cts.Token.ThrowIfCancellationRequested();
+			token.ThrowIfCancellationRequested();
 			Debug.Log(name + " Closing End");
 		}
 
