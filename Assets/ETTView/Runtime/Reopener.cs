@@ -51,7 +51,6 @@ namespace ETTView
 
 		public async UniTask Open()
 		{
-			if (_cts.Token.IsCancellationRequested) return;
 			if (enabled) return;
 			enabled = true;
 
@@ -60,7 +59,6 @@ namespace ETTView
 
 		public async UniTask Close()
 		{
-			if (_cts.Token.IsCancellationRequested) return;
 			//ロード中だったら待つ
 			await UniTask.WaitWhile(() => State == StateType.Loading);
 			if (!enabled) return;
@@ -114,6 +112,10 @@ namespace ETTView
 			catch(OperationCanceledException e)
 			{
 				Debug.Log("Reopner. " + e.Message);
+			}
+			catch(Exception e)
+			{
+				Debug.LogException(e);
 			}
 		}
 
