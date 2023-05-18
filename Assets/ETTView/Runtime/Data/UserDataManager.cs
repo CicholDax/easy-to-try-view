@@ -41,6 +41,11 @@ namespace ETTView.Data
 			_loadedList = new Dictionary<string, UserData>();
 		}
 
+		public bool IsExist<T>() where T : UserData, new()
+		{
+			return _loadedList.ContainsKey(typeof(T).Name);
+		}
+
 		public void Reset<T>() where T : UserData, new()
 		{
 			var key = typeof(T).Name;
