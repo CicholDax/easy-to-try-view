@@ -9,11 +9,6 @@ namespace ETTView.Data
 	[System.Serializable]
 	public class UserData
 	{
-		public virtual void Reset()
-		{
-			
-		}
-
 		public static T LoadFromPrefs<T>() where T : UserData, new()
 		{
 			T ret = new T();
@@ -23,6 +18,11 @@ namespace ETTView.Data
 				ret = JsonUtility.FromJson<T>(jsonText);
 			}
 			return ret;
+		}
+
+		public static bool IsExist<T>() where T : UserData, new()
+		{
+			return PlayerPrefs.HasKey(typeof(T).Name);
 		}
 
 		public static void Delete<T>() where T : UserData, new()

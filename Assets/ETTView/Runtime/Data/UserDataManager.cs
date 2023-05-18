@@ -18,7 +18,6 @@ namespace ETTView.Data
 				if (ret == null)
 				{
 					ret = new T();
-					ret.Reset();
 				};
 				_loadedList.Add(key, ret);
 			}
@@ -39,21 +38,6 @@ namespace ETTView.Data
 		public void DeleteAll()
 		{
 			_loadedList = new Dictionary<string, UserData>();
-		}
-
-		public bool IsExist<T>() where T : UserData, new()
-		{
-			return _loadedList.ContainsKey(typeof(T).Name);
-		}
-
-		public void Reset<T>() where T : UserData, new()
-		{
-			var key = typeof(T).Name;
-			if (_loadedList.ContainsKey(key))
-			{
-				_loadedList[key].Reset();
-				_loadedList[key].SaveToPrefs();
-			}
 		}
 	}
 }
