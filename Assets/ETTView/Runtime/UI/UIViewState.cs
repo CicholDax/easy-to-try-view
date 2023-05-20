@@ -7,8 +7,17 @@ using Cysharp.Threading.Tasks;
 
 public class UIViewState : ReopnablePrefab
 {
+	[SerializeField] bool _awaitCloseState = false;
+
 	public override async UniTask Preopning()
 	{
-		UIViewManager.Instance.Current.RegistState(this).Forget();
+		if (_awaitCloseState)
+		{
+			await UIViewManager.Instance.Current.RegistState(this);
+		}
+		else
+		{
+			UIViewManager.Instance.Current.RegistState(this).Forget();
+		}
 	}
 }
