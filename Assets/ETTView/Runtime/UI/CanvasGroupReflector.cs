@@ -17,10 +17,12 @@ public class CanvasGroupReflector : Reopnable
 	public override async UniTask Opening()
 	{
 		_canvasGroup.interactable = true;
+		_canvasGroup.blocksRaycasts = true;
 	}
 
 	public override async UniTask Closing()
 	{
 		_canvasGroup.interactable = false;
+		_canvasGroup.blocksRaycasts = false;
 	}
 }
