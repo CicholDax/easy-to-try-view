@@ -208,6 +208,8 @@ namespace ETTView.UI
 					{
 						//シーンごと破棄する
 						SceneManager.UnloadSceneAsync(scene);
+
+						Debug.Log(name + "によって" + gameObject.scene.name + "が破棄されました。");
 					}
 				}
 			}
