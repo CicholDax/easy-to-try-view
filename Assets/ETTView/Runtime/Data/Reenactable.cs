@@ -82,16 +82,16 @@ public class Reenactable : MonoBehaviour
 
 	[SerializeField] string _uniId = Guid.NewGuid().ToString();
 	[SerializeField] string _prefabPath;    //ƒvƒŒƒnƒu‚Ìê‡
-	[SerializeField] UnityEvent _onDataLoad;
-	[SerializeField] UnityEvent _onDataSave;
+	[SerializeField] UnityEvent<string> _onDataLoad;
+	[SerializeField] UnityEvent<string> _onDataSave;
 
 	public virtual void OnDataSaveBefore(string key)
 	{
-		_onDataSave?.Invoke();
+		_onDataSave?.Invoke(key);
 	}
 
 	public virtual void OnDataLoadAfter(string key)
 	{
-		_onDataLoad?.Invoke();
+		_onDataLoad?.Invoke(key);
 	}
 }
