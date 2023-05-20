@@ -71,7 +71,8 @@ namespace ETTView.UI
 			List<UniTask> tasks = new List<UniTask>();
 			foreach( var historyState in _stateHistory )
 			{
-				tasks.Add(historyState.Close());
+				if(historyState != state)
+					tasks.Add(historyState.Close());
 			}
 			_stateHistory.Push(state);
 
