@@ -9,7 +9,7 @@ public class BView : UIView
 {
 	public async void Update()
 	{
-		if (State == ETTView.Reopener.StateType.Loading) return;
+		if (Phase == ETTView.Reopener.PhaseType.Loading) return;
 
 		if (Input.GetKeyDown(KeyCode.F1))
 		{

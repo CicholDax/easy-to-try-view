@@ -23,9 +23,9 @@ namespace ETTView
 			}
 		}
 
-		public Reopener.StateType State { get { return Reopener.State; } }
+		public Reopener.PhaseType Phase { get { return Reopener.Phase; } }
 		public bool IsOpen { get => Reopener.enabled; }
-		public bool IsStateStable { get => State == Reopener.StateType.Closed || State == Reopener.StateType.Opened || State == Reopener.StateType.Loaded; }
+		public bool IsPhaseStable { get => Phase == Reopener.PhaseType.Closed || Phase == Reopener.PhaseType.Opened || Phase == Reopener.PhaseType.Loaded; }
 
 		public virtual async UniTask Open()
 		{

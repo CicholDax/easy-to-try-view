@@ -22,6 +22,9 @@ namespace ETTView.UI
 		//このビューが有効な時に開いたポップアップのリスト
 		[SerializeField]List<Popup> _openedPopupList = new List<Popup>();
 
+		//状態遷移履歴
+		Stack<UIViewState> _stateHistory = new Stack<UIViewState>();
+
 		//BackSceneで戻ってきた場合にtrue
 		public bool IsRewind
 		{
@@ -47,7 +50,7 @@ namespace ETTView.UI
 					pop = _openedPopupList[i];
 
 					//Nullだったりまだ開いてなかったら無視
-					if (pop.gameObject == null || pop.State != Reopener.StateType.Opened)
+					if (pop.gameObject == null || pop.Phase != Reopener.PhaseType.Opened)
 					{
 						pop = null;
 					}
@@ -63,6 +66,18 @@ namespace ETTView.UI
 			}
 		}
 
+		public async UniTask RegistState(UIViewState state)
+		{
+			List<UniTask> tasks = new List<UniTask>();
+			foreach( var historyState in _stateHistory )
+			{
+				tasks.Add(historyState.Close());
+			}
+			_stateHistory.Push(state);
+
+			await UniTask.WhenAll(tasks);
+		}
+
 		public void RegistPopup(Popup popup)
 		{
 			if (_openedPopupList.Contains(popup))
@@ -72,31 +87,6 @@ namespace ETTView.UI
 
 			_openedPopupList.Add(popup);
 		}
-
-		/*
-		public override async UniTask Closing()
-		{
-			//トップビューのクローズ後処理
-			if(_isSceneTopView)
-			{
-				//読み込み済みのシーンからこのViewが含まれるシーンを探す
-				for (var i = 0; i < SceneManager.sceneCount; i++)
-				{
-					var scene = SceneManager.GetSceneAt(i);
-
-					foreach (var go in scene.GetRootGameObjects())
-					{
-						if (go == transform.root.gameObject)
-						{
-							//シーンごと破棄する
-							await SceneManager.UnloadSceneAsync(scene);
-						}
-					}
-				}
-				
-			}
-		}
-		*/
 
 		public override UniTask Close(bool destroy = false)
 		{
@@ -135,15 +125,25 @@ namespace ETTView.UI
 			return true;
 		}
 
-		internal virtual async UniTask BackView( bool isRootView, bool isClosePopup, bool isForceBackView, Func<UniTask> onNextView = null )
+		internal virtual async UniTask BackView( bool isRootView, bool isClosePopup, bool isBackState, bool isForceBackView, Func<UniTask> onNextView = null )
 		{
 			var lastPopup = LastPopup;
 			if (lastPopup != null && isClosePopup)
 			{
 				//ポップアップが開いてたら閉じる
-				await lastPopup.ClosePopup();
+				await lastPopup.Close();
+				return;
 			}
-			else if (OnBackView() || isForceBackView)
+
+			if(_stateHistory.Count > 1 && isBackState)
+			{
+				//ステートを戻る
+				var popState = _stateHistory.Pop();
+				await popState.Close();
+				return;
+			}
+
+			if (OnBackView() || isForceBackView)
 			{
 				if (!isRootView)
 				{
@@ -165,35 +165,11 @@ namespace ETTView.UI
 
 		public async void BackView()	//OnBackView　院ベント用なんだったらOnBackViewにしたいな
 		{
-			if (State == Reopener.StateType.Opened)
+			if (Phase == Reopener.PhaseType.Opened)
 			{
 				await UIViewManager.Instance.BackView();
 			}
 		}
-
-		//このビューが存在するシーンを読み込み
-		/*
-		public Scene? GetScene()
-		{
-			if (!_isSceneTopView) return null;
-
-			//読み込み済みのシーンからこのViewが含まれるシーンを探す
-			for (var i = 0; i < SceneManager.sceneCount; i++)
-			{
-				var scene = SceneManager.GetSceneAt(i);
-
-				foreach (var go in scene.GetRootGameObjects())
-				{
-					if (go == transform.root.gameObject)
-					{
-						return scene;
-					}
-				}
-			}
-
-			return null;
-		}
-		*/
 
 		public void OnDestroy()
 		{

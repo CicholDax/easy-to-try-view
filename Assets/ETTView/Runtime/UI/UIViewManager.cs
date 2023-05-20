@@ -81,16 +81,17 @@ namespace ETTView.UI
 			return ins;
 		}
 
-		public async UniTask WaitUntil(Reopener.StateType state)
+		public async UniTask WaitUntil(Reopener.PhaseType state)
 		{
-			await UniTask.WaitUntil(() => Current.State >= state);
+			await UniTask.WaitUntil(() => Current.Phase >= state);
 		}		
 
-		public async UniTask BackView(bool isClosePopup = true, bool isForceBackView = false)
+		public async UniTask BackView(bool isClosePopup = true, bool isBackState = true, bool isForceBackView = false)
 		{
 			await Current.BackView(
 				_history.Count <= 1,
 				isClosePopup,
+				isBackState,
 				isForceBackView,
 				async () =>
 				{
@@ -109,7 +110,7 @@ namespace ETTView.UI
 
 		public async void Update()
 		{
-			if (Current != null && Current.State == Reopener.StateType.Opened && Input.GetKeyDown(KeyCode.Escape))
+			if (Current != null && Current.Phase == Reopener.PhaseType.Opened && Input.GetKeyDown(KeyCode.Escape))
 			{
 				await BackView();
 			}

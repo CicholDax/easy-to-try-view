@@ -11,7 +11,7 @@ public class AView : UIView
 	{
 		if(Input.GetKeyDown(KeyCode.D))
 		{
-			var popup = await Popup.CreateFromResources<APopup>();
+			var popup = await Popup.CreateFromResources<APopup>(transform);
 		}
 
 		if(Input.GetKeyDown(KeyCode.F1))

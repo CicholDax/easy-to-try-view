@@ -7,9 +7,9 @@ using System;
 
 namespace ETTView
 {
-	public static class StateTypeEx
+	public static class PhaseTypeEx
     {
-		public static async UniTask WaitUntil(this Reopener.StateType now, Reopener.StateType state)
+		public static async UniTask WaitUntil(this Reopener.PhaseType now, Reopener.PhaseType state)
         {
 			await UniTask.WaitUntil(() => now >= state);
 		}
@@ -17,7 +17,7 @@ namespace ETTView
 	[DisallowMultipleComponent]
 	public class Reopener : MonoBehaviour
 	{
-		public enum StateType
+		public enum PhaseType
 		{
 			Loading,    //生成時に一度だけ
 			Loaded,
@@ -32,7 +32,7 @@ namespace ETTView
 		[SerializeField] UnityEvent _onOpen;
 		[SerializeField] UnityEvent _onClose;
 
-		public StateType State { get; private set; } = StateType.Loading;
+		public PhaseType Phase { get; private set; } = PhaseType.Loading;
 
 		Reopnable[] _reopnables;
 		Reopnable[] Reopnables
@@ -54,17 +54,17 @@ namespace ETTView
 			if (enabled) return;
 			enabled = true;
 
-			await UniTask.WaitUntil(() => State == StateType.Opened);
+			await UniTask.WaitUntil(() => Phase == PhaseType.Opened);
 		}
 
 		public async UniTask Close()
 		{
 			//ロード中だったら待つ
-			await UniTask.WaitWhile(() => State == StateType.Loading);
+			await UniTask.WaitWhile(() => Phase == PhaseType.Loading);
 			if (!enabled) return;
 			enabled = false;
 
-			await UniTask.WaitUntil(() => State == StateType.Closed);
+			await UniTask.WaitUntil(() => Phase == PhaseType.Closed);
 		}
 
 
@@ -75,7 +75,7 @@ namespace ETTView
 			UniTaskScheduler.UnobservedExceptionWriteLogType = LogType.Warning;
 
 			await Load(_cts.Token);
-			State = StateType.Loaded;
+			Phase = PhaseType.Loaded;
 		}
 
 		protected virtual async void OnEnable()
@@ -83,31 +83,31 @@ namespace ETTView
 			try
 			{
 				//ロード完了まで待つ
-				await UniTask.WaitWhile(() => State == StateType.Loading);
+				await UniTask.WaitWhile(() => Phase == PhaseType.Loading);
 
 				_onLoaded?.Invoke();
 
-				State = StateType.Preopening;
+				Phase = PhaseType.Preopening;
 
 				await Preopning(_cts.Token);
 
-				State = StateType.Opening;
+				Phase = PhaseType.Opening;
 
 				_onOpen?.Invoke();
 
 				await Opening(_cts.Token);
 
-				State = StateType.Opened;
+				Phase = PhaseType.Opened;
 
 				await UniTask.WaitWhile(() => enabled, cancellationToken: _cts.Token);
 
-				State = StateType.Closing;
+				Phase = PhaseType.Closing;
 
 				_onClose?.Invoke();
 
 				await Closing(_cts.Token);
 
-				State = StateType.Closed;
+				Phase = PhaseType.Closed;
 			}
 			catch(OperationCanceledException e)
 			{

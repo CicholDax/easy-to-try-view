@@ -8,7 +8,7 @@ public class ViewSampleView : UIView
 {
 	public void Update()
 	{
-		if (State == Reopener.StateType.Opened)
+		if (Phase == Reopener.PhaseType.Opened)
 		{
 			//‰ñ“]‚µ‚Â‚Ã‚¯‚é
 			transform.Rotate(new Vector3(0, 0, 1));
