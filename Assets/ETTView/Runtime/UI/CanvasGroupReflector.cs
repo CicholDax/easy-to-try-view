@@ -11,7 +11,7 @@ public class CanvasGroupReflector : Reopnable
 
 	public void Awake()
 	{
-		_canvasGroup = new CanvasGroup();
+		_canvasGroup = GetComponent<CanvasGroup>();
 	}
 
 	public override async UniTask Opening()
