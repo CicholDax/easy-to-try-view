@@ -9,6 +9,6 @@ public class UIViewState : ReopnablePrefab
 {
 	public override async UniTask Preopning()
 	{
-		await UIViewManager.Instance.Current.RegistState(this);
+		UIViewManager.Instance.Current.RegistState(this).Forget();
 	}
 }
