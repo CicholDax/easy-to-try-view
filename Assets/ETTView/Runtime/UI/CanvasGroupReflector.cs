@@ -1,0 +1,26 @@
+using Cysharp.Threading.Tasks;
+using ETTView;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[RequireComponent(typeof(CanvasGroup))]
+public class CanvasGroupReflector : Reopnable
+{
+	CanvasGroup _canvasGroup;
+
+	public void Awake()
+	{
+		_canvasGroup = new CanvasGroup();
+	}
+
+	public override async UniTask Opening()
+	{
+		_canvasGroup.interactable = true;
+	}
+
+	public override async UniTask Closing()
+	{
+		_canvasGroup.interactable = false;
+	}
+}
