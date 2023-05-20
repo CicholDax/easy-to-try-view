@@ -9,6 +9,8 @@ public class UIViewState : ReopnablePrefab
 {
 	[SerializeField] bool _awaitCloseState = false;
 
+	public bool AwaitCloseState => _awaitCloseState;
+
 	public override async UniTask Preopning()
 	{
 		if (_awaitCloseState)

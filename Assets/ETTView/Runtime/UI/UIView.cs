@@ -139,8 +139,15 @@ namespace ETTView.UI
 			if(_stateHistory.Count > 1 && isBackState)
 			{
 				//ステートを戻る
-				var popState = _stateHistory.Pop();
-				await popState.Close();
+				var closeState = _stateHistory.Pop();
+				var openState = _stateHistory.Pop();
+
+				if(openState.AwaitCloseState)
+					await closeState.Close();
+				else
+					closeState.Close().Forget();
+
+				await openState.Open();
 				return;
 			}
 
