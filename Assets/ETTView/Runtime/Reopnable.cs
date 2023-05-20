@@ -35,7 +35,11 @@ namespace ETTView
 		public virtual async UniTask Close(bool destroy = false)
 		{
 			await Reopener.Close();
-			if (destroy && gameObject != null) Destroy(gameObject);
+			if (destroy && gameObject != null)
+			{
+				Debug.Log(name + "が破棄されました。");
+				Destroy(gameObject);
+			}
 		}
 
 		//生成時に一度だけ実行する処理
