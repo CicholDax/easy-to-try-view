@@ -74,7 +74,7 @@ namespace ETTView.UI
 				if(historyState != state)
 					tasks.Add(historyState.Close());
 			}
-			if (_stateHistory.Peek() != state)
+			if (_stateHistory.Count <= 0 || _stateHistory.Peek() != state)
 				_stateHistory.Push(state);
 
 			await UniTask.WhenAll(tasks);
