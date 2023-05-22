@@ -50,7 +50,7 @@ namespace ETTView.UI
 					pop = _openedPopupList[i];
 
 					//Nullだったりまだ開いてなかったら無視
-					if (pop.gameObject == null || pop.Phase != Reopener.PhaseType.Opened)
+					if (pop == null || pop.gameObject == null || pop.Phase != Reopener.PhaseType.Opened)
 					{
 						pop = null;
 					}
