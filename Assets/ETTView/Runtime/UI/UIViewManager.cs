@@ -137,8 +137,8 @@ namespace ETTView.UI
 
 					//今のをCloseしたのでCurrentは次のやつになってる
 					Current.SetRewind(true);
-					tasks.Add(Current.Open());
-					Current.SetRewind(false);
+					var openAndRewindTask = Current.Open().ContinueWith(() => Current.SetRewind(false));
+					tasks.Add(openAndRewindTask);
 
 					await UniTask.WhenAll(tasks);
 
