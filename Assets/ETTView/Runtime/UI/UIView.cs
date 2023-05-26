@@ -140,7 +140,7 @@ namespace ETTView.UI
 		public async UniTask<bool> TryBackState()
 		{
 			//nullの要素を除外
-			_stateHistory = new Stack<UIViewState>(_stateHistory.Where(state => state != null || state.gameObject != null).Reverse());
+			_stateHistory = new Stack<UIViewState>(_stateHistory.Where(state => state != null && state.gameObject != null).Reverse());
 
 			if (_stateHistory.Count > 1)
 			{
