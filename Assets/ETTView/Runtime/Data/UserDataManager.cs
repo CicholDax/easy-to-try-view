@@ -6,7 +6,7 @@ namespace ETTView.Data
 {
 	public class UserDataManager : Singleton<UserDataManager>
 	{
-		public Dictionary<string, UserData> _loadedList = new Dictionary<string, UserData>();
+		Dictionary<string, UserData> _loadedList = new Dictionary<string, UserData>();
 
 		public T Get<T>() where T : UserData, new()
 		{
@@ -37,7 +37,7 @@ namespace ETTView.Data
 
 		public void DeleteAll()
 		{
-			_loadedList = new Dictionary<string, UserData>();
+			_loadedList.Clear();
 		}
 	}
 }

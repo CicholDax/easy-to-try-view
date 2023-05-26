@@ -67,16 +67,9 @@ namespace ETTView.UI
 		//新しいビューを生成する
 		public async UniTask<T> Create<T>() where T : UIView
 		{
-			//var tasks = new List<UniTask>();
-
-			//現在のビューを閉じる	メモ：生成したあとのRegistでどうせCloseするから消してみる。UIViewに初期値入れるため
-			//tasks.Add(Current.Close());
-
 			var parent = Current != null ? Current.transform.parent : null;
 			var req = await Resources.LoadAsync<T>(typeof(T).Name) as T;
 			var ins = Instantiate(req, parent);
-
-			//await UniTask.WhenAll(tasks);
 
 			return ins;
 		}
@@ -84,23 +77,79 @@ namespace ETTView.UI
 		public async UniTask WaitUntil(Reopener.PhaseType state)
 		{
 			await UniTask.WaitUntil(() => Current.Phase >= state);
-		}		
-
-		public async UniTask BackView(bool isClosePopup = true, bool isBackState = true, bool isForceBackView = false)
+		}	
+		
+		/// <summary>
+		/// ターゲットを指定して画面を戻る
+		/// 戻る対象が違ったら何もしない
+		/// </summary>
+		/// <param name="target"></param>
+		/// <param name="isForceBackView"></param>
+		/// <returns></returns>
+		public async UniTask<bool> BackView(Reopnable target, bool isForceBackView = true)
 		{
-			await Current.BackView(
-				_history.Count <= 1,
-				isClosePopup,
-				isBackState,
-				isForceBackView,
-				async () =>
+			if( Current.CurrentState == target )
+			{
+				await Current.TryBackState();
+				return true;
+			}
+
+			if(Current.LastPopup == target)
+			{
+				await Current.TryCloseLastPopup();
+				return true;
+			}
+
+			if(Current == target)
+			{
+				return await BackView(false, false, isForceBackView);
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// 画面を戻る
+		/// </summary>
+		/// <param name="isClosePopup">ポップアップを閉じるかどうか</param>
+		/// <param name="isBackState">ステートを戻るかどうか</param>
+		/// <param name="isForceBackView">UIViewの定義に関わらず強制的にViewを戻るかどうか</param>
+		/// <returns>Popupが閉じる、Stateが戻る、UIViewが戻るしたらtrue</returns>
+		public async UniTask<bool> BackView(bool isClosePopup = true, bool isBackState = true, bool isForceBackView = false)
+		{
+			//Popupを閉じる
+			if (isClosePopup && await Current.TryCloseLastPopup()) return true;
+
+			//UIViewStateを戻る
+			if (isBackState && await Current.TryBackState()) return true;
+
+			//UIViewを戻る
+			if(_history.Count > 1)
+			{
+				if (Current.CanBackView() || isForceBackView)
 				{
-					_history.Pop();
+					//今のを閉じるのと、次のを開けるのを平行してやる
+					List<UniTask> tasks = new List<UniTask>();
+
+					//今のを閉じる
 					Current.SetRewind(true);
-					await Current.Open();
+					tasks.Add(Current.Close(true));
+
+					//今のをCloseしたのでCurrentは次のやつになってる
+					Current.SetRewind(true);
+					tasks.Add(Current.Open());
 					Current.SetRewind(false);
+
+					await UniTask.WhenAll(tasks);
+
+					return true;
 				}
-			);
+			}
+			else
+			{
+				Debug.LogWarning("RootViewなので閉じられません");
+			}
+			return false;
 		}
 
 		public  void ClearHistory()

@@ -11,4 +11,14 @@ public class SampleView : UIView
 	{
 		SceneManager.LoadSceneAsync("ViewSampleScene", LoadSceneMode.Additive);
 	}
+
+	public void OnClickReenactableSample()
+	{
+
+	}
+
+	public async void OnClickShowPopup()
+	{
+		await CommonPopup.Create(transform, "確認", "ポップアップだよ");
+	}
 }

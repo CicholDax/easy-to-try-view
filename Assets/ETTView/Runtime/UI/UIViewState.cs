@@ -11,9 +11,9 @@ public class UIViewState : ReopnablePrefab
 
 	public bool AwaitCloseState => _awaitCloseState;
 
-	public void BackView()
+	public async void BackView()
 	{
-		UIViewManager.Instance.Current.BackView();
+		await UIViewManager.Instance.BackView(this);
 	}
 
 	public override async UniTask Preopning()

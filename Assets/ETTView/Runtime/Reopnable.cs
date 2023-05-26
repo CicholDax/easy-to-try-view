@@ -32,6 +32,11 @@ namespace ETTView
 			await Reopener.Open();
 		}
 
+		public void OpenNowait()
+		{
+			Open().Forget();
+		}
+
 		public virtual async UniTask Close(bool destroy = false)
 		{
 			await Reopener.Close();
@@ -40,6 +45,11 @@ namespace ETTView
 				Debug.Log(name + "が破棄されました。");
 				Destroy(gameObject);
 			}
+		}
+
+		public void CloseNowait(bool destroy = false)
+		{
+			Close(destroy).Forget();
 		}
 
 		//生成時に一度だけ実行する処理

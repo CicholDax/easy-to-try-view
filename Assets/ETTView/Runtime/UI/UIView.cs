@@ -12,9 +12,6 @@ namespace ETTView.UI
 		//シーンに最初からRootに置かれてるビューかどうか
 		[SerializeField] bool _isSceneTopView;
 
-		//ポップアップの親
-		[SerializeField] Transform _popupParent;
-
 		//BackSceneで戻る/戻られる場合にトランジションを変更したい場合に指定する
 		[SerializeField] List<Reopnable> _forwardTransitions;
 		[SerializeField] List<Reopnable> _rewindTransitions;
@@ -30,17 +27,9 @@ namespace ETTView.UI
 		{
 			get;set;
 		}
-		
-		public Transform PopupParent
-		{
-			get
-			{
-				return _popupParent != null ? _popupParent : transform;
-			}
-		}
 
 		//最後に開いたポップアップ
-		protected Popup LastPopup
+		internal Popup LastPopup
 		{
 			get
 			{
@@ -63,6 +52,14 @@ namespace ETTView.UI
 				_openedPopupList.RemoveAll((data) => data == null || data.gameObject == null);
 
 				return pop;
+			}
+		}
+
+		internal UIViewState CurrentState
+		{
+			get
+			{
+				return _stateHistory.Peek();
 			}
 		}
 
@@ -122,62 +119,48 @@ namespace ETTView.UI
 		}
 
 		//Viewを戻ろうとしたタイミングで呼ばれる。戻って良ければtrueを返す
-		public virtual bool OnBackView()
+		public virtual bool CanBackView()
 		{
 			return true;
 		}
 
-		internal virtual async UniTask BackView( bool isRootView, bool isClosePopup, bool isBackState, bool isForceBackView, Func<UniTask> onNextView = null )
+		public async UniTask<bool> TryCloseLastPopup()
 		{
 			var lastPopup = LastPopup;
-			if (lastPopup != null && isClosePopup)
+			if (lastPopup != null)
 			{
 				//ポップアップが開いてたら閉じる
 				await lastPopup.Close();
-				return;
+				return true;
 			}
 
-			if(_stateHistory.Count > 1 && isBackState)
+			return false;
+		}
+		
+		public async UniTask<bool> TryBackState()
+		{
+			if (_stateHistory.Count > 1)
 			{
 				//ステートを戻る
 				var closeState = _stateHistory.Pop();
 				var openState = _stateHistory.Pop();
 
-				if(openState.AwaitCloseState)
+				if (openState.AwaitCloseState)
 					await closeState.Close();
 				else
 					closeState.Close().Forget();
 
 				await openState.Open();
-				return;
+
+				return true;
 			}
 
-			if (OnBackView() || isForceBackView)
-			{
-				if (!isRootView)
-				{
-					List<UniTask> tasks = new List<UniTask>();
-
-					//View自身が閉じる
-					SetRewind(true);
-					tasks.Add(base.Close(true));
-					if (onNextView != null) tasks.Add(onNextView());
-
-					await UniTask.WhenAll(tasks);
-				}
-				else
-				{
-					Debug.LogWarning("RootViewなので閉じられません");
-				}
-			}
+			return false;
 		}
 
-		public async void BackView()	//OnBackView　院ベント用なんだったらOnBackViewにしたいな
+		public async void BackViewNowait()
 		{
-			if (Phase == Reopener.PhaseType.Opened)
-			{
-				await UIViewManager.Instance.BackView();
-			}
+			await UIViewManager.Instance.BackView();
 		}
 
 		public void OnDestroy()

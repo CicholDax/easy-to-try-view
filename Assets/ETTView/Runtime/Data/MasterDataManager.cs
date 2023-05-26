@@ -6,7 +6,7 @@ namespace ETTView.Data
 {
 	public class MasterDataManager : Singleton<MasterDataManager>
 	{
-		public Dictionary<string, IMasterData> _loadedList = new Dictionary<string, IMasterData>();
+		Dictionary<string, IMasterData> _loadedList = new Dictionary<string, IMasterData>();
 
 		public T Get<T>() where T : UnityEngine.Object, IMasterData
 		{

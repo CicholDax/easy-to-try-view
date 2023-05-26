@@ -11,7 +11,7 @@ public class ViewSampleView : UIView
 		if (Phase == Reopener.PhaseType.Opened)
 		{
 			//‰ñ“]‚µ‚Â‚Ã‚¯‚é
-			transform.Rotate(new Vector3(0, 0, 1));
+			//transform.Rotate(new Vector3(0, 0, 1));
 		}
 	}
 }
