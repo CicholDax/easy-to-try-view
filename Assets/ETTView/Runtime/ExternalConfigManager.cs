@@ -24,7 +24,7 @@ namespace ETTView
 		public void UnRegist(ExternalConfigApplier.IConfigData applier)
 		{
 			if (!_historys.ContainsKey(applier.GetType())) return;
-			if (_historys[applier.GetType()].Count > 0) return;
+			if (_historys[applier.GetType()].Count <= 0) return;
 
 			//¡—LŒø‚É‚È‚Á‚Ä‚éapplier‚¾‚Á‚½‚ç‘O‚Ì‚ð—LŒø‚É‚·‚é
 			if (_historys[applier.GetType()].Peek() == applier)
