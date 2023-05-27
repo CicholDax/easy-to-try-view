@@ -26,5 +26,10 @@ namespace ETTView
 			ExternalConfigManager.Instance.UnRegist(ConfigData);
 			return base.Closing();
 		}
-    }
+
+		public void OnDestroy()
+		{
+			ExternalConfigManager.Instance.UnRegist(ConfigData);
+		}
+	}
 }
