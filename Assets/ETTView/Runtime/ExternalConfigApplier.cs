@@ -13,19 +13,20 @@ namespace ETTView
 			void Apply();
 		}
 
+		public abstract IConfigData ConfigData { get; }
+
 		public sealed override UniTask Opening()
 		{
-			ExternalConfigManager.Instance.Regist(GetConfigData());
+			ExternalConfigManager.Instance.Regist(ConfigData);
 			return base.Opening();
 		}
 
 		public sealed override UniTask Closing()
 		{
-			ExternalConfigManager.Instance.UnRegist(GetConfigData());
+			ExternalConfigManager.Instance.UnRegist(ConfigData);
 			return base.Closing();
 		}
 
 		public abstract IConfigData Apply();
-		public abstract IConfigData GetConfigData();
     }
 }
