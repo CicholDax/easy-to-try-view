@@ -30,7 +30,7 @@ namespace ETTView
 			if (_historys[applier.GetType()].Peek() == applier)
 			{
 				_historys[applier.GetType()].Pop();
-				var nextReflector = _historys[applier.GetType()].Peek();
+				var nextReflector = _historys[applier.GetType()].Count > 0 ? _historys[applier.GetType()].Peek() : null;
 				if (nextReflector != null) nextReflector.Apply();
 			}
 			else
