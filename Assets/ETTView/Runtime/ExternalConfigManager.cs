@@ -6,9 +6,28 @@ using UnityEngine;
 
 namespace ETTView
 {
-	internal class ExternalConfigManager : Singleton<ExternalConfigManager>
+	internal class ExternalConfigManager : SingletonMonoBehaviour<ExternalConfigManager> , ISingletonMono
 	{
+		public bool IsDontDestroy => true;
+
 		Dictionary<Type, Stack<ExternalConfigApplier.IConfigData>> _historys = new Dictionary<Type, Stack<ExternalConfigApplier.IConfigData>>();
+
+		[ContextMenu("Print History")]
+		public void PrintHistory()
+		{
+			foreach (var entry in _historys)
+			{
+				var key = entry.Key;
+				var stack = entry.Value;
+
+				Debug.Log($"Key: {key}");
+
+				foreach (var configData in stack)
+				{
+					Debug.Log($"ConfigData: {configData}");
+				}
+			}
+		}
 
 		public void Regist(ExternalConfigApplier.IConfigData applier)
 		{
