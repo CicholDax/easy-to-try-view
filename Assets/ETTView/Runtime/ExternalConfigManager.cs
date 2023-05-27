@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,27 +8,34 @@ namespace ETTView
 {
 	internal class ExternalConfigManager : Singleton<ExternalConfigManager>
 	{
-		Stack<ExternalConfigApplier.IConfigData> _history = new Stack<ExternalConfigApplier.IConfigData>();
+		Dictionary<Type, Stack<ExternalConfigApplier.IConfigData>> _historys = new Dictionary<Type, Stack<ExternalConfigApplier.IConfigData>>();
 
 		public void Regist(ExternalConfigApplier.IConfigData applier)
 		{
-			_history.Push(applier);
+			if (!_historys.ContainsKey(applier.GetType()))
+			{
+				_historys.Add(applier.GetType(), new Stack<ExternalConfigApplier.IConfigData>());
+			}
+			
+			_historys[applier.GetType()].Push(applier);
 			applier.Apply();
 		}
 
 		public void UnRegist(ExternalConfigApplier.IConfigData applier)
 		{
+			if (!_historys.ContainsKey(applier.GetType())) return;
+			if (_historys[applier.GetType()].Count > 0) return;
+
 			//¡—LŒø‚É‚È‚Á‚Ä‚éapplier‚¾‚Á‚½‚ç‘O‚Ì‚ğ—LŒø‚É‚·‚é
-			if (_history.Count <= 0) return;
-			if (_history.Peek() == applier)
+			if (_historys[applier.GetType()].Peek() == applier)
 			{
-				_history.Pop();
-				var nextReflector = _history.Peek();
+				_historys[applier.GetType()].Pop();
+				var nextReflector = _historys[applier.GetType()].Peek();
 				if (nextReflector != null) nextReflector.Apply();
 			}
 			else
 			{
-				_history.Pop();
+				_historys[applier.GetType()].Pop();
 			}
 		}
 	}
