@@ -4,27 +4,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace ETTView.UI
+namespace ETTView
 {
-    public class Reflector : Reopnable
+    public class ExternalConfigApplier : Reopnable
     {
-		[SerializeField] UnityEvent _onReflect;
+		[SerializeField] UnityEvent _onApply;
 
 		public sealed override UniTask Opening()
 		{
-			UIViewManager.Instance.Current.RegistReflector(this);	//îΩâfèàóù
+			ExternalConfigManager.Instance.Regist(this);
 			return base.Opening();
 		}
 
 		public sealed override UniTask Closing()
 		{
-			UIViewManager.Instance.Current.UnRegistReflector(this);	//îΩâfèàóù
+			ExternalConfigManager.Instance.UnRegist(this);
 			return base.Closing();
 		}
 
-		public virtual UniTask Reflect()
+		public virtual UniTask Apply()
         {
-			_onReflect?.Invoke();
+			_onApply?.Invoke();
 			return UniTask.CompletedTask;
 		}
     }

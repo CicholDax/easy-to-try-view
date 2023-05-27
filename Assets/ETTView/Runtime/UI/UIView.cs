@@ -22,9 +22,6 @@ namespace ETTView.UI
 		//状態遷移履歴
 		Stack<UIViewState> _stateHistory = new Stack<UIViewState>();
 
-		//反映履歴
-		Stack<Reflector> _reflectorHistory = new Stack<Reflector>();
-
 		//BackSceneで戻ってきた場合にtrue
 		public bool IsRewind
 		{
@@ -88,30 +85,6 @@ namespace ETTView.UI
 			}
 
 			_openedPopupList.Add(popup);
-		}
-
-		public void RegistReflector(Reflector reflector)
-		{
-			_reflectorHistory.Push(reflector);
-			reflector.Reflect();
-		}
-
-		public void UnRegistReflector(Reflector reflector)
-		{
-			_reflectorHistory = new Stack<Reflector>(_reflectorHistory.Where(state => state != null && state.gameObject != null).Reverse());
-
-			//今有効になってるReflectorだったら前のを有効にする
-			if (_reflectorHistory.Count <= 0) return;
-			if (_reflectorHistory.Peek() == reflector)
-			{
-				_reflectorHistory.Pop();
-				var nextReflector = _reflectorHistory.Peek();
-				if (nextReflector != null) nextReflector.Reflect();
-			}
-			else
-			{
-				_reflectorHistory.Pop();
-			}
 		}
 
 		public override UniTask Close(bool destroy = false)
