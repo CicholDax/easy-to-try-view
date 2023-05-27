@@ -6,26 +6,26 @@ using UnityEngine.Events;
 
 namespace ETTView
 {
-    public class ExternalConfigApplier : Reopnable
-    {
-		[SerializeField] UnityEvent _onApply;
+    public abstract class ExternalConfigApplier : Reopnable
+	{
+		public interface IConfigData
+		{
+			void Apply();
+		}
 
 		public sealed override UniTask Opening()
 		{
-			ExternalConfigManager.Instance.Regist(this);
+			ExternalConfigManager.Instance.Regist(GetConfigData());
 			return base.Opening();
 		}
 
 		public sealed override UniTask Closing()
 		{
-			ExternalConfigManager.Instance.UnRegist(this);
+			ExternalConfigManager.Instance.UnRegist(GetConfigData());
 			return base.Closing();
 		}
 
-		public virtual UniTask Apply()
-        {
-			_onApply?.Invoke();
-			return UniTask.CompletedTask;
-		}
+		public abstract IConfigData Apply();
+		public abstract IConfigData GetConfigData();
     }
 }

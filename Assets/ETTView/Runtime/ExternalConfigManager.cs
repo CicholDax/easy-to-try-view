@@ -7,18 +7,16 @@ namespace ETTView
 {
 	internal class ExternalConfigManager : Singleton<ExternalConfigManager>
 	{
-		Stack<ExternalConfigApplier> _history = new Stack<ExternalConfigApplier>();
+		Stack<ExternalConfigApplier.IConfigData> _history = new Stack<ExternalConfigApplier.IConfigData>();
 
-		public void Regist(ExternalConfigApplier applier)
+		public void Regist(ExternalConfigApplier.IConfigData applier)
 		{
 			_history.Push(applier);
 			applier.Apply();
 		}
 
-		public void UnRegist(ExternalConfigApplier applier)
+		public void UnRegist(ExternalConfigApplier.IConfigData applier)
 		{
-			_history = new Stack<ExternalConfigApplier>(_history.Where(state => state != null && state.gameObject != null).Reverse());
-
 			//¡—LŒø‚É‚È‚Á‚Ä‚éapplier‚¾‚Á‚½‚ç‘O‚Ì‚ğ—LŒø‚É‚·‚é
 			if (_history.Count <= 0) return;
 			if (_history.Peek() == applier)
