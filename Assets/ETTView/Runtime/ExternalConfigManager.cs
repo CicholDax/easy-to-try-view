@@ -10,7 +10,7 @@ namespace ETTView
 	{
 		public bool IsDontDestroy => true;
 
-		Dictionary<Type, Stack<ExternalConfigApplier.IConfigData>> _historys = new Dictionary<Type, Stack<ExternalConfigApplier.IConfigData>>();
+		Dictionary<Type, List<ExternalConfigApplier.IConfigData>> _historys = new Dictionary<Type, List<ExternalConfigApplier.IConfigData>>();
 
 		[ContextMenu("Print History")]
 		public void PrintHistory()
@@ -33,10 +33,10 @@ namespace ETTView
 		{
 			if (!_historys.ContainsKey(applier.GetType()))
 			{
-				_historys.Add(applier.GetType(), new Stack<ExternalConfigApplier.IConfigData>());
+				_historys.Add(applier.GetType(), new List<ExternalConfigApplier.IConfigData>());
 			}
 			
-			_historys[applier.GetType()].Push(applier);
+			_historys[applier.GetType()].Add(applier);
 			applier.Apply();
 		}
 
@@ -45,17 +45,12 @@ namespace ETTView
 			if (!_historys.ContainsKey(applier.GetType())) return;
 			if (_historys[applier.GetType()].Count <= 0) return;
 
-			//ç°óLå¯Ç…Ç»Ç¡ÇƒÇÈapplierÇæÇ¡ÇΩÇÁëOÇÃÇóLå¯Ç…Ç∑ÇÈ
-			if (_historys[applier.GetType()].Peek() == applier)
-			{
-				_historys[applier.GetType()].Pop();
-				var nextReflector = _historys[applier.GetType()].Count > 0 ? _historys[applier.GetType()].Peek() : null;
-				if (nextReflector != null) nextReflector.Apply();
-			}
-			else
-			{
-				_historys[applier.GetType()].Pop();
-			}
+			//çÌèú
+			_historys[applier.GetType()].RemoveAll(x => x == applier);
+
+			//ç≈å„Ç…ìoò^ÇµÇΩÇÃÇîΩâf
+			var nextReflector = _historys[applier.GetType()].LastOrDefault();
+			if (nextReflector != null) nextReflector.Apply();
 		}
 	}
 }
