@@ -55,6 +55,11 @@ namespace ETTView.UI
 			}
 		}
 
+		public bool ExistPopup()
+		{
+			return LastPopup != null;
+		}
+
 		internal UIViewState CurrentState
 		{
 			get
