@@ -160,10 +160,16 @@ namespace ETTView.UI
 
 		public async void Update()
 		{
-			if (Current != null && Current.Phase == Reopener.PhaseType.Opened && Input.GetKeyDown(KeyCode.Escape))
+			if (Current != null && Current.Phase == Reopener.PhaseType.Opened && IsBackInput())
 			{
 				await BackView();
 			}
 		}
+
+		protected virtual bool IsBackInput()
+		{
+			//デフォルトだとエスケープで戻る
+			return Input.GetKeyDown(KeyCode.Escape);
+        }
 	}
 }
