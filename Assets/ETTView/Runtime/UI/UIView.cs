@@ -124,7 +124,13 @@ namespace ETTView.UI
 			return true;
 		}
 
-		public async UniTask<bool> TryCloseLastPopup()
+        public virtual bool IsBackInput()
+        {
+            //デフォルトだとエスケープで戻る
+            return Input.GetKeyDown(KeyCode.Escape);
+        }
+
+        public async UniTask<bool> TryCloseLastPopup()
 		{
 			var lastPopup = LastPopup;
 			if (lastPopup != null)
