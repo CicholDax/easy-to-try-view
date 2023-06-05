@@ -29,11 +29,11 @@ namespace ETTView.Data
 
         public class CustomPlayerPrefs
         {
-			public string GetString(string key) => PlayerPrefs.GetString(key);
-            public void SetString(string key, string value) => PlayerPrefs.SetString(key, value);
-            public bool HasKey(string key) => PlayerPrefs.HasKey(key);
-            public void DeleteKey(string key) => PlayerPrefs.DeleteKey(key);
-            public void Save() => PlayerPrefs.Save();
+			public virtual string GetString(string key) => PlayerPrefs.GetString(key);
+            public virtual void SetString(string key, string value) => PlayerPrefs.SetString(key, value);
+            public virtual bool HasKey(string key) => PlayerPrefs.HasKey(key);
+            public virtual void DeleteKey(string key) => PlayerPrefs.DeleteKey(key);
+            public virtual void Save() => PlayerPrefs.Save();
         }
 
 
