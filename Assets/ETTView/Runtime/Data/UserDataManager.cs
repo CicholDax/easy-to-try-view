@@ -8,13 +8,41 @@ namespace ETTView.Data
 	{
 		Dictionary<string, UserData> _loadedList = new Dictionary<string, UserData>();
 
+        CustomPlayerPrefs _customPlayerPrefas;
+        CustomPlayerPrefs CustomPlayerPrefas
+        {
+            set
+            {
+                _customPlayerPrefas = value;
+            }
+            get
+            {
+                if(_customPlayerPrefas == null )
+                {
+                    _customPlayerPrefas = new CustomPlayerPrefs();
+                }
+
+                return _customPlayerPrefas;
+            }
+        }
+
+
+        class CustomPlayerPrefs
+        {
+			public string GetString(string key) => PlayerPrefs.GetString(key);
+            public void SetString(string key, string value) => PlayerPrefs.SetString(key, value);
+            public bool HasKey(string key) => PlayerPrefs.HasKey(key);
+            public void DeleteKey(string key) => PlayerPrefs.DeleteKey(key);
+            public void Save() => PlayerPrefs.Save();
+        }
+
+
 		public T Get<T>() where T : UserData, new()
 		{
 			var key = typeof(T).Name;
 			if (!_loadedList.ContainsKey(key))
 			{
-				//リモートの場合はAPIから取る
-				var ret = UserData.LoadFromPrefs<T>();
+				var ret = LoadFromPrefs<T>();
 				if (ret == null)
 				{
 					ret = new T();
@@ -28,16 +56,33 @@ namespace ETTView.Data
 		public void Delete<T>() where T : UserData, new()
 		{ 
 			var key = typeof(T).Name;
-			UserData.Delete<T>();
+			
 			if (_loadedList.ContainsKey(key))
 			{
 				_loadedList.Remove(key);
 			}
 		}
 
-		public void DeleteAll()
-		{
-			_loadedList.Clear();
-		}
-	}
+        public bool IsExist<T>() where T : UserData, new()
+        {
+            return CustomPlayerPrefas.HasKey(typeof(T).Name);
+        }
+
+        public void SaveToPrefs(UserData userData)
+        {
+            var jsonText = JsonUtility.ToJson(userData);
+            CustomPlayerPrefas.SetString(userData.GetType().Name, jsonText);
+        }
+
+        T LoadFromPrefs<T>() where T : UserData, new()
+        {
+            T ret = new T();
+            var jsonText = CustomPlayerPrefas.GetString(typeof(T).Name);
+            if (jsonText != null)
+            {
+                ret = JsonUtility.FromJson<T>(jsonText);
+            }
+            return ret;
+        }
+    }
 }
