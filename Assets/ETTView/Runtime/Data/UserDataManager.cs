@@ -9,7 +9,7 @@ namespace ETTView.Data
 		Dictionary<string, UserData> _loadedList = new Dictionary<string, UserData>();
 
         CustomPlayerPrefs _customPlayerPrefas;
-        CustomPlayerPrefs CustomPlayerPrefas
+        public CustomPlayerPrefs CustomPlayerPrefas
         {
             set
             {
@@ -27,7 +27,7 @@ namespace ETTView.Data
         }
 
 
-        class CustomPlayerPrefs
+        public class CustomPlayerPrefs
         {
 			public string GetString(string key) => PlayerPrefs.GetString(key);
             public void SetString(string key, string value) => PlayerPrefs.SetString(key, value);
