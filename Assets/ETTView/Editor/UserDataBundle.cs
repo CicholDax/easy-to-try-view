@@ -51,7 +51,7 @@ namespace ETTView.Editor
 					foreach (var userDataType in _cashUserDataTypes)
 					{
 						bundle._userDatas.Add(new DummyUserData() { Name = userDataType.Name });
-						bundle._userDatas.Add(UserData.LoadFromPrefs(userDataType, ()=> { return Activator.CreateInstance(userDataType) as UserData; }));
+						//bundle._userDatas.Add(UserData.LoadFromPrefs(userDataType, ()=> { return Activator.CreateInstance(userDataType) as UserData; }));
 					}
 
 					var so = new SerializedObject(bundle);
@@ -81,7 +81,7 @@ namespace ETTView.Editor
 					//保存
 					foreach (var userData in bundle._userDatas)
 					{
-						userData.SaveToPrefs();
+						UserDataManager.Instance.SaveToPrefs(userData);
 					}
 				}
 			};

@@ -56,7 +56,7 @@ public class UserSceneReenactData : UserData
 			GetOrCreateData(key).Add(new Reenactable.Data(target));
 		}
 
-		SaveToPrefs();
+		UserDataManager.Instance.SaveToPrefs(this);
 	}
 
 	public void Load(string key = "")
