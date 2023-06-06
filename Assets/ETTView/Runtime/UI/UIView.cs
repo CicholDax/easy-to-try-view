@@ -140,8 +140,11 @@ namespace ETTView.UI
 			var lastPopup = LastPopup;
 			if (lastPopup != null)
 			{
-				//ポップアップが開いてたら閉じる
-				await lastPopup.Close();
+				if (lastPopup.CanBack)
+				{
+					//ポップアップが開いてたら閉じる
+					await lastPopup.Close();
+				}
 
 				return true;
 			}

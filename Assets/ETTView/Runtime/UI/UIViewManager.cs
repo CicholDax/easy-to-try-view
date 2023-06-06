@@ -89,15 +89,15 @@ namespace ETTView.UI
 		/// <returns></returns>
 		public async UniTask<bool> BackView(Reopnable target, bool isForceBackView = true)
 		{
-			if( Current.CurrentState == target )
+            if (Current.LastPopup == target)
+            {
+                await Current.TryCloseLastPopup();
+                return true;
+            }
+
+            if ( Current.CurrentState == target )
 			{
 				await Current.TryBackState();
-				return true;
-			}
-
-			if(Current.LastPopup == target)
-			{
-				await Current.TryCloseLastPopup();
 				return true;
 			}
 
