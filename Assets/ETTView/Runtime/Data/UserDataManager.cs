@@ -56,12 +56,8 @@ namespace ETTView.Data
 		public void Delete<T>() where T : UserData, new()
 		{ 
 			var key = typeof(T).Name;
-			
-			if (_loadedList.ContainsKey(key))
-			{
-				_loadedList.Remove(key);
-			}
-		}
+            CustomPlayerPrefas.DeleteKey(key);
+        }
 
         public bool IsExist<T>() where T : UserData, new()
         {
