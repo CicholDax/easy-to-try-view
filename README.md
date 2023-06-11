@@ -11,7 +11,8 @@ https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask
 非同期のライフサイクルイベントを提供します
 各フェーズは同一のGameObjectにアタッチされた複数のReopnableがひとつのReopenerに取りまとめられて処理されます
 ### UIView
-画面の構成単位です。UIViewはUIViewManagerクラスによって常にひとつのみがOpenになります
+画面の構成単位です
+UIViewはUIViewManagerクラスによって常にひとつのみがOpenになります
 画面遷移が記憶され、BackViewメソッドによって前のViewに戻ります
 ### Popup
 Viewに重ねて表示できるポップアップです
