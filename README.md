@@ -7,20 +7,21 @@ https://github.com/CicholDax/easy-to-try-view.git?path=Assets/ETTView
 https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask  
 
 ## 機能概要
-### Reopnable/Reopner
-非同期のライフサイクルイベントを提供します。
+### Reopnable
+非同期のライフサイクルイベントを提供します
+各フェーズは同一のGameObjectにアタッチされた複数のReopnableがひとつのReopenerに取りまとめられて処理されます
 ### UIView
-画面の構成単位です。UIViewはUIViewManagerクラスによって常にひとつのみがOpenになります。
-画面遷移が記憶され、BackViewメソッドによって前のViewに戻ります。
-#### Popup
-Viewに重ねて表示できるポップアップです。
-#### UIViewState
-Viewがとることができる状態です。UIViewに属するStateはひとつのみがOpenになります。
-#### ExternalConfigApplier
+画面の構成単位です。UIViewはUIViewManagerクラスによって常にひとつのみがOpenになります
+画面遷移が記憶され、BackViewメソッドによって前のViewに戻ります
+### Popup
+Viewに重ねて表示できるポップアップです
+### UIViewState
+Viewがとることができる状態です
+UIViewに属するStateはひとつのみがOpenになります
+### ExternalConfigApplier
 マウスの表示有無などの外部の設定を管理します
 
 ## 以下、DoTweenProを使用する場合
-
 1. PackageManagerからDoTweenProを導入
 2. ettview-dotweenpro.unitypackageをインポート
 3. ScriptDefineSynbolsにUNITASK_DOTWEEN_SUPPORTを追加
