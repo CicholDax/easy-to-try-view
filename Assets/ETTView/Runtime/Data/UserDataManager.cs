@@ -60,6 +60,11 @@ namespace ETTView.Data
             _loadedList.Remove(key);
         }
 
+        public void ClearLoaded()
+        {
+            _loadedList.Clear();
+        }
+
         public bool IsExist<T>() where T : UserData, new()
         {
             return CustomPlayerPrefas.HasKey(typeof(T).Name);
