@@ -85,6 +85,13 @@ public class Reenactable : MonoBehaviour
 	[SerializeField] UnityEvent<string> _onDataLoad;
 	[SerializeField] UnityEvent<string> _onDataSave;
 
+	public void ResetUniId()
+	{
+#if UNITY_EDITOR
+		_uniId = Guid.NewGuid().ToString();
+#endif
+	}
+
 	public virtual void OnDataSaveBefore(string key)
 	{
 		_onDataSave?.Invoke(key);
