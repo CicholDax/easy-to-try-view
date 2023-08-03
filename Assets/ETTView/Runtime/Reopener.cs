@@ -72,8 +72,6 @@ namespace ETTView
 		{
 			_cts = new CancellationTokenSource();
 
-			UniTaskScheduler.UnobservedExceptionWriteLogType = LogType.Warning;
-
 			await Load(_cts.Token);
 			Phase = PhaseType.Loaded;
 		}

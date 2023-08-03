@@ -11,25 +11,35 @@ namespace ETTView
 		{
 			get
 			{
-				if (_reopener == null)
+				if (gameObject != null)
 				{
-					_reopener = GetComponent<Reopener>();
 					if (_reopener == null)
 					{
-						_reopener = gameObject.AddComponent<Reopener>();
+						_reopener = GetComponent<Reopener>();
+						if (_reopener == null)
+						{
+							_reopener = gameObject.AddComponent<Reopener>();
+						}
 					}
+					return _reopener;
 				}
-				return _reopener;
+				else
+				{
+					return null;
+				}
 			}
 		}
 
-		public Reopener.PhaseType Phase { get { return Reopener.Phase; } }
-		public bool IsOpen { get => Reopener.enabled; }
+		public Reopener.PhaseType Phase { get { return Reopener?.Phase ?? Reopener.PhaseType.Closed; } }
+		public bool IsOpen { get => Reopener?.enabled ?? false; }
 		public bool IsPhaseStable { get => Phase == Reopener.PhaseType.Closed || Phase == Reopener.PhaseType.Opened || Phase == Reopener.PhaseType.Loaded; }
 
 		public virtual async UniTask Open()
 		{
-			await Reopener.Open();
+			if (Reopener != null)
+			{
+				await Reopener.Open();
+			}
 		}
 
 		public void OpenNowait()
@@ -38,9 +48,12 @@ namespace ETTView
 		}
 
 		public virtual async UniTask Close(bool destroy = false)
-		{
-			await Reopener.Close();
-			if (destroy && this != null && gameObject != null)
+        {
+            if (Reopener != null)
+            {
+                await Reopener.Close();
+            }
+            if (destroy && this != null && gameObject != null)
 			{
 				Debug.Log(name + "が破棄されました。");
 
