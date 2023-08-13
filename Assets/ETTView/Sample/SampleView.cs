@@ -14,8 +14,8 @@ public class SampleView : UIView
 
 	public void OnClickReenactableSample()
 	{
-
-	}
+        SceneManager.LoadSceneAsync("ReenactSampleScene", LoadSceneMode.Additive);
+    }
 
 	public async void OnClickShowPopup()
 	{
