@@ -15,14 +15,24 @@ namespace ETTView.UI
 		{
 			get
 			{
-				if (_history.Count <= 0) return null;
+                while (_history.Count > 0 && _history.Peek() == null)
+                {
+                    _history.Pop(); //nullの要素を削除する
+                }
+
+                if (_history.Count <= 0) return null;
 				return _history.Peek();
 			}
 		}
 
-		//登録
-		//ビューが生成された時に登録する
-		public async UniTask Regist(UIView newView)
+        public IEnumerable<UIView> History
+        {
+            get { return _history; }
+        }
+
+        //登録
+        //ビューが生成された時に登録する
+        public async UniTask Regist(UIView newView)
 		{
 			var tasks = new List<UniTask>();
 			foreach (var view in _history)
@@ -125,7 +135,7 @@ namespace ETTView.UI
 			if (isBackState && await Current.TryBackState()) return true;
 
 			//UIViewを戻る
-			if(_history.Count > 1)
+			if(_history.Count(x => x != null) > 1)
 			{
 				if (Current.CanBackView() || isForceBackView)
 				{
@@ -164,6 +174,6 @@ namespace ETTView.UI
 			{
 				await BackView();
 			}
-		}
+        }
 	}
 }

@@ -22,8 +22,18 @@ namespace ETTView.UI
 		//状態遷移履歴
 		Stack<UIViewState> _stateHistory = new Stack<UIViewState>();
 
-		//BackSceneで戻ってきた場合にtrue
-		public bool IsRewind
+        public IEnumerable<Popup> OpenedPopups
+        {
+            get { return _openedPopupList; }
+        }
+
+        public IEnumerable<UIViewState> StateHistory
+        {
+            get { return _stateHistory; }
+        }
+
+        //BackSceneで戻ってきた場合にtrue
+        public bool IsRewind
 		{
 			get;set;
 		}
