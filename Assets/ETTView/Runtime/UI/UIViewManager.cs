@@ -168,11 +168,11 @@ namespace ETTView.UI
 			_history.Clear();
 		}
 
-		public async void FixedUpdate()
+		public void FixedUpdate()
 		{
 			if (Current != null && Current.Phase == Reopener.PhaseType.Opened && Current.IsBackInput())
 			{
-				await BackView();
+				BackView().Forget();
 			}
         }
 	}
