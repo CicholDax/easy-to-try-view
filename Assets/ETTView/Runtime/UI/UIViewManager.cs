@@ -168,7 +168,7 @@ namespace ETTView.UI
 			_history.Clear();
 		}
 
-		public async void FixedUpdate()
+		public async void Update()
 		{
 			if (Current != null && Current.Phase == Reopener.PhaseType.Opened && Current.IsBackInput())
 			{
