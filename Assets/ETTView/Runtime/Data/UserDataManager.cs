@@ -60,6 +60,12 @@ namespace ETTView.Data
             _loadedList.Remove(key);
         }
 
+        public void DeleteImmediate<T>() where T : UserData, new ()
+        {
+            Debug.Log("DeleteImmediate UserData." + typeof(T).Name);
+            Delete<T>();
+        }
+
         public void ClearLoaded()
         {
             _loadedList.Clear();
