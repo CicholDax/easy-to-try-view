@@ -117,11 +117,13 @@ namespace ETTView.UI
 			IsRewind = flag;
 			foreach (var transition in _rewindTransitions)
 			{
-				transition.enabled = flag;
+				if (transition != null)
+					transition.enabled = flag;
 			}
 			foreach (var transition in _forwardTransitions)
 			{
-				transition.enabled = !flag;
+                if (transition != null)
+                    transition.enabled = !flag;
 			}
 		}
 
