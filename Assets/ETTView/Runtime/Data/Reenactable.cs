@@ -21,6 +21,8 @@ public class Reenactable : MonoBehaviour
 
 			_json = JsonUtility.ToJson(reenactable);
 
+			if (!string.IsNullOrEmpty(_prefabPath)) Debug.Log( "SAVED! : " +_prefabPath + ":" + _json);
+
 			_enable = reenactable.enabled;
 			_name = reenactable.name;
 			_active = reenactable.gameObject.activeSelf;
@@ -28,14 +30,17 @@ public class Reenactable : MonoBehaviour
 			_rot = reenactable.transform.localRotation;
 			_scl = reenactable.transform.localScale;
 		}
-		public void Reenact(Reenactable target, bool json = true)
+		public void Reenact(Reenactable target)
 		{
 			target.enabled = _enable;
+
+
+			if (!string.IsNullOrEmpty(_prefabPath)) Debug.Log("LOAD! : " + _prefabPath + ":" + _json);
 
 			//コールバックはシリアライズしたくない
 			//var onDataLoad = target._onDataLoad.Clone();
 			//var onDataSave = target._onDataSave.Clone();
-			if(json) JsonUtility.FromJsonOverwrite(_json, target);
+			JsonUtility.FromJsonOverwrite(_json, target);
 			//target._onDataLoad = onDataLoad;
 			//target._onDataSave = onDataSave;
 			target.gameObject.name = _name;
@@ -70,7 +75,7 @@ public class Reenactable : MonoBehaviour
 
 			var instance = Instantiate(prefab);
 			Debug.Log("instance transform" + instance.transform.position + "/" + instance.transform.localScale + "/" + instance.transform.localRotation);
-			Reenact(instance, false);
+			Reenact(instance);
 			Debug.Log("afterrenact transform" + instance.transform.position + "/" + instance.transform.localScale + "/" + instance.transform.localRotation);
 			instance.OnDataLoadAfter(key);
 
