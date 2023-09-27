@@ -66,7 +66,9 @@ public class Reenactable : MonoBehaviour
 
 			Debug.Log("InstantiateAndReenactIfPathExists 2" + prefab);
 
-			foreach(Transform child in prefab.transform)
+			Debug.Log("transform " + prefab.transform.position + "/" +  prefab.transform.localScale + "/" + prefab.transform.localRotation);
+
+			foreach (Transform child in prefab.transform)
 			{
 				Debug.Log(prefab.name + child.name + ":" + child.gameObject.activeInHierarchy);
 			}
@@ -77,6 +79,9 @@ public class Reenactable : MonoBehaviour
 			Debug.Log("InstantiateAndReenactIfPathExists 3" + prefab.gameObject.activeInHierarchy);
 
 			var instance = Instantiate(prefab);
+
+
+			Debug.Log("transform "1 + instance.transform.position + "/" + instance.transform.localScale + "/" + instance.transform.localRotation);
 
 
 			foreach (Transform child in instance.transform)
@@ -92,8 +97,13 @@ public class Reenactable : MonoBehaviour
 			Reenact(instance);
 
 
+			Debug.Log("transform 2" + instance.transform.position + "/" + instance.transform.localScale + "/" + instance.transform.localRotation);
+
 			Debug.Log("InstantiateAndReenactIfPathExists 6" + instance.gameObject.activeInHierarchy);
 			instance.OnDataLoadAfter(key);
+
+
+			Debug.Log("transform 3" + instance.transform.position + "/" + instance.transform.localScale + "/" + instance.transform.localRotation);
 
 
 			Debug.Log("InstantiateAndReenactIfPathExists 7" + instance.gameObject.activeInHierarchy);
