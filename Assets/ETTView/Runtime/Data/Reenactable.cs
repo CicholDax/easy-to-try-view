@@ -61,6 +61,7 @@ public class Reenactable : MonoBehaviour
 			{
 				return null;
 			}
+			Debug.Log(_prefabPath + "Renact!!" + _uniId);
 			var prefab = Resources.Load<Reenactable>(_prefabPath);
 			Debug.Log("prefab transform " + prefab.transform.position + "/" +  prefab.transform.localScale + "/" + prefab.transform.localRotation);
 
