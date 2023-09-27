@@ -59,7 +59,7 @@ public class Reenactable : MonoBehaviour
 		{
 			if (string.IsNullOrEmpty(_prefabPath))
 			{
-				Debug.Log("InstantiateAndReenactIfPathExists 1" + _prefabPath);
+				//Debug.Log("InstantiateAndReenactIfPathExists 1" + _prefabPath);
 				return null;
 			}
 			var prefab = Resources.Load<Reenactable>(_prefabPath);
