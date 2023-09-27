@@ -68,20 +68,20 @@ public class Reenactable : MonoBehaviour
 
 			Debug.Log("transform " + prefab.transform.position + "/" +  prefab.transform.localScale + "/" + prefab.transform.localRotation);
 
+			if (prefab == null) return null;
+
+
 			foreach (Transform child in prefab.transform)
 			{
 				Debug.Log(prefab.name + child.name + ":" + child.gameObject.activeInHierarchy);
 			}
-
-			if (prefab == null) return null;
-
 
 			Debug.Log("InstantiateAndReenactIfPathExists 3" + prefab.gameObject.activeInHierarchy);
 
 			var instance = Instantiate(prefab);
 
 
-			Debug.Log("transform "1 + instance.transform.position + "/" + instance.transform.localScale + "/" + instance.transform.localRotation);
+			Debug.Log("transform 1" + instance.transform.position + "/" + instance.transform.localScale + "/" + instance.transform.localRotation);
 
 
 			foreach (Transform child in instance.transform)
