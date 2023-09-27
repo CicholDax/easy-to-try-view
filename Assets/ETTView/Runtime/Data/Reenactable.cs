@@ -66,6 +66,11 @@ public class Reenactable : MonoBehaviour
 
 			Debug.Log("InstantiateAndReenactIfPathExists 2" + prefab);
 
+			foreach(Transform child in prefab.transform)
+			{
+				Debug.Log(prefab.name + child.name + ":" + child.gameObject.activeInHierarchy);
+			}
+
 			if (prefab == null) return null;
 
 
@@ -73,6 +78,11 @@ public class Reenactable : MonoBehaviour
 
 			var instance = Instantiate(prefab);
 
+
+			foreach (Transform child in instance.transform)
+			{
+				Debug.Log(prefab.name + child.name + ":" + child.gameObject.activeInHierarchy);
+			}
 
 			Debug.Log("InstantiateAndReenactIfPathExists 4" + instance.gameObject.activeInHierarchy);
 			instance.gameObject.SetActive(true);
