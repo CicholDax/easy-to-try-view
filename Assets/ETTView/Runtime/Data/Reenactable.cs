@@ -80,11 +80,11 @@ public class Reenactable : MonoBehaviour
 		[SerializeField] string _uniId; //ユニークID
 		[SerializeField] string _json;
 		[SerializeField] bool _enable;
-		[SerializeField] string _prefabPath;
+		[SerializeField] public string _prefabPath;
 
 		//GameObject情報　複数アタッチの場合冗長になるが許容
-		[SerializeField] string _name;
-		[SerializeField] bool _active;
+		[SerializeField] public string _name;
+		[SerializeField] public bool _active;
 		[SerializeField] Vector3 _pos;
 		[SerializeField] Quaternion _rot;
 		[SerializeField] Vector3 _scl;

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ETTView.Data;
+using System.Runtime.Serialization;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -76,6 +77,8 @@ public class UserSceneReenactData : UserData
 			}
 			else
 			{
+				Debug.Log("Missing ReenactableData " + data._name + "/" + data._prefabPath + "/" + data._active);
+
 				//一致するインスタンスIDがなくてかつPrefab情報を保持してたら生成して復元
 				data.InstantiateAndReenactIfPathExists(key);
 			}
