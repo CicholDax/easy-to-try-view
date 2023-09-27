@@ -77,7 +77,7 @@ public class Reenactable : MonoBehaviour
 			return instance;
 		}
 
-		[SerializeField] string _uniId; //ユニークID
+		[SerializeField] public string _uniId; //ユニークID
 		[SerializeField] string _json;
 		[SerializeField] bool _enable;
 		[SerializeField] public string _prefabPath;
