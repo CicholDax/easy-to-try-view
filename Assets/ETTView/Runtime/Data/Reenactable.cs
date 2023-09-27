@@ -59,54 +59,20 @@ public class Reenactable : MonoBehaviour
 		{
 			if (string.IsNullOrEmpty(_prefabPath))
 			{
-				//Debug.Log("InstantiateAndReenactIfPathExists 1" + _prefabPath);
 				return null;
 			}
 			var prefab = Resources.Load<Reenactable>(_prefabPath);
+			Debug.Log("prefab transform " + prefab.transform.position + "/" +  prefab.transform.localScale + "/" + prefab.transform.localRotation);
 
-			Debug.Log("InstantiateAndReenactIfPathExists 2" + prefab);
-
-			Debug.Log("transform " + prefab.transform.position + "/" +  prefab.transform.localScale + "/" + prefab.transform.localRotation);
-
+			Debug.Log("data transform " + _pos + "/" + _scl + "/" + _rot);
 			if (prefab == null) return null;
 
-
-			foreach (Transform child in prefab.transform)
-			{
-				Debug.Log(prefab.name + child.name + ":" + child.gameObject.activeInHierarchy);
-			}
-
-			Debug.Log("InstantiateAndReenactIfPathExists 3" + prefab.gameObject.activeInHierarchy);
-
 			var instance = Instantiate(prefab);
-
-
-			Debug.Log("transform 1" + instance.transform.position + "/" + instance.transform.localScale + "/" + instance.transform.localRotation);
-
-
-			foreach (Transform child in instance.transform)
-			{
-				Debug.Log(prefab.name + child.name + ":" + child.gameObject.activeInHierarchy);
-			}
-
-			Debug.Log("InstantiateAndReenactIfPathExists 4" + instance.gameObject.activeInHierarchy);
-			instance.gameObject.SetActive(true);
-
-
-			Debug.Log("InstantiateAndReenactIfPathExists 5" + instance.gameObject.activeInHierarchy);
+			Debug.Log("instance transform" + instance.transform.position + "/" + instance.transform.localScale + "/" + instance.transform.localRotation);
 			Reenact(instance);
-
-
-			Debug.Log("transform 2" + instance.transform.position + "/" + instance.transform.localScale + "/" + instance.transform.localRotation);
-
-			Debug.Log("InstantiateAndReenactIfPathExists 6" + instance.gameObject.activeInHierarchy);
+			Debug.Log("afterrenact transform" + instance.transform.position + "/" + instance.transform.localScale + "/" + instance.transform.localRotation);
 			instance.OnDataLoadAfter(key);
 
-
-			Debug.Log("transform 3" + instance.transform.position + "/" + instance.transform.localScale + "/" + instance.transform.localRotation);
-
-
-			Debug.Log("InstantiateAndReenactIfPathExists 7" + instance.gameObject.activeInHierarchy);
 			return instance;
 		}
 
