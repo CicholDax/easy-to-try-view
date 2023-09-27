@@ -19,23 +19,23 @@ public class Reenactable : MonoBehaviour
 			_uniId = reenactable._uniId;
 			_prefabPath = reenactable._prefabPath;
 
-			_json = JsonUtility.ToJson(reenactable);
-
-			if (!string.IsNullOrEmpty(_prefabPath)) Debug.Log( "SAVED! : " +_prefabPath + ":" + _json);
-
 			_enable = reenactable.enabled;
 			_name = reenactable.name;
 			_active = reenactable.gameObject.activeSelf;
 			_pos = reenactable.transform.localPosition;
 			_rot = reenactable.transform.localRotation;
 			_scl = reenactable.transform.localScale;
+
+			_json = JsonUtility.ToJson(reenactable);
+
+			if (!string.IsNullOrEmpty(_prefabPath)) Debug.Log("SAVED! : " + _prefabPath + ":" + _pos);
 		}
 		public void Reenact(Reenactable target)
 		{
 			target.enabled = _enable;
 
 
-			if (!string.IsNullOrEmpty(_prefabPath)) Debug.Log("LOAD! : " + _prefabPath + ":" + _json);
+			if (!string.IsNullOrEmpty(_prefabPath)) Debug.Log("LOAD! : " + _prefabPath + ":" + _pos);
 
 			//コールバックはシリアライズしたくない
 			//var onDataLoad = target._onDataLoad.Clone();
