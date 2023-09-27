@@ -49,7 +49,7 @@ public class Reenactable : MonoBehaviour
 		{
 			return
 #if UNITY_EDITOR
-			!EditorUtility.IsPersistent(target) && 
+			!EditorUtility.IsPersistent(target) &&
 #endif
 			_uniId == target._uniId;
 		}
@@ -69,11 +69,24 @@ public class Reenactable : MonoBehaviour
 			if (prefab == null) return null;
 
 
+			Debug.Log("InstantiateAndReenactIfPathExists 3" + prefab);
+
 			var instance = Instantiate(prefab);
+
+
+			Debug.Log("InstantiateAndReenactIfPathExists 4" + instance);
 			instance.gameObject.SetActive(true);
 
+
+			Debug.Log("InstantiateAndReenactIfPathExists 5" + instance);
 			Reenact(instance);
+
+
+			Debug.Log("InstantiateAndReenactIfPathExists 6" + instance);
 			instance.OnDataLoadAfter(key);
+
+
+			Debug.Log("InstantiateAndReenactIfPathExists 7" + instance);
 			return instance;
 		}
 
