@@ -69,24 +69,24 @@ public class Reenactable : MonoBehaviour
 			if (prefab == null) return null;
 
 
-			Debug.Log("InstantiateAndReenactIfPathExists 3" + prefab);
+			Debug.Log("InstantiateAndReenactIfPathExists 3" + prefab.gameObject.activeInHierarchy);
 
 			var instance = Instantiate(prefab);
 
 
-			Debug.Log("InstantiateAndReenactIfPathExists 4" + instance);
+			Debug.Log("InstantiateAndReenactIfPathExists 4" + instance.gameObject.activeInHierarchy);
 			instance.gameObject.SetActive(true);
 
 
-			Debug.Log("InstantiateAndReenactIfPathExists 5" + instance);
+			Debug.Log("InstantiateAndReenactIfPathExists 5" + instance.gameObject.activeInHierarchy);
 			Reenact(instance);
 
 
-			Debug.Log("InstantiateAndReenactIfPathExists 6" + instance);
+			Debug.Log("InstantiateAndReenactIfPathExists 6" + instance.gameObject.activeInHierarchy);
 			instance.OnDataLoadAfter(key);
 
 
-			Debug.Log("InstantiateAndReenactIfPathExists 7" + instance);
+			Debug.Log("InstantiateAndReenactIfPathExists 7" + instance.gameObject.activeInHierarchy);
 			return instance;
 		}
 
