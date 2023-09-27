@@ -38,7 +38,6 @@ public class Reenactable : MonoBehaviour
 			JsonUtility.FromJsonOverwrite(_json, target);
 			//target._onDataLoad = onDataLoad;
 			//target._onDataSave = onDataSave;
-
 			target.gameObject.name = _name;
 			target.gameObject.SetActive(_active);
 			target.transform.localPosition = _pos;
@@ -58,10 +57,21 @@ public class Reenactable : MonoBehaviour
 		//ƒpƒX‚ğ•Û‚µ‚Ä‚¢‚½‚ç¶¬‚µ‚Ä•œŒ³
 		public Reenactable InstantiateAndReenactIfPathExists(string key)
 		{
-			if (string.IsNullOrEmpty(_prefabPath)) return null;
+			if (string.IsNullOrEmpty(_prefabPath))
+			{
+				Debug.Log("InstantiateAndReenactIfPathExists 1" + _prefabPath);
+				return null;
+			}
 			var prefab = Resources.Load<Reenactable>(_prefabPath);
+
+			Debug.Log("InstantiateAndReenactIfPathExists 2" + prefab);
+
 			if (prefab == null) return null;
+
+
 			var instance = Instantiate(prefab);
+			instance.gameObject.SetActive(true);
+
 			Reenact(instance);
 			instance.OnDataLoadAfter(key);
 			return instance;
