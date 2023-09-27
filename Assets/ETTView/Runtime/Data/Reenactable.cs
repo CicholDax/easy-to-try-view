@@ -22,8 +22,8 @@ public class Reenactable : MonoBehaviour
 			_enable = reenactable.enabled;
 			_name = reenactable.name;
 			_active = reenactable.gameObject.activeSelf;
-			_pos = reenactable.transform.localPosition;
-			_rot = reenactable.transform.localRotation;
+			_pos = reenactable.transform.position;
+			_rot = reenactable.transform.rotation;
 			_scl = reenactable.transform.localScale;
 
 			_json = JsonUtility.ToJson(reenactable);
@@ -45,8 +45,8 @@ public class Reenactable : MonoBehaviour
 			//target._onDataSave = onDataSave;
 			target.gameObject.name = _name;
 			target.gameObject.SetActive(_active);
-			target.transform.localPosition = _pos;
-			target.transform.localRotation = _rot;
+			target.transform.position = _pos;
+			target.transform.rotation = _rot;
 			target.transform.localScale = _scl;
 		}
 
