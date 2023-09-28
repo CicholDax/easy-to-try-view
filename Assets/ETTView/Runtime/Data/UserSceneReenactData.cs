@@ -50,9 +50,6 @@ public class UserSceneReenactData : UserData
 		{
 			Scene scene = SceneManager.GetSceneAt(i);
 
-			if (!scene.isLoaded) // シーンがロードされていない場合はスキップ
-				continue;
-
 			foreach (var rootGameObject in scene.GetRootGameObjects())
 			{
 				targets.AddRange(rootGameObject.GetComponentsInChildren<Reenactable>(true));
