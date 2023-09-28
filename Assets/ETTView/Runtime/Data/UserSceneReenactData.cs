@@ -82,7 +82,7 @@ public class UserSceneReenactData : UserData
 		foreach (var data in GetOrCreateData(key))
 		{
 			//ƒCƒ“ƒXƒ^ƒ“ƒXID‚ªˆê’v‚µ‚½‚ç”½‰f
-			var desc = list.ToList().Find((d) => data.IsMatch(d));
+			var desc = list.Find((d) => data.IsMatch(d));
 			if (desc != null)
 			{
 				data.Reenact(desc);
