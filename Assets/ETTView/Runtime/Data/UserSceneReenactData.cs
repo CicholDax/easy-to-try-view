@@ -44,15 +44,19 @@ public class UserSceneReenactData : UserData
 	{
 		GetOrCreateData(key).Clear();
 
-		//再現対象のオブジェクトをリストに
-		var targets = Resources.FindObjectsOfTypeAll<Reenactable>();
+		// 全てのルートゲームオブジェクトを取得
+		var allRootGameObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+		List<Reenactable> targets = new List<Reenactable>();
+
+		foreach (var rootGameObject in allRootGameObjects)
+		{
+			// アクティブ・非アクティブなオブジェクトも含めて Reenactable コンポーネントを検索
+			var reenactables = rootGameObject.GetComponentsInChildren<Reenactable>(true);
+			targets.AddRange(reenactables);
+		}
 
 		foreach (var target in targets)
 		{
-			//Editgorだとプレハブファイルも入っちゃうみたいなので除外
-#if UNITY_EDITOR
-			if (EditorUtility.IsPersistent(target)) continue;
-#endif
 			target.OnDataSaveBefore(key);
 			GetOrCreateData(key).Add(new Reenactable.Data(target));
 		}
