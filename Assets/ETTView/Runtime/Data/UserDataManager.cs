@@ -80,6 +80,7 @@ namespace ETTView.Data
         {
             var jsonText = JsonUtility.ToJson(userData);
             CustomPlayerPrefas.SetString(userData.GetType().Name, jsonText);
+            CustomPlayerPrefas.Save();
         }
 
         T LoadFromPrefs<T>() where T : UserData, new()
