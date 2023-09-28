@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ETTView.Data;
+using UnityEngine.SceneManagement;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -43,15 +44,19 @@ public class UserSceneReenactData : UserData
 	{
 		GetOrCreateData(key).Clear();
 
-		// 全てのルートゲームオブジェクトを取得
-		var allRootGameObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
 		List<Reenactable> targets = new List<Reenactable>();
 
-		foreach (var rootGameObject in allRootGameObjects)
+		for (int i = 0; i < SceneManager.sceneCount; i++)
 		{
-			// アクティブ・非アクティブなオブジェクトも含めて Reenactable コンポーネントを検索
-			var reenactables = rootGameObject.GetComponentsInChildren<Reenactable>(true);
-			targets.AddRange(reenactables);
+			Scene scene = SceneManager.GetSceneAt(i);
+
+			if (!scene.isLoaded) // シーンがロードされていない場合はスキップ
+				continue;
+
+			foreach (var rootGameObject in scene.GetRootGameObjects())
+			{
+				targets.AddRange(rootGameObject.GetComponentsInChildren<Reenactable>(true));
+			}
 		}
 
 		foreach (var target in targets)
@@ -66,14 +71,19 @@ public class UserSceneReenactData : UserData
 	public void Load(string key = "")
 	{
 		// 全てのルートゲームオブジェクトを取得
-		var allRootGameObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
 		List<Reenactable> list = new List<Reenactable>();
 
-		foreach (var rootGameObject in allRootGameObjects)
+		for (int i = 0; i < SceneManager.sceneCount; i++)
 		{
-			// アクティブ・非アクティブなオブジェクトも含めて Reenactable コンポーネントを検索
-			var reenactables = rootGameObject.GetComponentsInChildren<Reenactable>(true);
-			list.AddRange(reenactables);
+			Scene scene = SceneManager.GetSceneAt(i);
+
+			if (!scene.isLoaded) // シーンがロードされていない場合はスキップ
+				continue;
+
+			foreach (var rootGameObject in scene.GetRootGameObjects())
+			{
+				list.AddRange(rootGameObject.GetComponentsInChildren<Reenactable>(true));
+			}
 		}
 
 		//再現データを走査して
