@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ETTView.Data;
 using System.Runtime.Serialization;
+using static DG.DemiEditor.DeEditorUtils;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -66,11 +67,19 @@ public class UserSceneReenactData : UserData
 
 	public void Load(string key = "")
 	{
-		//DataListを走査しながら、ロード済みのオブジェクトのインスタンスIDと照合して反映
-		List<Reenactable> list = Resources.FindObjectsOfTypeAll<Reenactable>().ToList();
+		// 全てのルートゲームオブジェクトを取得
+		var allRootGameObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+		List<Reenactable> list = new List<Reenactable>();
+
+		foreach (var rootGameObject in allRootGameObjects)
+		{
+			// アクティブ・非アクティブなオブジェクトも含めて Reenactable コンポーネントを検索
+			var reenactables = rootGameObject.GetComponentsInChildren<Reenactable>(true);
+			list.AddRange(reenactables);
+		}
 
 		//再現データを走査して
-		foreach(var data in GetOrCreateData(key))
+		foreach (var data in GetOrCreateData(key))
 		{
 			//インスタンスIDが一致したら反映
 			var desc = list.ToList().Find((d) => data.IsMatch(d));
