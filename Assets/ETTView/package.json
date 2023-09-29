@@ -1,7 +1,7 @@
 {
     "name": "com.cicholdax.ettview",
     "displayName": "ETTView", 
-    "version": "2.0.0",               
+    "version": "1.0.3",               
     "unity": "2021.3",
     "description": "デバッグ指向汎用ゲーム基盤",
     "author": {
