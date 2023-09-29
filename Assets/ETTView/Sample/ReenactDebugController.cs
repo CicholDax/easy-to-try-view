@@ -3,12 +3,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using ETTView;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using System.Threading;
 
-public class ReenactDebugController : MonoBehaviour
+public class ReenactDebugController : Reopnable
 {
     [SerializeField] GameObject _cubePrefab;
+	[SerializeField] Image _image;
 
-	GameObject _ins;
+    public override async UniTask Loading()
+    {
+        await HogeTask("ローディング", Color.red);
+    }
+
+    public override async UniTask Closing()
+    {
+		await _image.DOColor(Color.green, 0.5f);
+        await _image.DOColor(Color.red, 0.5f);
+        await _image.DOColor(Color.green, 0.5f);
+        await _image.DOColor(Color.red, 0.5f);
+    }
+
+
+    public async UniTask HogeTask(string name, Color color)
+	{
+		Debug.Log(name + "開始...");
+
+
+		await _image.DOColor(color, 1);
+
+
+		Debug.Log(name + "終了!");
+    }
+
+    GameObject _ins;
     // Update is called once per frame
     void Update()
     {

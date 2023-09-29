@@ -1,5 +1,6 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using System.Threading;
 
 namespace ETTView.UI
 {
@@ -10,9 +11,9 @@ namespace ETTView.UI
 		[SerializeField] string _closeStateName = "close";
 		[SerializeField] float _fadeDuration = 1;
 
-		public override async UniTask Opening()
+		public override async UniTask Opening(CancellationToken token)
 		{
-			await base.Opening();
+			await base.Opening(token);
 
 			_animator.speed = 1;
 			_animator.CrossFade(_openStateName, _fadeDuration);

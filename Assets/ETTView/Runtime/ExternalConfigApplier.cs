@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -15,10 +16,10 @@ namespace ETTView
 
 		public abstract IConfigData ConfigData { get; }
 
-		public sealed override UniTask Opening()
+		public sealed override UniTask Opening(CancellationToken token)
 		{
 			ExternalConfigManager.Instance.Regist(ConfigData);
-			return base.Opening();
+			return base.Opening(token);
 		}
 
 		public sealed override UniTask Closing()

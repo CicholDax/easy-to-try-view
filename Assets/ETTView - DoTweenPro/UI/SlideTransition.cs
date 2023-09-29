@@ -32,16 +32,16 @@ namespace ETTView.UI
 			}
 		}
 
-		public override async UniTask Load()
+		public override async UniTask Loading()
 		{
 			if (transform != null)
 				transform.localPosition = new Vector2((_way == WAY.SLIDE_RIGHT ? -1 : 1) * -CanvasRectt.sizeDelta.x, 0.0f);
-			await base.Load();
+			await base.Loading();
 		}
 
-		public override async UniTask Opening()
+		public override async UniTask Opening(CancellationToken token)
 		{
-			await base.Opening();
+			await base.Opening(token);
 
             if (transform != null)
                 transform.localPosition = new Vector2((_way == WAY.SLIDE_RIGHT ? -1 : 1) * -CanvasRectt.sizeDelta.x, 0.0f);

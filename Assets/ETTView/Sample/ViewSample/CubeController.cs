@@ -4,15 +4,16 @@ using UnityEngine;
 using ETTView;
 using ETTView.Data;
 using Cysharp.Threading.Tasks;
+using System.Threading;
 
 public class CubeController : Reopnable
 {
 
 	[SerializeField] string _test;
 
-	public override UniTask Opening()
+	public override UniTask Opening(CancellationToken token)
 	{
-		return base.Opening();
+		return base.Opening(token);
 	}
 
 

@@ -13,9 +13,9 @@ namespace ETTView.UI
 		[SerializeField] public DOTweenAnimations _startTween;
 		[SerializeField] public DOTweenAnimations _endTween;
 
-		public override async UniTask Opening()
+		public override async UniTask Opening(CancellationToken token)
 		{
-			await base.Opening();
+			await base.Opening(token);
 
 			if (_startTween != null && !_startTween.IsEmpty())
 			{

@@ -1,5 +1,6 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using System.Threading;
 
 namespace ETTView
 {
@@ -69,7 +70,7 @@ namespace ETTView
 
 		//生成時に一度だけ実行する処理
 		//Ex.付随するプレハブの生成、初期化とか
-		public virtual async UniTask Load()
+		public virtual async UniTask Loading()
 		{
 		}
 
@@ -81,7 +82,7 @@ namespace ETTView
 
 		//スタート、再スタート時に毎回実行する処理
 		//Ex.開始時のアニメーションなど
-		public virtual async UniTask Opening()
+		public virtual async UniTask Opening(CancellationToken token)
 		{
 		}
 
