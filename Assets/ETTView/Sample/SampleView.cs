@@ -19,6 +19,6 @@ public class SampleView : UIView
 
 	public async void OnClickShowPopup()
 	{
-		await CommonPopup.Create(transform, "確認", "ポップアップだよ");
+		await CommonPopup.Create(transform, "確認", "ポップアップだよーん");
 	}
 }
