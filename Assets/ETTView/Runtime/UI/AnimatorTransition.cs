@@ -21,9 +21,9 @@ namespace ETTView.UI
 			await UniTask.WaitUntil(() => _animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1);
 		}
 
-		public override async UniTask Closing()
+		public override async UniTask Closing(CancellationToken token)
 		{
-			await base.Closing();
+			await base.Closing(token);
 
 			_animator.speed = 1;
 			_animator.CrossFade(_closeStateName, _fadeDuration);

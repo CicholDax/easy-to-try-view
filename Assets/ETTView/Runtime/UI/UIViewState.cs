@@ -4,6 +4,7 @@ using UnityEngine;
 using ETTView.UI;
 using ETTView;
 using Cysharp.Threading.Tasks;
+using System.Threading;
 
 public class UIViewState : ReopnablePrefab
 {
@@ -16,7 +17,7 @@ public class UIViewState : ReopnablePrefab
 		await UIViewManager.Instance.BackView(this);
 	}
 
-	public override async UniTask Preopning()
+	public override async UniTask Preopning(CancellationToken token)
 	{
 		if (_awaitCloseState)
 		{

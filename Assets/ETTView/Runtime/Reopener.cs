@@ -48,7 +48,7 @@ namespace ETTView
 		}
 
 		CancellationTokenSource _destroyCts;
-		CancellationTokenSource _disableCts;
+		CancellationTokenSource _phaseCts;
 
         public async UniTask Open()
 		{
@@ -73,15 +73,21 @@ namespace ETTView
 		{
             _destroyCts = new CancellationTokenSource();
 
-            await ExecutePhaseAction((reopnable) => reopnable.Loading(), _destroyCts.Token, "Loading");
+            await ExecutePhaseAction((reopnable) => reopnable.Loading(_destroyCts.Token), _destroyCts.Token, "Loading");
             Phase = PhaseType.Loaded;
             _onLoaded?.Invoke();
         }
 
-		protected virtual async void OnEnable()
+		protected async void OnEnable()
 		{
-			_disableCts = new CancellationTokenSource();
-			var linkedTs = CancellationTokenSource.CreateLinkedTokenSource(_destroyCts.Token, _disableCts.Token);
+			if(_phaseCts != null)
+			{
+				_phaseCts.Cancel();
+				_phaseCts.Dispose();
+            }
+
+			_phaseCts = new CancellationTokenSource();
+			var linkedTs = CancellationTokenSource.CreateLinkedTokenSource(_destroyCts.Token, _phaseCts.Token);
 
             try
 			{
@@ -90,7 +96,7 @@ namespace ETTView
 
                 linkedTs.Token.ThrowIfCancellationRequested();
                 Phase = PhaseType.Preopening;
-				await ExecutePhaseAction((reopnable) => reopnable.Preopning(), linkedTs.Token, "Preopning");
+				await ExecutePhaseAction((reopnable) => reopnable.Preopning(linkedTs.Token), linkedTs.Token, "Preopning");
 
                 linkedTs.Token.ThrowIfCancellationRequested();
                 Phase = PhaseType.Opening;
@@ -99,37 +105,52 @@ namespace ETTView
 
                 linkedTs.Token.ThrowIfCancellationRequested();
                 Phase = PhaseType.Opened;
-				await UniTask.WaitWhile(() => enabled, cancellationToken: _destroyCts.Token);
 				
 			}
 			catch(OperationCanceledException e)
 			{
-				Debug.Log("Reopner Disable or Destory. " + e.Message);
+				Debug.Log("Reopner Enable. " + e.Message);
 			}
 			catch(Exception e)
 			{
 				Debug.LogException(e);
 			}
-			finally
-			{
-				try
-				{
-					Phase = PhaseType.Closing;
-					_onClose?.Invoke();
-					await ExecutePhaseAction((reopnable) => reopnable.Closing(), _destroyCts.Token, "Closing");
-					Phase = PhaseType.Closed;
-				}
-                catch (OperationCanceledException e)
-                {
-                    Debug.Log("Reopner Destory. " + e.Message);
-                }
-                catch (Exception e)
-                {
-                    Debug.LogException(e);
-                }
-            }
 		}
-		
+
+        public async void OnDisable()
+        {
+            if (_phaseCts != null)
+            {
+                _phaseCts.Cancel();
+                _phaseCts.Dispose();
+            }
+
+            _phaseCts = new CancellationTokenSource();
+            var linkedTs = CancellationTokenSource.CreateLinkedTokenSource(_destroyCts.Token, _phaseCts.Token);
+			
+			try
+			{
+				//ロード完了まで待つ
+				await UniTask.WaitWhile(() => Phase == PhaseType.Loading);
+
+                linkedTs.Token.ThrowIfCancellationRequested();
+                Phase = PhaseType.Closing;
+				_onClose?.Invoke();
+				await ExecutePhaseAction((reopnable) => reopnable.Closing(linkedTs.Token), linkedTs.Token, "Closing");
+
+                linkedTs.Token.ThrowIfCancellationRequested();
+                Phase = PhaseType.Closed;
+            }
+            catch (OperationCanceledException e)
+            {
+                Debug.Log("Reopner Disable. " + e.Message);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+        }
+
 
         async UniTask ExecutePhaseAction(Func<Reopnable, UniTask> action, CancellationToken token, string logMessage)
         {
@@ -151,24 +172,21 @@ namespace ETTView
             Debug.Log(name + " " + logMessage + " End");
         }
 
-        public void OnDisable()
-        {
-            if(_disableCts != null)
-			{
-				_disableCts.Cancel();
-				_disableCts.Dispose();
-				_disableCts = null;
-			}
-        }
-
         public void OnDestroy()
 		{
-			if (_destroyCts != null)
+            if (_phaseCts != null)
+            {
+                _phaseCts.Cancel();
+                _phaseCts.Dispose();
+            }
+            _destroyCts = null;
+
+            if (_destroyCts != null)
 			{
 				_destroyCts.Cancel();
 				_destroyCts.Dispose();
-				_destroyCts = null;
 			}
-		}
+            _destroyCts = null;
+        }
 	}
 }

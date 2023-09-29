@@ -27,9 +27,9 @@ namespace ETTView.UI
 			}
 		}
 
-		public override async UniTask Closing()
+		public override async UniTask Closing(CancellationToken token)
 		{
-			await base.Closing();
+			await base.Closing(token);
 
 			if (_endTween != null && !_endTween.IsEmpty())
 			{

@@ -16,27 +16,22 @@ namespace ETTView.UI
 		[SerializeField] float _closeScale = 0.2f;
 		[SerializeField] float _openScale = 1.0f;
 
-		public override async UniTask Loading()
+		public override async UniTask Loading(CancellationToken token)
 		{
 			transform.localScale = Vector3.one * _closeScale;
-			await base.Loading();
+			await base.Loading(token);
 		}
 
 		public override async UniTask Opening(CancellationToken token)
 		{
             await base.Opening(token);
-            Tween tween = transform.DOScale(_openScale, _duration);
-
-			using (token.Register(() => tween.Kill()))
-			{
-				await tween;
-			}
+            await transform.DOScale(_openScale, _duration);
         }
 
-		public override async UniTask Closing()
+		public override async UniTask Closing(CancellationToken token)
 		{
-			await base.Closing();
-			await transform.DOScale(_closeScale, _duration);
+            await base.Closing(token);
+            await transform.DOScale(_closeScale, _duration);
 		}
 	}
 }

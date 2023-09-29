@@ -14,12 +14,12 @@ public class ReenactDebugController : Reopnable
     [SerializeField] GameObject _cubePrefab;
 	[SerializeField] Image _image;
 
-    public override async UniTask Loading()
+    public override async UniTask Loading(CancellationToken token)
     {
         await HogeTask("ローディング", Color.red);
     }
 
-    public override async UniTask Closing()
+    public override async UniTask Closing(CancellationToken token)
     {
 		await _image.DOColor(Color.green, 0.5f);
         await _image.DOColor(Color.red, 0.5f);

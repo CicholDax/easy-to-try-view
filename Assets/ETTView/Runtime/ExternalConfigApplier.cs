@@ -22,10 +22,10 @@ namespace ETTView
 			return base.Opening(token);
 		}
 
-		public sealed override UniTask Closing()
+		public sealed override UniTask Closing(CancellationToken token)
 		{
 			ExternalConfigManager.Instance.UnRegist(ConfigData);
-			return base.Closing();
+			return base.Closing(token);
 		}
 
 		public void OnDestroy()

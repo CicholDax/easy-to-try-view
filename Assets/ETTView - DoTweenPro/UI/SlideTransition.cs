@@ -32,11 +32,11 @@ namespace ETTView.UI
 			}
 		}
 
-		public override async UniTask Loading()
+		public override async UniTask Loading(CancellationToken token)
 		{
 			if (transform != null)
 				transform.localPosition = new Vector2((_way == WAY.SLIDE_RIGHT ? -1 : 1) * -CanvasRectt.sizeDelta.x, 0.0f);
-			await base.Loading();
+			await base.Loading(token);
 		}
 
 		public override async UniTask Opening(CancellationToken token)
@@ -48,9 +48,9 @@ namespace ETTView.UI
 			await transform.DOLocalMoveX(0, _duration);
 		}
 
-		public override async UniTask Closing()
+		public override async UniTask Closing(CancellationToken token)
 		{
-			await base.Closing();
+			await base.Closing(token);
 
             if (transform != null)
                 await transform.DOLocalMoveX((_way == WAY.SLIDE_RIGHT ? -1 : 1) * CanvasRectt.sizeDelta.x, _duration);

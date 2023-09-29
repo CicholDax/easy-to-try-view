@@ -70,13 +70,13 @@ namespace ETTView
 
 		//生成時に一度だけ実行する処理
 		//Ex.付随するプレハブの生成、初期化とか
-		public virtual async UniTask Loading()
+		public virtual async UniTask Loading(CancellationToken token)
 		{
 		}
 
 		//スタート、再スタート時に毎回実行する処理のうち、他より先に行いたいもの
 		//Ex.状態の初期化とか、データの更新とか
-		public virtual async UniTask Preopning()
+		public virtual async UniTask Preopning(CancellationToken token)
 		{
 		}
 
@@ -88,7 +88,7 @@ namespace ETTView
 
 		//終了時の処理
 		//Ex.終了時のアニメーションとか
-		public virtual async UniTask Closing()
+		public virtual async UniTask Closing(CancellationToken token)
 		{
 		}
 	}

@@ -21,7 +21,7 @@ public class CanvasGroupReflector : Reopnable
 		_canvasGroup.blocksRaycasts = true;
 	}
 
-	public override async UniTask Closing()
+	public override async UniTask Closing(CancellationToken token)
 	{
 		_canvasGroup.interactable = false;
 		_canvasGroup.blocksRaycasts = false;

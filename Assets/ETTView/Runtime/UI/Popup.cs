@@ -1,5 +1,6 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using System.Threading;
 
 namespace ETTView.UI
 {
@@ -10,10 +11,10 @@ namespace ETTView.UI
             return true;
         }
 
-        public override UniTask Preopning()
+        public override UniTask Preopning(CancellationToken token)
 		{
 			UIViewManager.Instance.Current.RegistPopup(this);
-			return base.Preopning();
+			return base.Preopning(token);
 		}
 	}
 }
