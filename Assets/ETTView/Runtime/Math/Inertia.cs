@@ -72,15 +72,27 @@ namespace ETTView.Math
 	{
 		//加速度制限
 		public float? MaxMagnitude { get; set; } = null;
-		public Rect? LimitRect { get; set; } = null;
+        public float? MinMagnitude { get; set; } = null;
+        public Rect? LimitRect { get; set; } = null;
 		public Action<float> OnOverhang{ get; set; } = null;
+
+		Vector3 _dir = Vector3.up;
 
 		protected override void FrameSpeedAdjust()
 		{
-			//長さが指定より超えてたらそろえる
-			if (MaxMagnitude != null && _frameSpeed.magnitude > MaxMagnitude)
+			if(_frameSpeed.normalized != Vector3.zero)
+				_dir =_frameSpeed.normalized;
+
+            //長さが指定より超えてたらそろえる
+            if (MaxMagnitude != null && _frameSpeed.magnitude > MaxMagnitude)
 			{
 				_frameSpeed = _frameSpeed.normalized * (float)MaxMagnitude;
+			}
+
+			//長さが指定より短かったらそろえる
+			if(MinMagnitude != null && _frameSpeed.magnitude < MinMagnitude)
+			{
+				_frameSpeed = _dir * (float)MinMagnitude;
 			}
 		}
 

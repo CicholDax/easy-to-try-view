@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using ETTView;
+using ETTView.UI;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System.Threading;
@@ -13,25 +14,6 @@ public class ReenactDebugController : Reopnable
 {
     [SerializeField] GameObject _cubePrefab;
 	[SerializeField] Image _image;
-
-
-	public override async UniTask Closing(CancellationToken token)
-	{
-		try
-		{
-			await _image.DOColor(Color.black, 0.2f).WithCancellation(token);
-			await _image.DOColor(Color.yellow, 0.2f).WithCancellation(token);
-			await _image.DOColor(Color.black, 0.2f).WithCancellation(token);
-			await _image.DOColor(Color.yellow, 0.2f).WithCancellation(token);
-
-		}
-		finally
-		{
-			_image.color = Color.yellow;
-		}
-
-	}
-
 
 	GameObject _ins;
     // Update is called once per frame

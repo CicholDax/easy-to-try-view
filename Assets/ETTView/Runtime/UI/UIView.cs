@@ -4,13 +4,18 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using System.Threading;
 
 namespace ETTView.UI
 {
-	public class UIView : Reopnable
-	{
-		//シーンに最初からRootに置かれてるビューかどうか
-		[SerializeField] bool _isSceneTopView;
+	public class UIView : ReopnablePrefab
+    {
+        public static UIView Current => UIViewManager.Instance.Current;
+        public static IEnumerable<UIView> History => UIViewManager.Instance.History;
+
+        //シーンに最初からRootに置かれてるビューかどうか
+        [SerializeField] bool _isSceneTopView;
 
 		//BackSceneで戻る/戻られる場合にトランジションを変更したい場合に指定する
 		[SerializeField] List<Reopnable> _forwardTransitions;
@@ -127,16 +132,16 @@ namespace ETTView.UI
 			}
 		}
 
-		public async void Awake()
-		{
-			SetRewind(false);
+        public override async UniTask Preopning(CancellationToken token)
+        {
+            SetRewind(false);
 
-			//マネージャに登録
-			await UIViewManager.Instance.Regist(this);
-		}
+            //マネージャに登録
+            await UIViewManager.Instance.Regist(this);
+        }
 
-		//Viewを戻ろうとしたタイミングで呼ばれる。戻って良ければtrueを返す
-		public virtual bool CanBackView()
+        //Viewを戻ろうとしたタイミングで呼ばれる。戻って良ければtrueを返す
+        public virtual bool CanBackView()
 		{
 			return true;
 		}
@@ -188,12 +193,33 @@ namespace ETTView.UI
 			return false;
 		}
 
-		public async void BackViewNowait()
+		public void BackViewForget()
 		{
-			await UIViewManager.Instance.BackView();
+			UIViewManager.Instance.BackView().Forget();
 		}
 
-		public void OnDestroy()
+        [Obsolete("Use BackViewForget.")]
+        public void BackViewNoWait()
+        {
+            UIViewManager.Instance.BackView().Forget();
+        }
+
+        public  void BackToTargetViewForget(UIView view)
+		{
+			BackToTargetView(view).Forget();
+		}
+
+		public UniTask BackToTargetView<T>() where T : UIView
+		{
+			return UIViewManager.Instance.BackToTargetView<T>();
+		}
+
+        public UniTask BackToTargetView(UIView view)
+        {
+            return UIViewManager.Instance.BackToTargetView(view);
+        }
+
+        public void OnDestroy()
 		{
 			if(_isSceneTopView)
 			{

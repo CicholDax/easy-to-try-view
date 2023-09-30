@@ -17,17 +17,12 @@ public class UIViewHistoryDebugWindow : EditorWindow
 
     private void OnGUI()
     {
-        var manager = UIViewManager.Instance;
-        if (manager == null)
-        {
-            EditorGUILayout.LabelField("UIViewManager instance not found.");
-            return;
-        }
+        if (!EditorApplication.isPlaying) return;
 
         _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);  // Begin the scroll view
 
         EditorGUILayout.LabelField("History Contents:", EditorStyles.boldLabel);
-        foreach (var view in manager.History)
+        foreach (var view in UIView.History)
         {
             EditorGUILayout.LabelField(view != null ? view.name : "null");
 

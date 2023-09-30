@@ -20,7 +20,7 @@ public class ReopnablePrefab : Reopnable
 	bool _fromPrefab = false;
 	protected virtual bool IsDestroyWhenClosed => _fromPrefab;
 
-	public static async UniTask<T> CreateFromResources<T>(Transform parent) where T : ReopnablePrefab
+	protected static async UniTask<T> CreateFromResources<T>(Transform parent) where T : ReopnablePrefab
 	{
 		var req = await Resources.LoadAsync<T>(typeof(T).Name) as T;
 		if (req == null) throw new PrefabNotFoundException(typeof(T).Name);
@@ -30,7 +30,7 @@ public class ReopnablePrefab : Reopnable
 		return ins;
 	}
 
-	public static ReopnablePrefab CreateFromPrefab(ReopnablePrefab prefab, Transform parent)
+    protected static ReopnablePrefab CreateFromPrefab(ReopnablePrefab prefab, Transform parent)
 	{
 		var ins = Instantiate(prefab, parent);
 		ins._fromPrefab = true;

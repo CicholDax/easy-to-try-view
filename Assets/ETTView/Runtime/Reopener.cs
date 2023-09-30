@@ -143,7 +143,7 @@ namespace ETTView
             }
             catch (OperationCanceledException e)
             {
-                Debug.Log("Reopner Disable. " + e.Message);
+                Debug.Log("Reopner Disable. " + e);
             }
             catch (Exception e)
             {

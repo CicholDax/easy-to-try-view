@@ -2,10 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using UnityEngine.tvOS;
+using System;
 
 namespace ETTView.UI
 {
-	public class UIViewManager : SingletonMonoBehaviour<UIViewManager>, ISingletonMono
+	internal class UIViewManager : SingletonMonoBehaviour<UIViewManager>, ISingletonMono
 	{
 		public bool IsDontDestroy { get; } = true;
 
@@ -35,22 +37,34 @@ namespace ETTView.UI
         public async UniTask Regist(UIView newView)
 		{
 			var tasks = new List<UniTask>();
-			foreach (var view in _history)
+			if (!_history.Contains(newView))
 			{
-				if(view == null)
+				foreach (var view in _history)
 				{
-					Debug.LogWarning("破棄されたUIViewがHistoryに残っています。SingleでSceneLoadする場合は戻れなくなるのでUIViewManager.ClearHistoryしてください。");
-					continue;
+					if (view == null)
+					{
+						Debug.LogWarning("破棄されたUIViewがHistoryに残っています。SingleでSceneLoadする場合は戻れなくなるのでUIViewManager.ClearHistoryしてください。");
+						continue;
+					}
+					//ビューはひとつしかOpenにならないので、他はClose
+					tasks.Add(view.Close());
 				}
-				//ビューはひとつしかOpenにならないので、他はClose
-				tasks.Add(view.Close());
-			}
 
-			_history.Push(newView);
+				_history.Push(newView);
+			}
+			else
+			{
+                foreach (var view in _history)
+                {
+					if (view != newView)
+						tasks.Add(view.Close());
+                }
+            }
 
 			await UniTask.WhenAll(tasks);
 		}
 
+		//一番最初に挿入
 		public async UniTask Interrupt(UIView view)
 		{
 			await view.Close();
@@ -67,22 +81,50 @@ namespace ETTView.UI
 			}
 		}
 
+		//指定のビューまで戻る
+		public UniTask BackToTargetView(UIView view)
+		{
+			return BackToTargetView(x => x == view);
+        }
+
+		public UniTask BackToTargetView<T>() where T : UIView
+        {
+			return BackToTargetView(x => x.GetType() == typeof(T));
+        }
+
+		public async UniTask BackToTargetView(Func<UIView, bool> predicate)
+        {
+            var list = new List<UIView>(_history.ToArray());
+            list.Reverse();
+
+			List<UniTask> tasks = new List<UniTask>();
+            _history.Clear();
+			bool hit = false;
+            foreach (var v in list)
+            {
+				if (!hit)
+				{
+					_history.Push(v);
+					if (predicate(v))
+					{
+						tasks.Add(v.Open());
+						hit = true;
+					}
+				}
+				else
+				{
+                    tasks.Add(v.Close());
+                }
+            }
+        }
+
 		//履歴から削除
 		public void Remove(UIView view)
 		{
 			var list = new List<UIView>(_history);
 			list.Remove(view);
-			_history = new Stack<UIView>(list);
-		}
-
-		//新しいビューを生成する
-		public async UniTask<T> Create<T>() where T : UIView
-		{
-			var parent = Current != null ? Current.transform.parent : null;
-			var req = await Resources.LoadAsync<T>(typeof(T).Name) as T;
-			var ins = Instantiate(req, parent);
-
-			return ins;
+			list.Reverse();
+            _history = new Stack<UIView>(list);
 		}
 
 		public async UniTask WaitUntil(Reopener.PhaseType state)
@@ -144,7 +186,9 @@ namespace ETTView.UI
 
 					//今のを閉じる
 					Current.SetRewind(true);
-					tasks.Add(Current.Close(true));
+					var view = Current;
+					tasks.Add(view.Close());
+					Remove(view);
 
 					//今のをCloseしたのでCurrentは次のやつになってる
 					Current.SetRewind(true);
