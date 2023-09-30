@@ -14,32 +14,26 @@ public class ReenactDebugController : Reopnable
     [SerializeField] GameObject _cubePrefab;
 	[SerializeField] Image _image;
 
-    public override async UniTask Loading(CancellationToken token)
-    {
-        await HogeTask("ローディング", Color.red);
-    }
 
-    public override async UniTask Closing(CancellationToken token)
-    {
-		await _image.DOColor(Color.green, 0.5f);
-        await _image.DOColor(Color.red, 0.5f);
-        await _image.DOColor(Color.green, 0.5f);
-        await _image.DOColor(Color.red, 0.5f);
-    }
-
-
-    public async UniTask HogeTask(string name, Color color)
+	public override async UniTask Closing(CancellationToken token)
 	{
-		Debug.Log(name + "開始...");
+		try
+		{
+			await _image.DOColor(Color.black, 0.2f).WithCancellation(token);
+			await _image.DOColor(Color.yellow, 0.2f).WithCancellation(token);
+			await _image.DOColor(Color.black, 0.2f).WithCancellation(token);
+			await _image.DOColor(Color.yellow, 0.2f).WithCancellation(token);
+
+		}
+		finally
+		{
+			_image.color = Color.yellow;
+		}
+
+	}
 
 
-		await _image.DOColor(color, 1);
-
-
-		Debug.Log(name + "終了!");
-    }
-
-    GameObject _ins;
+	GameObject _ins;
     // Update is called once per frame
     void Update()
     {
