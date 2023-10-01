@@ -10,7 +10,7 @@ namespace ETTView.Math
 		//速度（秒速）
 		protected T _speed;
 
-		public T Speed
+		public virtual T Speed
 		{
 			get { return _speed; }
 			set { _speed = value; }
@@ -42,10 +42,10 @@ namespace ETTView.Math
 		public T Reflect(T pos, float decayValue)
 		{
 			FrameSpeedAdjust();
-			_speed = Add(_speed, _frameSpeed);
-			_speed = Mag(_speed, 1.0f - decayValue);
+            Speed = Add(Speed, _frameSpeed);
+            Speed = Mag(Speed, 1.0f - decayValue);
 			_frameSpeed = default(T);
-			return PosAdjust(Add(pos, Mag(_speed, Time.deltaTime)));
+			return PosAdjust(Add(pos, Mag(Speed, Time.deltaTime)));
 		}
 	}
 	//比較可能な慣性値
@@ -78,11 +78,19 @@ namespace ETTView.Math
 
 		Vector3 _dir = Vector3.up;
 
-		protected override void FrameSpeedAdjust()
+        public override Vector3 Speed
 		{
-			if(_frameSpeed.normalized != Vector3.zero)
-				_dir =_frameSpeed.normalized;
+			get => base.Speed;
+			set
+			{
+				if (value != Vector3.zero)
+					_dir = value.normalized;
+				base.Speed = value;
+			}
+		}
 
+        protected override void FrameSpeedAdjust()
+		{
             //長さが指定より超えてたらそろえる
             if (MaxMagnitude != null && _frameSpeed.magnitude > MaxMagnitude)
 			{

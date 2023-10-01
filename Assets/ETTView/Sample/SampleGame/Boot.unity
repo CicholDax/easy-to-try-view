@@ -227,10 +227,11 @@ MonoBehaviour:
   _rewindTransitions: []
   _openedPopupList: []
   _playerNode: {fileID: -5280700747171373740, guid: 670e736cf3f9e384eb171fcc72a11f0f, type: 3}
-  _nodeCreateTimeSpan: 0.5
-  _speed: 0.001
-  _decay: 0.001
-  _nodeLifeTime: 3
+  _nodeCreateTimeSpan: 0.25
+  _speed: 0.004
+  _decay: 0.002
+  _nodeLifeTime: 3.5
+  _camera: {fileID: 665287396}
   _resultView: {fileID: 311551964}
 --- !u!4 &82759969
 Transform:
@@ -255,7 +256,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 82759967}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 152cd0053fcbd4a4ebb5c4a231a5591a, type: 3}
   m_Name: 
@@ -395,7 +396,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &325882596
 RectTransform:
   m_ObjectHideFlags: 0
