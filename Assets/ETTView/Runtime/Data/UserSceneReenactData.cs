@@ -66,7 +66,7 @@ public class UserSceneReenactData : UserData
 
 #else
 		var targets = Resources.FindObjectsOfTypeAll<Reenactable>();
-		_debugText = "targets:" + targets.Count;
+		_debugText = "targets:" + targets.Count();
 #endif
 
 		foreach (var target in targets)
