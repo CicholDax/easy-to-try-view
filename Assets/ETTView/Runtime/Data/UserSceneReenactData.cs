@@ -65,7 +65,7 @@ public class UserSceneReenactData : UserData
 		_debugText = "targets:" + targets.Count + "/" + "sceneCount:" + sceneCount + "/" + "rootCount:" + rootCount;
 
 #else
-		var targets = Resources.FindObjectsOfTypeAll<Reenactable>();
+		var targets = GameObject.FindObjectsOfType<Reenactable>(true);
 		_debugText = "targets:" + targets.Count();
 #endif
 
@@ -99,7 +99,7 @@ public class UserSceneReenactData : UserData
 			}
 		}
 #else
-		var targets = Resources.FindObjectsOfTypeAll<Reenactable>().ToList();
+		var targets = GameObject.FindObjectsOfType<Reenactable>(true).ToList();
 #endif
 
 		//ÄŒ»ƒf[ƒ^‚ğ‘–¸‚µ‚Ä
