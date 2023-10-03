@@ -22,6 +22,7 @@ public class UserSceneReenactData : UserData
 
 	[SerializeField] List<string> _dataKeys = new List<string>();
 	[SerializeField] List<DataSet> _dataSetList = new List<DataSet>();
+	[SerializeField] public string _debugText;
 
 	List<Reenactable.Data> GetOrCreateData(string key)
 	{
@@ -46,12 +47,16 @@ public class UserSceneReenactData : UserData
 
 		List<Reenactable> targets = new List<Reenactable>();
 
+		int sceneCount = 0;
+		int rootCount = 0;
 		for (int i = 0; i < SceneManager.sceneCount; i++)
 		{
 			Scene scene = SceneManager.GetSceneAt(i);
+			sceneCount++;
 
 			foreach (var rootGameObject in scene.GetRootGameObjects())
 			{
+				rootCount++;
 				targets.AddRange(rootGameObject.GetComponentsInChildren<Reenactable>(true));
 			}
 		}
@@ -61,6 +66,9 @@ public class UserSceneReenactData : UserData
 			target.OnDataSaveBefore(key);
 			GetOrCreateData(key).Add(new Reenactable.Data(target));
 		}
+
+
+		_debugText = "targets:" + targets.Count + "/" + "sceneCount:" + sceneCount + "/" + "rootCount:" + rootCount;
 
 		UserDataManager.Instance.SaveToPrefs(this);
 	}
