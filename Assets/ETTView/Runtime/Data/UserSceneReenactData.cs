@@ -62,8 +62,11 @@ public class UserSceneReenactData : UserData
 				targets.AddRange(rootGameObject.GetComponentsInChildren<Reenactable>(true));
 			}
 		}
+		_debugText = "targets:" + targets.Count + "/" + "sceneCount:" + sceneCount + "/" + "rootCount:" + rootCount;
+
 #else
 		var targets = Resources.FindObjectsOfTypeAll<Reenactable>();
+		_debugText = "targets:" + targets.Count;
 #endif
 
 		foreach (var target in targets)
@@ -71,9 +74,6 @@ public class UserSceneReenactData : UserData
 			target.OnDataSaveBefore(key);
 			GetOrCreateData(key).Add(new Reenactable.Data(target));
 		}
-
-
-		_debugText = "targets:" + targets.Count + "/" + "sceneCount:" + sceneCount + "/" + "rootCount:" + rootCount;
 
 		UserDataManager.Instance.SaveToPrefs(this);
 	}
