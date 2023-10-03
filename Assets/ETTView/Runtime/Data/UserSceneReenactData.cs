@@ -99,7 +99,7 @@ public class UserSceneReenactData : UserData
 			}
 		}
 #else
-		var targets = Resources.FindObjectsOfTypeAll<Reenactable>();
+		var targets = Resources.FindObjectsOfTypeAll<Reenactable>().ToList();
 #endif
 
 		//ÄŒ»ƒf[ƒ^‚ğ‘–¸‚µ‚Ä
