@@ -45,10 +45,12 @@ public class UserSceneReenactData : UserData
 	{
 		GetOrCreateData(key).Clear();
 
+#if UNITY_EDITOR
 		List<Reenactable> targets = new List<Reenactable>();
 
 		int sceneCount = 0;
 		int rootCount = 0;
+
 		for (int i = 0; i < SceneManager.sceneCount; i++)
 		{
 			Scene scene = SceneManager.GetSceneAt(i);
@@ -60,6 +62,9 @@ public class UserSceneReenactData : UserData
 				targets.AddRange(rootGameObject.GetComponentsInChildren<Reenactable>(true));
 			}
 		}
+#else
+		var targets = Resources.FindObjectsOfTypeAll<Reenactable>();
+#endif
 
 		foreach (var target in targets)
 		{
@@ -76,23 +81,32 @@ public class UserSceneReenactData : UserData
 	public void Load(string key = "")
 	{
 		// 全てのルートゲームオブジェクトを取得
-		List<Reenactable> list = new List<Reenactable>();
+#if UNITY_EDITOR
+		List<Reenactable> targets = new List<Reenactable>();
+
+		int sceneCount = 0;
+		int rootCount = 0;
 
 		for (int i = 0; i < SceneManager.sceneCount; i++)
 		{
 			Scene scene = SceneManager.GetSceneAt(i);
+			sceneCount++;
 
 			foreach (var rootGameObject in scene.GetRootGameObjects())
 			{
-				list.AddRange(rootGameObject.GetComponentsInChildren<Reenactable>(true));
+				rootCount++;
+				targets.AddRange(rootGameObject.GetComponentsInChildren<Reenactable>(true));
 			}
 		}
+#else
+		var targets = Resources.FindObjectsOfTypeAll<Reenactable>();
+#endif
 
 		//再現データを走査して
 		foreach (var data in GetOrCreateData(key))
 		{
 			//インスタンスIDが一致したら反映
-			var desc = list.Find((d) => data.IsMatch(d));
+			var desc = targets.Find((d) => data.IsMatch(d));
 			if (desc != null)
 			{
 				data.Reenact(desc);
@@ -105,7 +119,7 @@ public class UserSceneReenactData : UserData
 				//一致するインスタンスIDがなくてかつPrefab情報を保持してたら生成して復元
 				data.InstantiateAndReenactIfPathExists(key);
 			}
-			list.Remove(desc);
+			targets.Remove(desc);
 		}
 	}
 }
