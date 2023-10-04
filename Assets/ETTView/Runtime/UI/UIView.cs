@@ -6,6 +6,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System.Threading;
+using static UnityEngine.GraphicsBuffer;
 
 namespace ETTView.UI
 {
@@ -191,6 +192,16 @@ namespace ETTView.UI
 			}
 
 			return false;
+		}
+
+		public UniTask<bool> BackView(Reopnable target, bool isForceBackView = true)
+		{
+			return UIViewManager.Instance.BackView(target, isForceBackView);
+		}
+
+		public UniTask<bool> BackView(bool isClosePopup = true, bool isBackState = true, bool isForceBackView = false)
+		{
+			return UIViewManager.Instance.BackView(isClosePopup, isBackState, isForceBackView);
 		}
 
 		public void BackViewForget()
