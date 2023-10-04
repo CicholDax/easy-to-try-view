@@ -7,7 +7,7 @@ using System;
 
 namespace ETTView.UI
 {
-	internal class UIViewManager : SingletonMonoBehaviour<UIViewManager>, ISingletonMono
+	public class UIViewManager : SingletonMonoBehaviour<UIViewManager>, ISingletonMono
 	{
 		public bool IsDontDestroy { get; } = true;
 
