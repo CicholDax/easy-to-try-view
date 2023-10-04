@@ -10,6 +10,8 @@ public class UIViewState : ReopnablePrefab
 {
 	[SerializeField] bool _awaitCloseState = false;
 
+	public UIView View => UIViewManager.Instance.Current;
+
 	public bool AwaitCloseState => _awaitCloseState;
 
 	public async void BackView()

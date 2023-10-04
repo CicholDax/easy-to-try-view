@@ -6,7 +6,9 @@ namespace ETTView.UI
 {
     public class Popup : ReopnablePrefab
 	{
-        public virtual bool CanBackPopup()
+		public UIView View => UIViewManager.Instance.Current;
+
+		public virtual bool CanBackPopup()
         {
             return true;
         }
