@@ -19,7 +19,7 @@ public class UIViewState : ReopnablePrefab
 		await UIViewManager.Instance.BackView(this);
 	}
 
-	public override async UniTask Preopning(CancellationToken token)
+	public override async UniTask Opening(CancellationToken token)
 	{
 		if (_awaitCloseState)
 		{

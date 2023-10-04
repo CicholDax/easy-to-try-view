@@ -13,7 +13,7 @@ namespace ETTView.UI
             return true;
         }
 
-        public override UniTask Preopning(CancellationToken token)
+        public override UniTask Opening(CancellationToken token)
 		{
 			UIViewManager.Instance.Current.RegistPopup(this);
 			return base.Preopning(token);
