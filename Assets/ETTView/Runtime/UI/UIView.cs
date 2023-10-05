@@ -16,10 +16,13 @@ namespace ETTView.UI
         public static IEnumerable<UIView> History => UIViewManager.Instance.History;
 
 		//Awakeで登録するフラグ
-		protected virtual bool IsResistAwake => !IsDestroyWhenClosed;
+		protected virtual bool IsResistAwake => !IsFromPrefab;
 
 		//シーンに最初からRootに置かれてるビューかどうか
 		[SerializeField] bool _isSceneTopView;
+
+		//クローズするときに閉じるかどうか　プレハブかシーンのトップビューだったら
+		protected override bool IsDestroyWhenClosed => base.IsFromPrefab || _isSceneTopView;
 
 		//BackSceneで戻る/戻られる場合にトランジションを変更したい場合に指定する
 		[SerializeField] List<Reopnable> _forwardTransitions;

@@ -18,7 +18,10 @@ public class PrefabNotFoundException : System.Exception
 public class ReopnablePrefab : Reopnable
 {
 	bool _fromPrefab = false;
+
+	protected virtual bool IsFromPrefab => _fromPrefab;
 	protected virtual bool IsDestroyWhenClosed => _fromPrefab;
+
 
 	protected static async UniTask<T> CreateFromResources<T>(Transform parent) where T : ReopnablePrefab
 	{
