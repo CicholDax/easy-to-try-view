@@ -187,7 +187,7 @@ namespace ETTView.UI
 					//今のを閉じる
 					Current.SetRewind(true);
 					var view = Current;
-					tasks.Add(view.Close());
+					tasks.Add(view.Close(true));
 					Remove(view);
 
 					//今のをCloseしたのでCurrentは次のやつになってる

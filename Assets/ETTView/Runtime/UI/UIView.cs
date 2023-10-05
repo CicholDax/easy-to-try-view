@@ -21,9 +21,6 @@ namespace ETTView.UI
 		//シーンに最初からRootに置かれてるビューかどうか
 		[SerializeField] bool _isSceneTopView;
 
-		//クローズするときに閉じるかどうか　プレハブかシーンのトップビューだったら
-		protected override bool IsDestroyWhenClosed => base.IsFromPrefab || _isSceneTopView;
-
 		//BackSceneで戻る/戻られる場合にトランジションを変更したい場合に指定する
 		[SerializeField] List<Reopnable> _forwardTransitions;
 		[SerializeField] List<Reopnable> _rewindTransitions;
