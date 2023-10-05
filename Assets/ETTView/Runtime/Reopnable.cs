@@ -12,7 +12,7 @@ namespace ETTView
 		{
 			get
 			{
-				if (gameObject != null)
+				if (this != null && gameObject != null)
 				{
 					if (_reopener == null)
 					{
