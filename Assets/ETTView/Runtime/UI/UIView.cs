@@ -15,8 +15,11 @@ namespace ETTView.UI
         public static UIView Current => UIViewManager.Instance.Current;
         public static IEnumerable<UIView> History => UIViewManager.Instance.History;
 
-        //シーンに最初からRootに置かれてるビューかどうか
-        [SerializeField] bool _isSceneTopView;
+		//Awakeで登録するフラグ
+		protected virtual bool IsResistAwake => !IsDestroyWhenClosed;
+
+		//シーンに最初からRootに置かれてるビューかどうか
+		[SerializeField] bool _isSceneTopView;
 
 		//BackSceneで戻る/戻られる場合にトランジションを変更したい場合に指定する
 		[SerializeField] List<Reopnable> _forwardTransitions;
@@ -133,12 +136,23 @@ namespace ETTView.UI
 			}
 		}
 
-        public override async UniTask Preopning(CancellationToken token)
-        {
-            SetRewind(false);
+		public void Awake()
+		{
+			if (IsResistAwake)
+			{
+				SetRewind(false);
+				UIViewManager.Instance.Regist(this).Forget();
+			}
+		}
 
-            //マネージャに登録
-            await UIViewManager.Instance.Regist(this);
+		public override async UniTask Preopning(CancellationToken token)
+        {
+			//マネージャに登録
+			if (!IsResistAwake)
+			{
+				SetRewind(false);
+				await UIViewManager.Instance.Regist(this);
+			}
         }
 
         //Viewを戻ろうとしたタイミングで呼ばれる。戻って良ければtrueを返す
