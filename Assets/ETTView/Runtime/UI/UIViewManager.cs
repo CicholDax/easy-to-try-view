@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using UnityEngine.tvOS;
 using System;
 
 namespace ETTView.UI
