@@ -6,7 +6,6 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System.Threading;
-using static UnityEngine.GraphicsBuffer;
 
 namespace ETTView.UI
 {
