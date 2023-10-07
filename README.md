@@ -28,6 +28,5 @@ UIViewに属するStateはひとつのみがOpenになります
 3. ScriptDefineSynbolsにUNITASK_DOTWEEN_SUPPORTを追加
 
 ## メモ
-- 依存としてUniTaskがうまく追加できない
 - パッケージキャッシュにシンボリックリンクを貼っちゃうと編集が楽だよ  
 mklink /J com.cicholdax.ettview@95f66d72b9 C:\work\RexLabo\easy-to-try-view\Assets\ETTView
