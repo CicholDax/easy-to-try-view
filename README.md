@@ -19,8 +19,6 @@ Viewに重ねて表示できるポップアップです
 ### UIViewState
 Viewがとることができる状態です
 UIViewに属するStateはひとつのみがOpenになります
-### ExternalConfigApplier
-マウスの表示有無などの外部の設定を管理します
 
 ## 以下、DoTweenProを使用する場合
 1. PackageManagerからDoTweenProを導入
