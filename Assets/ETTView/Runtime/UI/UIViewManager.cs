@@ -66,7 +66,7 @@ namespace ETTView.UI
 		//一番最初に挿入
 		public async UniTask Interrupt(UIView view)
 		{
-			await view.CloseAndDestroyIfNeeded();
+			await view.Close();
 
 			var list = new List<UIView>(_history.ToArray());
 			list.Reverse();
