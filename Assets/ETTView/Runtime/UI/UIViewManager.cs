@@ -66,7 +66,7 @@ namespace ETTView.UI
 		//一番最初に挿入
 		public async UniTask Interrupt(UIView view)
 		{
-			await view.Close();
+			await view.CloseAndDestroyIfNeeded();
 
 			var list = new List<UIView>(_history.ToArray());
 			list.Reverse();
@@ -112,7 +112,7 @@ namespace ETTView.UI
 				}
 				else
 				{
-                    tasks.Add(v.Close());
+                    tasks.Add(v.Close(true));
                 }
             }
         }
@@ -186,7 +186,7 @@ namespace ETTView.UI
 					//今のを閉じる
 					Current.SetRewind(true);
 					var view = Current;
-					tasks.Add(view.Close(true));
+					tasks.Add(view.CloseAndDestroyIfNeeded());
 					Remove(view);
 
 					//今のをCloseしたのでCurrentは次のやつになってる

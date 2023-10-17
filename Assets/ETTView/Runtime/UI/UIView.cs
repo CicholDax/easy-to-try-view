@@ -14,8 +14,8 @@ namespace ETTView.UI
         public static UIView Current => UIViewManager.Instance.Current;
         public static IEnumerable<UIView> History => UIViewManager.Instance.History;
 
-		//Awakeで登録するフラグ
-		protected virtual bool IsResistAwake => !IsFromPrefab;
+		//クローズ時にDestroyするかどうかのフラグ
+		protected override bool IsDestroyWhenClosed => _isSceneTopView;
 
 		//シーンに最初からRootに置かれてるビューかどうか
 		[SerializeField] bool _isSceneTopView;
@@ -135,23 +135,11 @@ namespace ETTView.UI
 			}
 		}
 
-		public void Awake()
-		{
-			if (IsResistAwake)
-			{
-				SetRewind(false);
-				UIViewManager.Instance.Regist(this).Forget();
-			}
-		}
-
 		public override async UniTask Preopning(CancellationToken token)
         {
 			//マネージャに登録
-			if (!IsResistAwake)
-			{
-				SetRewind(false);
-				await UIViewManager.Instance.Regist(this);
-			}
+			SetRewind(false);
+			await UIViewManager.Instance.Regist(this);
         }
 
         //Viewを戻ろうとしたタイミングで呼ばれる。戻って良ければtrueを返す
@@ -174,7 +162,7 @@ namespace ETTView.UI
 				if (lastPopup.CanBackPopup())
 				{
 					//ポップアップが開いてたら閉じる
-					await lastPopup.Close();
+					await lastPopup.CloseAndDestroyIfNeeded();
 				}
 
 				return true;
@@ -195,9 +183,9 @@ namespace ETTView.UI
 				var openState = _stateHistory.Pop();
 
 				if (openState.AwaitCloseState)
-					await closeState.Close();
+					await closeState.CloseAndDestroyIfNeeded();
 				else
-					closeState.Close().Forget();
+					closeState.CloseAndDestroyIfNeeded().Forget();
 
 				await openState.Open();
 

@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ETTView.UI;
+using UnityEngine.SceneManagement;
 
 public class TitleView : UIView
 {
-    [SerializeField] GameView _gameView;
     public async void OnClickStart()
     {
-        await _gameView.Open();
+        SceneManager.LoadSceneAsync("Game", LoadSceneMode.Additive);
     }
 }

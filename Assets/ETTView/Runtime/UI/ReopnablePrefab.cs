@@ -14,18 +14,16 @@ public class PrefabNotFoundException : System.Exception
 	}
 }
 
-//Resource直下に型名と同名のPrefabが存在する前提
 public class ReopnablePrefab : Reopnable
 {
 	bool _fromPrefab = false;
 
-	protected virtual bool IsFromPrefab => _fromPrefab;
 	protected virtual bool IsDestroyWhenClosed => _fromPrefab;
 
-
-	protected static async UniTask<T> CreateFromResources<T>(Transform parent) where T : ReopnablePrefab
+	//Resource直下に型名と同名のPrefabが存在する前提(いつかAddressableに置き換える)
+	protected static async UniTask<T> CreateFromResources<T>(Transform parent, string path = null) where T : ReopnablePrefab
 	{
-		var req = await Resources.LoadAsync<T>(typeof(T).Name) as T;
+		var req = await Resources.LoadAsync<T>( path == null ? typeof(T).Name : path) as T;
 		if (req == null) throw new PrefabNotFoundException(typeof(T).Name);
 		var ins = Instantiate(req, parent);
 		ins._fromPrefab = true;
@@ -41,7 +39,7 @@ public class ReopnablePrefab : Reopnable
 		return ins;
 	}
 
-	public UniTask Close()
+	public UniTask CloseAndDestroyIfNeeded()
 	{
 		//プレハブから生成したやつだったら消す
 		return base.Close(IsDestroyWhenClosed);

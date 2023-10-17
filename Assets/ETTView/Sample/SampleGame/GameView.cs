@@ -17,17 +17,27 @@ public class GameView : UIView
     [SerializeField] float _speed = 0.1f;
     [SerializeField] float _decay = 0.01f;
     [SerializeField] float _nodeLifeTime = 5.0f;
-    [SerializeField] Camera _camera;
+	[SerializeField] Canvas _canvas;
 
-    [SerializeField] ResultView _resultView;
+    [SerializeField] UIViewState _testStateA;
+	[SerializeField] UIViewState _testStateBPrefab;
 
-    VectorInertia _playerInertia;
-
+	Camera _camera;
+	VectorInertia _playerInertia;
     float _lastNodeCreateTime;
 
-    public async void OnClickGameOverButton()
+	public void Awake()
+	{
+        _camera = Camera.main;
+	}
+
+	public async void OnClickGameOverButton()
     {
-        await _resultView.Open();
+        //雑
+        var canvas = GameObject.FindGameObjectWithTag("BootCanvas");
+
+        if (canvas != null)
+            ResultView.Create(canvas.transform).Forget();
     }
 
 
@@ -55,11 +65,13 @@ public class GameView : UIView
             if(Input.GetKey(KeyCode.D))
             {
                 _playerInertia.AddSpeed(Vector3.right * _speed);
-            }
+
+			}
             if (Input.GetKey(KeyCode.A))
             {
                 _playerInertia.AddSpeed(Vector3.left * _speed);
-            }
+
+			}
             if (Input.GetKey(KeyCode.W))
             {
                 _playerInertia.AddSpeed(Vector3.up * _speed);
@@ -69,7 +81,16 @@ public class GameView : UIView
                 _playerInertia.AddSpeed(Vector3.down * _speed);
             }
 
-            _playerNode.transform.position = _playerInertia.Reflect(_playerNode.transform.position, _decay);
+            if(Input.GetKeyDown(KeyCode.F1))
+            {
+				_testStateA.Open().Forget();
+			}
+			if (Input.GetKeyDown(KeyCode.F2))
+			{
+				CreateFromPrefab(_testStateBPrefab, _testStateA.transform.parent);
+			}
+
+			_playerNode.transform.position = _playerInertia.Reflect(_playerNode.transform.position, _decay);
 
             //画面外チェック
             var viewPoint = _camera.WorldToViewportPoint(_playerNode.transform.position);
