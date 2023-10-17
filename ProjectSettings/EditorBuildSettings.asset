@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/ETTView/Sample/ViewSample/ViewSampleScene.unity
     guid: 90644a69ed455f9448cb4da63aafbc08
+  - enabled: 1
+    path: Assets/ETTView/Sample/SampleGame/Game.unity
+    guid: a15f274a03e7e64449b651b0ac1d6497
   m_configObjects: {}
