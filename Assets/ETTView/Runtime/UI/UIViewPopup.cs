@@ -4,10 +4,8 @@ using System.Threading;
 
 namespace ETTView.UI
 {
-    public class Popup : ReopnablePrefab
+    public class UIViewPopup : BackableReopnablePrefab
 	{
-		public UIView View => UIViewManager.Instance.Current;
-
 		public virtual bool CanBackPopup()
         {
             return true;

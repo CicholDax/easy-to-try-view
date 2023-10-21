@@ -6,13 +6,14 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System.Threading;
+using JetBrains.Annotations;
 
 namespace ETTView.UI
 {
-	public class UIView : ReopnablePrefab
-    {
-        public static UIView Current => UIViewManager.Instance.Current;
-        public static IEnumerable<UIView> History => UIViewManager.Instance.History;
+	public class UIView : BackableReopnablePrefab
+	{
+		public static UIView Current => UIViewManager.Instance.Current;
+		public static IEnumerable<UIView> History => UIViewManager.Instance.History;
 
 		//クローズ時にDestroyするかどうかのフラグ
 		protected override bool IsDestroyWhenClosed => _isSceneTopView;
@@ -25,34 +26,34 @@ namespace ETTView.UI
 		[SerializeField] List<Reopnable> _rewindTransitions;
 
 		//このビューが有効な時に開いたポップアップのリスト
-		[SerializeField]List<Popup> _openedPopupList = new List<Popup>();
+		[SerializeField] List<UIViewPopup> _openedPopupList = new List<UIViewPopup>();
 
 		//状態遷移履歴
 		Stack<UIViewState> _stateHistory = new Stack<UIViewState>();
 
-        public IEnumerable<Popup> OpenedPopups
-        {
-            get { return _openedPopupList; }
-        }
-
-        public IEnumerable<UIViewState> StateHistory
-        {
-            get { return _stateHistory; }
-        }
-
-        //BackSceneで戻ってきた場合にtrue
-        public bool IsRewind
+		public IEnumerable<UIViewPopup> OpenedPopups
 		{
-			get;set;
+			get { return _openedPopupList; }
+		}
+
+		public IEnumerable<UIViewState> StateHistory
+		{
+			get { return _stateHistory; }
+		}
+
+		//BackSceneで戻ってきた場合にtrue
+		public bool IsRewind
+		{
+			get; set;
 		}
 
 		//最後に開いたポップアップ
-		internal Popup LastPopup
+		internal UIViewPopup LastPopup
 		{
 			get
 			{
-				Popup pop = null;
-				for(var i = _openedPopupList.Count-1; i >= 0; i-- )		
+				UIViewPopup pop = null;
+				for (var i = _openedPopupList.Count - 1; i >= 0; i--)
 				{
 					pop = _openedPopupList[i];
 
@@ -82,16 +83,16 @@ namespace ETTView.UI
 		{
 			get
 			{
-				return _stateHistory.Peek();
+				return _stateHistory.Count > 0 ? _stateHistory.Peek() : null;
 			}
 		}
 
 		public async UniTask RegistState(UIViewState state)
 		{
 			List<UniTask> tasks = new List<UniTask>();
-			foreach( var historyState in _stateHistory )
+			foreach (var historyState in _stateHistory)
 			{
-				if(historyState != state)
+				if (historyState != state)
 					tasks.Add(historyState.Close());
 			}
 			if (_stateHistory.Count <= 0 || _stateHistory.Peek() != state)
@@ -100,7 +101,7 @@ namespace ETTView.UI
 			await UniTask.WhenAll(tasks);
 		}
 
-		public void RegistPopup(Popup popup)
+		public void RegistPopup(UIViewPopup popup)
 		{
 			if (_openedPopupList.Contains(popup))
 			{
@@ -112,7 +113,7 @@ namespace ETTView.UI
 
 		public override UniTask Close(bool destroy = false)
 		{
-			if(destroy)
+			if (destroy)
 			{
 				UIViewManager.Instance.Remove(this);
 			}
@@ -120,7 +121,7 @@ namespace ETTView.UI
 			return base.Close(destroy);
 		}
 
-		public void SetRewind(bool flag)
+		internal void SetRewind(bool flag)
 		{
 			IsRewind = flag;
 			foreach (var transition in _rewindTransitions)
@@ -130,31 +131,35 @@ namespace ETTView.UI
 			}
 			foreach (var transition in _forwardTransitions)
 			{
-                if (transition != null)
-                    transition.enabled = !flag;
+				if (transition != null)
+					transition.enabled = !flag;
 			}
 		}
 
 		public override async UniTask Preopning(CancellationToken token)
-        {
+		{
 			//マネージャに登録
 			SetRewind(false);
 			await UIViewManager.Instance.Regist(this);
-        }
+		}
 
-        //Viewを戻ろうとしたタイミングで呼ばれる。戻って良ければtrueを返す
-        public virtual bool CanBackView()
+		//Viewを戻ろうとしたタイミングで呼ばれる。戻って良ければtrueを返す
+		public virtual bool CanBackView()
 		{
 			return true;
 		}
 
-        public virtual bool IsBackInput()
-        {
-            //デフォルトだとエスケープで戻る
-            return Input.GetKeyDown(KeyCode.Escape);
-        }
+		public virtual bool IsBackInput()
+		{
+			//デフォルトだとエスケープで戻る
+			return Input.GetKeyDown(KeyCode.Escape);
+		}
 
-        public async UniTask<bool> TryCloseLastPopup()
+		/// <summary>
+		/// 最後に開いたポップアップを閉じる
+		/// </summary>
+		/// <returns></returns>
+		internal async UniTask<bool> TryCloseLastPopup()
 		{
 			var lastPopup = LastPopup;
 			if (lastPopup != null)
@@ -170,8 +175,12 @@ namespace ETTView.UI
 
 			return false;
 		}
-		
-		public async UniTask<bool> TryBackState()
+
+		/// <summary>
+		/// 最後のステートから戻る
+		/// </summary>
+		/// <returns></returns>
+		internal async UniTask<bool> TryBackState()
 		{
 			//nullの要素を除外
 			_stateHistory = new Stack<UIViewState>(_stateHistory.Where(state => state != null && state.gameObject != null).Reverse());
@@ -195,37 +204,30 @@ namespace ETTView.UI
 			return false;
 		}
 
-		public UniTask<bool> BackView(Reopnable target, bool isForceBackView = true)
-		{
-			return UIViewManager.Instance.BackView(target, isForceBackView);
-		}
-
-		public UniTask<bool> BackView(bool isClosePopup = true, bool isBackState = true, bool isForceBackView = false)
-		{
-			return UIViewManager.Instance.BackView(isClosePopup, isBackState, isForceBackView);
-		}
-
-		public void BackViewForget()
-		{
-			UIViewManager.Instance.BackView().Forget();
-		}
-
-        [Obsolete("Use BackViewForget.")]
-        public void BackViewNoWait()
-        {
-            UIViewManager.Instance.BackView().Forget();
-        }
-
-        public  void BackToTargetViewForget(UIView view)
+		/// <summary>
+		/// 指定のビューまで戻る（UnityEventに設定する用）
+		/// </summary>
+		/// <param name="view"></param>
+		public void BackToTargetViewForget(UIView view)
 		{
 			BackToTargetView(view).Forget();
 		}
 
+		/// <summary>
+		/// 指定のビューまで戻る（型指定）
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
 		public UniTask BackToTargetView<T>() where T : UIView
 		{
 			return UIViewManager.Instance.BackToTargetView<T>();
 		}
 
+		/// <summary>
+		/// 指定のビューまで戻る（インスタンス指定）
+		/// </summary>
+		/// <param name="view"></param>
+		/// <returns></returns>
         public UniTask BackToTargetView(UIView view)
         {
             return UIViewManager.Instance.BackToTargetView(view);

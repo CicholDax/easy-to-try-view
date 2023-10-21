@@ -29,8 +29,8 @@ namespace ETTView
 		}
 
 		[SerializeField] UnityEvent _onLoaded;
-		[SerializeField] UnityEvent _onOpen;
-		[SerializeField] UnityEvent _onClose;
+		[SerializeField] UnityEvent _onOpened;
+		[SerializeField] UnityEvent _onClosed;
 
 		public PhaseType Phase { get; private set; } = PhaseType.Loading;
 
@@ -41,6 +41,7 @@ namespace ETTView
 			{
 				if (_reopnables == null)
 				{
+					//TODO　動的にAddComponentされた場合が考慮できてない
 					_reopnables = GetComponents<Reopnable>();
 				}
 				return _reopnables;
@@ -100,7 +101,7 @@ namespace ETTView
 
                 linkedTs.Token.ThrowIfCancellationRequested();
                 Phase = PhaseType.Opening;
-				_onOpen?.Invoke();
+				_onOpened?.Invoke();
 				await ExecutePhaseAction((reopnable) => reopnable.Opening(linkedTs.Token), linkedTs.Token, "Opening");
 
                 linkedTs.Token.ThrowIfCancellationRequested();
@@ -135,7 +136,7 @@ namespace ETTView
 
                 linkedTs.Token.ThrowIfCancellationRequested();
                 Phase = PhaseType.Closing;
-				_onClose?.Invoke();
+				_onClosed?.Invoke();
 				await ExecutePhaseAction((reopnable) => reopnable.Closing(linkedTs.Token), linkedTs.Token, "Closing");
 
                 linkedTs.Token.ThrowIfCancellationRequested();

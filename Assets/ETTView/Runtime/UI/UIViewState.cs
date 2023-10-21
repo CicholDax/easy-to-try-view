@@ -6,7 +6,7 @@ using ETTView;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 
-public class UIViewState : ReopnablePrefab
+public class UIViewState : BackableReopnablePrefab
 {
 	[SerializeField] UIView _view;
 	[SerializeField] bool _awaitCloseState = false;
@@ -28,11 +28,6 @@ public class UIViewState : ReopnablePrefab
 	}
 
 	public bool AwaitCloseState => _awaitCloseState;
-
-	public async void BackView()
-	{
-		await View.BackView(this);
-	}
 
 	public override async UniTask Preopning(CancellationToken token)
 	{

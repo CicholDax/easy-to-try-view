@@ -6,7 +6,7 @@ using System;
 
 namespace ETTView.UI
 {
-	public class UIViewManager : SingletonMonoBehaviour<UIViewManager>, ISingletonMono
+	internal class UIViewManager : SingletonMonoBehaviour<UIViewManager>, ISingletonMono
 	{
 		public bool IsDontDestroy { get; } = true;
 
@@ -80,43 +80,6 @@ namespace ETTView.UI
 			}
 		}
 
-		//指定のビューまで戻る
-		public UniTask BackToTargetView(UIView view)
-		{
-			return BackToTargetView(x => x == view);
-        }
-
-		public UniTask BackToTargetView<T>() where T : UIView
-        {
-			return BackToTargetView(x => x.GetType() == typeof(T));
-        }
-
-		public async UniTask BackToTargetView(Func<UIView, bool> predicate)
-        {
-            var list = new List<UIView>(_history.ToArray());
-            list.Reverse();
-
-			List<UniTask> tasks = new List<UniTask>();
-            _history.Clear();
-			bool hit = false;
-            foreach (var v in list)
-            {
-				if (!hit)
-				{
-					_history.Push(v);
-					if (predicate(v))
-					{
-						tasks.Add(v.Open());
-						hit = true;
-					}
-				}
-				else
-				{
-                    tasks.Add(v.Close(true));
-                }
-            }
-        }
-
 		//履歴から削除
 		public void Remove(UIView view)
 		{
@@ -138,23 +101,29 @@ namespace ETTView.UI
 		/// <param name="target"></param>
 		/// <param name="isForceBackView"></param>
 		/// <returns></returns>
-		public async UniTask<bool> BackView(Reopnable target, bool isForceBackView = true)
+		public async UniTask<bool> Back(Reopnable target, bool isForceBackView = true)
 		{
+			//最後に開いたポップアップを指定してたら
             if (Current.LastPopup == target)
             {
+				//ポップアップを閉じる
                 await Current.TryCloseLastPopup();
                 return true;
             }
 
+			//現在のステートを指定してたら
             if ( Current.CurrentState == target )
 			{
+				//ステートを戻す
 				await Current.TryBackState();
 				return true;
 			}
 
+			//現在のViewを指定してたら
 			if(Current == target)
 			{
-				return await BackView(false, false, isForceBackView);
+				//ビューを戻す
+				return await Back(false, false, isForceBackView);
 			}
 
 			return false;
@@ -165,9 +134,9 @@ namespace ETTView.UI
 		/// </summary>
 		/// <param name="isClosePopup">ポップアップを閉じるかどうか</param>
 		/// <param name="isBackState">ステートを戻るかどうか</param>
-		/// <param name="isForceBackView">UIViewの定義に関わらず強制的にViewを戻るかどうか</param>
+		/// <param name="isForceBackView">UIView.CanBackViewに関わらず強制的にViewを戻るかどうか</param>
 		/// <returns>Popupが閉じる、Stateが戻る、UIViewが戻るしたらtrue</returns>
-		public async UniTask<bool> BackView(bool isClosePopup = true, bool isBackState = true, bool isForceBackView = false)
+		public async UniTask<bool> Back(bool isClosePopup = true, bool isBackState = true, bool isForceBackView = false)
 		{
 			//Popupを閉じる
 			if (isClosePopup && await Current.TryCloseLastPopup()) return true;
@@ -206,7 +175,45 @@ namespace ETTView.UI
 			return false;
 		}
 
-		public  void ClearHistory()
+		//指定のビューまで戻る
+		public UniTask BackToTargetView(UIView view)
+		{
+			return BackToTargetView(x => x == view);
+		}
+
+		public UniTask BackToTargetView<T>() where T : UIView
+		{
+			return BackToTargetView(x => x.GetType() == typeof(T));
+		}
+
+		async UniTask BackToTargetView(Func<UIView, bool> predicate)
+		{
+			var list = new List<UIView>(_history.ToArray());
+			list.Reverse();
+
+			List<UniTask> tasks = new List<UniTask>();
+			_history.Clear();
+			bool hit = false;
+			foreach (var v in list)
+			{
+				if (!hit)
+				{
+					_history.Push(v);
+					if (predicate(v))
+					{
+						tasks.Add(v.Open());
+						hit = true;
+					}
+				}
+				else
+				{
+					tasks.Add(v.Close(true));
+				}
+			}
+		}
+
+
+		public void ClearHistory()
 		{
 			_history.Clear();
 		}
@@ -215,7 +222,7 @@ namespace ETTView.UI
 		{
 			if (Current != null && Current.Phase == Reopener.PhaseType.Opened && Current.IsBackInput())
 			{
-				await BackView();
+				await Back();
 			}
         }
 	}
