@@ -12,13 +12,13 @@ https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask
 各フェーズは同一のGameObjectにアタッチされた複数のReopnableがひとつのReopenerに取りまとめられて処理されます
 ### UIView
 画面の構成単位です
-UIViewはUIViewManagerクラスによって常にひとつのみがOpenになります
-画面遷移が記憶され、BackViewメソッドによって前のViewに戻ります
-### Popup
+UIViewは常にひとつのみがOpenになります
+遷移が記憶され、Backメソッドによって前のViewに戻れます
+### UIViewPopup
 Viewに重ねて表示できるポップアップです
 ### UIViewState
 Viewがとることができる状態です
-UIViewに属するStateはひとつのみがOpenになります
+Viewに属するStateはひとつのみがOpenになります
 
 ## 以下、DoTweenProを使用する場合
 1. PackageManagerからDoTweenProを導入
