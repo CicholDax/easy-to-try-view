@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using System;
+using UnityEngine.SceneManagement;
 
 namespace ETTView.UI
 {
@@ -11,6 +12,9 @@ namespace ETTView.UI
 		public bool IsDontDestroy { get; } = true;
 
 		Stack<UIView> _history = new Stack<UIView>();
+
+		//Boot以外から立ち上がったフラグ
+		static bool _editorUnitExecute = false;
 
 		public UIView Current
 		{
@@ -31,9 +35,50 @@ namespace ETTView.UI
             get { return _history; }
         }
 
-        //登録
-        //ビューが生成された時に登録する
-        public async UniTask Regist(UIView newView)
+
+		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+		private static async void InitializeBeforeSceneLoad()
+		{
+			//index0のシーンが読み込まれてるかどうか
+			for (var i = 0; i < SceneManager.sceneCount; i++)
+			{
+				var scene = SceneManager.GetSceneAt(i);
+				if (scene.buildIndex == 0)
+				{
+					//読み込まれてたら返る
+					return;
+				}
+			}
+
+			//index0以外の起動だったらフラグ立てる
+			_editorUnitExecute = true;
+
+			//index0を読み込む
+			await SceneManager.LoadSceneAsync(0, LoadSceneMode.Additive);
+
+			//View割り込み登録（index0シーンに存在するEnableなView→起動したViewの順番に遷移したことにする）
+			for (var i = 0; i < SceneManager.sceneCount; i++)
+			{
+				var scene = SceneManager.GetSceneAt(i);
+				if (scene.buildIndex == 0)
+				{
+					foreach (var go in scene.GetRootGameObjects())
+					{
+						var views = go.GetComponentsInChildren<UIView>();
+						foreach(var view in views)
+						{
+							if (!view.IsOpen) return;
+							
+							await Instance.Interrupt(view);
+						}
+					}
+				}
+			}
+		}
+
+		//登録
+		//ビューが生成された時に登録する
+		public async UniTask Regist(UIView newView)
 		{
 			var tasks = new List<UniTask>();
 			if (!_history.Contains(newView))
@@ -64,15 +109,15 @@ namespace ETTView.UI
 		}
 
 		//一番最初に挿入
-		public async UniTask Interrupt(UIView view)
+		async UniTask Interrupt(UIView view)
 		{
 			await view.Close();
 
 			var list = new List<UIView>(_history.ToArray());
 			list.Reverse();
+			list.Remove(view);
 
 			_history.Clear();
-
 			_history.Push(view);
 			foreach(var v in list)
 			{

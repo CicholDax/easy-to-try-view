@@ -22,14 +22,8 @@ public class GameView : UIView
     [SerializeField] UIViewState _testStateA;
 	[SerializeField] UIViewState _testStateBPrefab;
 
-	Camera _camera;
 	VectorInertia _playerInertia;
     float _lastNodeCreateTime;
-
-	public void Awake()
-	{
-        _camera = Camera.main;
-	}
 
 	public async void OnClickGameOverButton()
     {
@@ -93,7 +87,7 @@ public class GameView : UIView
 			_playerNode.transform.position = _playerInertia.Reflect(_playerNode.transform.position, _decay);
 
             //画面外チェック
-            var viewPoint = _camera.WorldToViewportPoint(_playerNode.transform.position);
+            var viewPoint = Camera.main.WorldToViewportPoint(_playerNode.transform.position);
 
             Vector3 correctedViewportPoint = viewPoint;
 
@@ -122,7 +116,7 @@ public class GameView : UIView
 
             if (hitNor != Vector3.zero)
             {
-                Vector3 correctedWorldPoint = _camera.ViewportToWorldPoint(correctedViewportPoint);
+                Vector3 correctedWorldPoint = Camera.main.ViewportToWorldPoint(correctedViewportPoint);
                 correctedWorldPoint.z = _playerNode.transform.position.z; // オブジェクトの元のz座標を維持
                 _playerNode.transform.position = correctedWorldPoint;
                 _playerInertia.Speed = _playerInertia.Speed.WallReflect(hitNor);
