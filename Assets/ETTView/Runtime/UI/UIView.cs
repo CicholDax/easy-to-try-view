@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using System.Threading;
 using JetBrains.Annotations;
 

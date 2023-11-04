@@ -156,7 +156,7 @@ namespace ETTView
         async UniTask ExecutePhaseAction(Func<Reopnable, UniTask> action, CancellationToken token, string logMessage)
         {
             token.ThrowIfCancellationRequested();
-            Debug.Log(name + " " + logMessage + " Start");
+            //Debug.Log(name + " " + logMessage + " Start");
 
             var tasks = new List<UniTask>();
             foreach (var reopnable in Reopnables)
@@ -170,7 +170,7 @@ namespace ETTView
             await UniTask.WhenAll(tasks);
 
             token.ThrowIfCancellationRequested();
-            Debug.Log(name + " " + logMessage + " End");
+            //Debug.Log(name + " " + logMessage + " End");
         }
 
         public void OnDestroy()
