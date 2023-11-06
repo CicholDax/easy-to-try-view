@@ -68,7 +68,8 @@ namespace ETTView.UI
 						foreach(var view in views)
 						{
 							if (!view.IsOpen) return;
-							
+							await UniTask.WaitUntil(() => view.Phase == Reopener.PhaseType.Opened);	//開ききるのを待つ
+
 							await Instance.Interrupt(view);
 						}
 					}
