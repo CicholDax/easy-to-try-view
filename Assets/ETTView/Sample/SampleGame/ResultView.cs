@@ -4,15 +4,18 @@ using UnityEngine;
 using ETTView.UI;
 using Cysharp.Threading.Tasks;
 
-public class ResultView : UIView
+namespace ETTView.SampleGame
 {
-    public static async UniTask<ResultView> Create(Transform parent)
+    public class ResultView : UIView
     {
-        return await CreateFromResources<ResultView>(parent);
-    }
+        public static async UniTask<ResultView> Create(Transform parent)
+        {
+            return await CreateFromResources<ResultView>(parent);
+        }
 
-    public async void OnClickBackToTtile()
-    {
-        await BackToTargetView<TitleView>();
+        public async void OnClickBackToTtile()
+        {
+            await BackToTargetView<TitleView>();
+        }
     }
 }

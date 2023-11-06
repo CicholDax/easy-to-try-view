@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
-[RequireComponent(typeof(Collider))]
-public class Item : ReopnablePrefab
+namespace ETTView.SampleGame
 {
-    public static UniTask<Item> Create(Transform parent)
+    [RequireComponent(typeof(Collider))]
+    public class Item : ReopnablePrefab
     {
-        return CreateFromResources<Item>(parent);
+        public static UniTask<Item> Create(Transform parent)
+        {
+            return CreateFromResources<Item>(parent);
+        }
     }
 }

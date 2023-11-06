@@ -4,10 +4,13 @@ using UnityEngine;
 using ETTView.UI;
 using UnityEngine.SceneManagement;
 
-public class TitleView : UIView
+namespace ETTView.SampleGame
 {
-    public async void OnClickStart()
+    public class TitleView : UIView
     {
-        SceneManager.LoadSceneAsync("Game", LoadSceneMode.Additive);
+        public async void OnClickStart()
+        {
+            SceneManager.LoadSceneAsync("Game", LoadSceneMode.Additive);
+        }
     }
 }
