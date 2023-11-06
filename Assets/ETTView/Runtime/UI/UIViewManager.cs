@@ -124,6 +124,8 @@ namespace ETTView.UI
 			{
 				_history.Push(v);
 			}
+
+			await _history.Peek().Open();
 		}
 
 		//履歴から削除
