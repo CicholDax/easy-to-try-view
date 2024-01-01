@@ -46,6 +46,22 @@ namespace ETTView.UI
 			get; set;
 		}
 
+		public bool IsOtherViewCloset
+		{
+			get
+			{
+				foreach (var view in UIViewManager.Instance.History)
+				{
+					if (view != this)
+					{
+						//自分以外が開いてたらFalse
+						if (view.IsOpen) return false;
+					}
+				}
+				return true;
+			}
+		}
+
 		//最後に開いたポップアップ
 		internal UIViewPopup LastPopup
 		{
