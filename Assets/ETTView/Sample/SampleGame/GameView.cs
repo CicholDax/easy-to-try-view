@@ -51,7 +51,7 @@ namespace ETTView.SampleGame
 
         public override async UniTask Closing(CancellationToken token)
         {
-            await _canvasGroup.DOFade(0.0f, 2.0f);
+            //await _canvasGroup.DOFade(0.0f, 2.0f);
         }
 
         private async void Update()
