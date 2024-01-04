@@ -211,6 +211,9 @@ namespace ETTView.UI
 					tasks.Add(openAndRewindTask);
 
 					await UniTask.WhenAll(tasks);
+					
+					//閉じるのを待ってからリストから消す
+					await UniTask.WaitUntil(() => !view.IsOpen);
 					_history.Remove(view);
 
 					return true;
