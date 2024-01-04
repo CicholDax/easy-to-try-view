@@ -5,11 +5,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//ƒvƒŒƒnƒu‚È‚¢‚æ—áŠO
+//ãƒ—ãƒ¬ãƒãƒ–ãªã„ã‚ˆä¾‹å¤–
 public class PrefabNotFoundException : System.Exception
 {
 	public PrefabNotFoundException(string prefabName)
-		: base($"ReopnablePrefab: ƒvƒŒƒnƒu‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½B{prefabName}")
+		: base($"ReopnablePrefab: ãƒ—ãƒ¬ãƒãƒ–ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸã€‚{prefabName}")
 	{
 	}
 }
@@ -20,7 +20,7 @@ public class ReopnablePrefab : Reopnable
 
 	protected virtual bool IsDestroyWhenClosed => _fromPrefab;
 
-	//Resource’¼‰º‚ÉŒ^–¼‚Æ“¯–¼‚ÌPrefab‚ª‘¶İ‚·‚é‘O’ñ(‚¢‚Â‚©Addressable‚É’u‚«Š·‚¦‚é)
+	//Resourceç›´ä¸‹ã«å‹åã¨åŒåã®PrefabãŒå­˜åœ¨ã™ã‚‹å‰æ(TODO:Addressableã«ç½®ãæ›ãˆã‚‹)
 	protected static async UniTask<T> CreateFromResources<T>(Transform parent, string path = null) where T : ReopnablePrefab
 	{
 		var req = await Resources.LoadAsync<T>( path == null ? typeof(T).Name : path) as T;
@@ -41,7 +41,7 @@ public class ReopnablePrefab : Reopnable
 
 	public UniTask CloseAndDestroyIfNeeded()
 	{
-		//ƒvƒŒƒnƒu‚©‚ç¶¬‚µ‚½‚â‚Â‚¾‚Á‚½‚çÁ‚·
+		//ãƒ—ãƒ¬ãƒãƒ–ã‹ã‚‰ç”Ÿæˆã—ãŸã‚„ã¤ã ã£ãŸã‚‰æ¶ˆã™
 		return base.Close(IsDestroyWhenClosed);
 	}
 }
