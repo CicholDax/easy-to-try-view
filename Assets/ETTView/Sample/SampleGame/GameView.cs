@@ -5,7 +5,10 @@ using ETTView.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI;
+using DG.Tweening;
 
 namespace ETTView.SampleGame
 {
@@ -20,6 +23,7 @@ namespace ETTView.SampleGame
         [SerializeField] float _decay = 0.01f;
         [SerializeField] float _nodeLifeTime = 5.0f;
         [SerializeField] Canvas _canvas;
+        [SerializeField] CanvasGroup _canvasGroup;
 
         [SerializeField] UIViewState _testStateA;
         [SerializeField] UIViewState _testStateBPrefab;
@@ -29,7 +33,7 @@ namespace ETTView.SampleGame
 
         public async void OnClickGameOverButton()
         {
-            //G
+            //é›‘
             var canvas = GameObject.FindGameObjectWithTag("BootCanvas");
 
             if (canvas != null)
@@ -45,18 +49,23 @@ namespace ETTView.SampleGame
             _playerNode = await PlayerNode.Create(transform, Vector3.zero, _nodeLifeTime);
         }
 
+        public override async UniTask Closing(CancellationToken token)
+        {
+            await _canvasGroup.DOFade(0.0f, 2.0f);
+        }
+
         private async void Update()
         {
             if (Phase == ETTView.Reopener.PhaseType.Opened)
             {
-                //ˆê’èŠÔ‚²‚Æ‚Ég‘Ì‚ğ‰„‚Î‚·
+                //ä¸€å®šæ™‚é–“ã”ã¨ã«èº«ä½“ã‚’å»¶ã°ã™
                 if (_lastNodeCreateTime + _nodeCreateTimeSpan <= Time.time)
                 {
                     _playerNode = await PlayerNode.Create(transform, _playerNode.transform.position, _nodeLifeTime);
                     _lastNodeCreateTime = Time.time;
                 }
 
-                //ˆê’èŠÔ‚²‚Æ‚É
+                //ä¸€å®šæ™‚é–“ã”ã¨ã«
 
                 if (Input.GetKey(KeyCode.D))
                 {
@@ -88,7 +97,7 @@ namespace ETTView.SampleGame
 
                 _playerNode.transform.position = _playerInertia.Reflect(_playerNode.transform.position, _decay);
 
-                //‰æ–ÊŠOƒ`ƒFƒbƒN
+                //ç”»é¢å¤–ãƒã‚§ãƒƒã‚¯
                 var viewPoint = Camera.main.WorldToViewportPoint(_playerNode.transform.position);
 
                 Vector3 correctedViewportPoint = viewPoint;
@@ -119,7 +128,7 @@ namespace ETTView.SampleGame
                 if (hitNor != Vector3.zero)
                 {
                     Vector3 correctedWorldPoint = Camera.main.ViewportToWorldPoint(correctedViewportPoint);
-                    correctedWorldPoint.z = _playerNode.transform.position.z; // ƒIƒuƒWƒFƒNƒg‚ÌŒ³‚ÌzÀ•W‚ğˆÛ
+                    correctedWorldPoint.z = _playerNode.transform.position.z; // ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å…ƒã®zåº§æ¨™ã‚’ç¶­æŒ
                     _playerNode.transform.position = correctedWorldPoint;
                     _playerInertia.Speed = _playerInertia.Speed.WallReflect(hitNor);
                     _playerInertia.Speed *= 2.3f;

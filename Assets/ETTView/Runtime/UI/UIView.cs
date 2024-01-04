@@ -46,7 +46,7 @@ namespace ETTView.UI
 			get; set;
 		}
 
-		public bool IsOtherViewCloset
+		public bool IsOtherViewClosed
 		{
 			get
 			{
@@ -54,8 +54,8 @@ namespace ETTView.UI
 				{
 					if (view != this)
 					{
-						//自分以外が開いてたらFalse
-						if (view.IsOpen) return false;
+						//自分以外がCloset以外だったらFalse
+						if (view.Phase != Reopener.PhaseType.Closed) return false;
 					}
 				}
 				return true;
