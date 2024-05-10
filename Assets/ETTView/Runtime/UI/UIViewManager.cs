@@ -3,26 +3,35 @@ using UnityEngine;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using System;
+using UnityEngine.SceneManagement;
 
 namespace ETTView.UI
 {
-	public class UIViewManager : SingletonMonoBehaviour<UIViewManager>, ISingletonMono
+	internal class UIViewManager : SingletonMonoBehaviour<UIViewManager>, ISingletonMono
 	{
 		public bool IsDontDestroy { get; } = true;
 
-		Stack<UIView> _history = new Stack<UIView>();
+		List<UIView> _history = new List<UIView>();
+
+		//Boot以外から立ち上がったフラグ
+		static bool _editorUnitExecute = false;
 
 		public UIView Current
 		{
 			get
 			{
-                while (_history.Count > 0 && _history.Peek() == null)
-                {
-                    _history.Pop(); //nullの要素を削除する
-                }
-
+				_history.RemoveAll(x => x == null);
                 if (_history.Count <= 0) return null;
-				return _history.Peek();
+                return _history.LastOrDefault();
+			}
+		}
+
+		UIView Next
+		{
+			get
+			{
+				if (_history.Count < 2) return null; // 少なくとも2つの要素が必要
+				return _history[^2]; // 最後から二番目の要素を返す
 			}
 		}
 
@@ -31,9 +40,59 @@ namespace ETTView.UI
             get { return _history; }
         }
 
-        //登録
-        //ビューが生成された時に登録する
-        public async UniTask Regist(UIView newView)
+        public void Remove(UIView view)
+        {
+	        _history.Remove(view);
+        }
+
+
+		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+		private static async void InitializeBeforeSceneLoad()
+		{
+			//index0のシーンが読み込まれてるかどうか
+			for (var i = 0; i < SceneManager.sceneCount; i++)
+			{
+				var scene = SceneManager.GetSceneAt(i);
+				if (scene.buildIndex == 0)
+				{
+					//読み込まれてたら返る
+					return;
+				}
+			}
+
+			//index0以外の起動だったらフラグ立てる
+			_editorUnitExecute = true;
+
+			//index0を読み込む
+			await SceneManager.LoadSceneAsync(0, LoadSceneMode.Additive);
+
+			//View割り込み登録（index0シーンに存在するEnableなView→起動したViewの順番に遷移したことにする）
+			for (var i = 0; i < SceneManager.sceneCount; i++)
+			{
+				var scene = SceneManager.GetSceneAt(i);
+				if (scene.buildIndex == 0)
+				{
+					foreach (var go in scene.GetRootGameObjects())
+					{
+						var views = go.GetComponentsInChildren<UIView>();
+						foreach(var view in views)
+						{
+							if (!view.IsOpen) return;
+							await UniTask.WaitUntil(() => view.Phase == Reopener.PhaseType.Opened);	//開ききるのを待つ
+
+							await Instance.Interrupt(view);
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// ビューの登録
+		/// Preopeningで呼び出してる
+		/// </summary>
+		/// <param name="newView"></param>
+		public async UniTask Regist(UIView newView)
 		{
 			var tasks = new List<UniTask>();
 			if (!_history.Contains(newView))
@@ -42,14 +101,14 @@ namespace ETTView.UI
 				{
 					if (view == null)
 					{
-						Debug.LogWarning("破棄されたUIViewがHistoryに残っています。SingleでSceneLoadする場合は戻れなくなるのでUIViewManager.ClearHistoryしてください。");
+						Debug.LogWarning("破棄されたUIViewがHistoryに残っています。");
 						continue;
 					}
 					//ビューはひとつしかOpenにならないので、他はClose
 					tasks.Add(view.Close());
 				}
-
-				_history.Push(newView);
+				
+				_history.Add(newView);
 			}
 			else
 			{
@@ -63,67 +122,18 @@ namespace ETTView.UI
 			await UniTask.WhenAll(tasks);
 		}
 
-		//一番最初に挿入
-		public async UniTask Interrupt(UIView view)
+		/// <summary>
+		/// 先頭に割り込んで登録
+		/// </summary>
+		/// <param name="view"></param>
+		async UniTask Interrupt(UIView view)
 		{
 			await view.Close();
-
-			var list = new List<UIView>(_history.ToArray());
-			list.Reverse();
-
-			_history.Clear();
-
-			_history.Push(view);
-			foreach(var v in list)
-			{
-				_history.Push(v);
-			}
-		}
-
-		//指定のビューまで戻る
-		public UniTask BackToTargetView(UIView view)
-		{
-			return BackToTargetView(x => x == view);
-        }
-
-		public UniTask BackToTargetView<T>() where T : UIView
-        {
-			return BackToTargetView(x => x.GetType() == typeof(T));
-        }
-
-		public async UniTask BackToTargetView(Func<UIView, bool> predicate)
-        {
-            var list = new List<UIView>(_history.ToArray());
-            list.Reverse();
-
-			List<UniTask> tasks = new List<UniTask>();
-            _history.Clear();
-			bool hit = false;
-            foreach (var v in list)
-            {
-				if (!hit)
-				{
-					_history.Push(v);
-					if (predicate(v))
-					{
-						tasks.Add(v.Open());
-						hit = true;
-					}
-				}
-				else
-				{
-                    tasks.Add(v.Close(true));
-                }
-            }
-        }
-
-		//履歴から削除
-		public void Remove(UIView view)
-		{
-			var list = new List<UIView>(_history);
-			list.Remove(view);
-			list.Reverse();
-            _history = new Stack<UIView>(list);
+			
+			//先頭に入れ替える
+			_history.Remove(view);
+			_history.Insert(0, view);
+			await _history.Last().Open();
 		}
 
 		public async UniTask WaitUntil(Reopener.PhaseType state)
@@ -138,23 +148,29 @@ namespace ETTView.UI
 		/// <param name="target"></param>
 		/// <param name="isForceBackView"></param>
 		/// <returns></returns>
-		public async UniTask<bool> BackView(Reopnable target, bool isForceBackView = true)
+		public async UniTask<bool> Back(Reopnable target, bool isForceBackView = true)
 		{
+			//最後に開いたポップアップを指定してたら
             if (Current.LastPopup == target)
             {
+				//ポップアップを閉じる
                 await Current.TryCloseLastPopup();
                 return true;
             }
 
+			//現在のステートを指定してたら
             if ( Current.CurrentState == target )
 			{
+				//ステートを戻す
 				await Current.TryBackState();
 				return true;
 			}
 
+			//現在のViewを指定してたら
 			if(Current == target)
 			{
-				return await BackView(false, false, isForceBackView);
+				//ビューを戻す
+				return await Back(false, false, isForceBackView);
 			}
 
 			return false;
@@ -165,9 +181,9 @@ namespace ETTView.UI
 		/// </summary>
 		/// <param name="isClosePopup">ポップアップを閉じるかどうか</param>
 		/// <param name="isBackState">ステートを戻るかどうか</param>
-		/// <param name="isForceBackView">UIViewの定義に関わらず強制的にViewを戻るかどうか</param>
+		/// <param name="isForceBackView">UIView.CanBackViewに関わらず強制的にViewを戻るかどうか</param>
 		/// <returns>Popupが閉じる、Stateが戻る、UIViewが戻るしたらtrue</returns>
-		public async UniTask<bool> BackView(bool isClosePopup = true, bool isBackState = true, bool isForceBackView = false)
+		public async UniTask<bool> Back(bool isClosePopup = true, bool isBackState = true, bool isForceBackView = false)
 		{
 			//Popupを閉じる
 			if (isClosePopup && await Current.TryCloseLastPopup()) return true;
@@ -187,14 +203,18 @@ namespace ETTView.UI
 					Current.SetRewind(true);
 					var view = Current;
 					tasks.Add(view.CloseAndDestroyIfNeeded());
-					Remove(view);
 
-					//今のをCloseしたのでCurrentは次のやつになってる
-					Current.SetRewind(true);
-					var openAndRewindTask = Current.Open().ContinueWith(() => Current.SetRewind(false));
+					//次を開く
+					var nextView = Next;
+					nextView.SetRewind(true);
+					var openAndRewindTask = nextView.Open().ContinueWith(() => nextView.SetRewind(false));
 					tasks.Add(openAndRewindTask);
 
 					await UniTask.WhenAll(tasks);
+					
+					//閉じるのを待ってからリストから消す
+					await UniTask.WaitUntil(() => !view.IsOpen);
+					_history.Remove(view);
 
 					return true;
 				}
@@ -206,7 +226,45 @@ namespace ETTView.UI
 			return false;
 		}
 
-		public  void ClearHistory()
+		//指定のビューまで戻る
+		public UniTask BackToTargetView(UIView view)
+		{
+			return BackToTargetView(x => x == view);
+		}
+
+		public UniTask BackToTargetView<T>() where T : UIView
+		{
+			return BackToTargetView(x => x.GetType() == typeof(T));
+		}
+
+		async UniTask BackToTargetView(Func<UIView, bool> predicate)
+		{
+			var list = new List<UIView>(_history);
+			list.Reverse();
+
+			List<UniTask> tasks = new List<UniTask>();
+			_history.Clear();
+			bool hit = false;
+			foreach (var v in list)
+			{
+				if (!hit)
+				{
+					_history.Add(v);
+					if (predicate(v))
+					{
+						tasks.Add(v.Open());
+						hit = true;
+					}
+				}
+				else
+				{
+					tasks.Add(v.Close(true));
+				}
+			}
+		}
+
+
+		public void ClearHistory()
 		{
 			_history.Clear();
 		}
@@ -215,7 +273,7 @@ namespace ETTView.UI
 		{
 			if (Current != null && Current.Phase == Reopener.PhaseType.Opened && Current.IsBackInput())
 			{
-				await BackView();
+				await Back();
 			}
         }
 	}

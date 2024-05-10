@@ -27,11 +27,11 @@ namespace ETTView
 				{
 					if (_instance == null)
 					{
-						//“¯–¼ƒvƒŒƒnƒu‚ªResource‚É‚ ‚é‚©Šm”F
+						//åŒåãƒ—ãƒ¬ãƒãƒ–ãŒResourceã«ã‚ã‚‹ã‹ç¢ºèª
 						var prefab = Resources.Load<T>(type.Name);
 						if (prefab != null)
 						{
-							//ƒvƒŒƒnƒu‚ªw’è‚³‚ê‚Ä‚½‚ç¶¬
+							//ãƒ—ãƒ¬ãƒãƒ–ãŒæŒ‡å®šã•ã‚Œã¦ãŸã‚‰ç”Ÿæˆ
 							_instance = Instantiate(prefab);
 						}
 						else

@@ -56,7 +56,7 @@ namespace ETTView
             }
             if (destroy && this != null && gameObject != null)
 			{
-				Debug.Log(name + "が破棄されました。");
+				//Debug.Log(name + "が破棄されました。");
 
 				if (this != null && gameObject != null)
 					Destroy(gameObject);

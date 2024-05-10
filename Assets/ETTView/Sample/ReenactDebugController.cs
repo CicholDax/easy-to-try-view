@@ -1,14 +1,8 @@
 using ETTView.Data;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using ETTView;
-using ETTView.UI;
-using Cysharp.Threading.Tasks;
-using DG.Tweening;
-using System.Threading;
 
 public class ReenactDebugController : Reopnable
 {

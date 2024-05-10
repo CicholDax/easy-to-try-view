@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
 using ETTView.UI;
 
-public class CommonPopup : Popup
+public class CommonPopup : UIViewPopup
 {
 	[SerializeField] Text _title;
 	[SerializeField] Text _text;
