@@ -45,7 +45,7 @@ namespace ETTView.Math
             Speed = Add(Speed, _frameSpeed);
             Speed = Mag(Speed, 1.0f - decayValue);
 			_frameSpeed = default(T);
-			return PosAdjust(Add(pos, Mag(Speed, Time.deltaTime)));
+			return PosAdjust(Add(pos, Speed));
 		}
 	}
 	//比較可能な慣性値
