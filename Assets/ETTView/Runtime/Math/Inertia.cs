@@ -43,7 +43,7 @@ namespace ETTView.Math
 		{
 			FrameSpeedAdjust();
             Speed = Add(Speed, _frameSpeed);
-            Speed = Mag(Speed, 1.0f - decayValue);
+            Speed = Mag(Speed, 1.0f - decayValue * Time.deltaTime);
 			_frameSpeed = default(T);
 			return PosAdjust(Add(pos, Mag(Speed, Time.deltaTime)));
 		}
