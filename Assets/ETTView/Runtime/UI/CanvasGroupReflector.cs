@@ -6,7 +6,7 @@ using System.Threading;
 using UnityEngine;
 
 [RequireComponent(typeof(CanvasGroup))]
-public class CanvasGroupReflector : Reopnable
+public class CanvasGroupReflector : Reopenable
 {
 	CanvasGroup _canvasGroup;
 

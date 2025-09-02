@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using ETTView;
 
-public class ReenactDebugController : Reopnable
+public class ReenactDebugController : Reopenable
 {
     [SerializeField] GameObject _cubePrefab;
 	[SerializeField] Image _image;

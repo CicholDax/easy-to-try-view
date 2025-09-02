@@ -5,7 +5,7 @@ using System.Threading;
 namespace ETTView
 {
 	[RequireComponent(typeof(Reopener))]
-	public class Reopnable : MonoBehaviour
+	public class Reopenable : MonoBehaviour
 	{
 		Reopener _reopener;
 		Reopener Reopener

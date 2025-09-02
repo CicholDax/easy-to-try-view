@@ -148,7 +148,7 @@ namespace ETTView.UI
 		/// <param name="target"></param>
 		/// <param name="isForceBackView"></param>
 		/// <returns></returns>
-		public async UniTask<bool> Back(Reopnable target, bool isForceBackView = true)
+		public async UniTask<bool> Back(Reopenable target, bool isForceBackView = true)
 		{
 			//最後に開いたポップアップを指定してたら
             if (Current.LastPopup == target)
@@ -240,7 +240,6 @@ namespace ETTView.UI
 		async UniTask BackToTargetView(Func<UIView, bool> predicate)
 		{
 			var list = new List<UIView>(_history);
-			list.Reverse();
 
 			List<UniTask> tasks = new List<UniTask>();
 			_history.Clear();
@@ -258,9 +257,11 @@ namespace ETTView.UI
 				}
 				else
 				{
-					tasks.Add(v.Close(true));
+					tasks.Add(v.CloseAndDestroyIfNeeded());
 				}
 			}
+
+			await tasks;
 		}
 
 

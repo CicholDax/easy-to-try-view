@@ -12,7 +12,7 @@ using ETTView;
 namespace ETTView.UI
 {
 	[RequireComponent(typeof(CanvasGroup))]
-	public class FadeTransition : Reopnable
+	public class FadeTransition : Reopenable
 	{
 		[SerializeField] float _duration = 1.0f;
 

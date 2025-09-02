@@ -9,20 +9,20 @@ using JetBrains.Annotations;
 
 namespace ETTView.UI
 {
-	public class UIView : BackableReopnablePrefab
+	public class UIView : BackableReopenablePrefab
 	{
 		public static UIView Current => UIViewManager.Instance.Current;
 		public static IEnumerable<UIView> History => UIViewManager.Instance.History;
 
 		//クローズ時にDestroyするかどうかのフラグ
-		protected override bool IsDestroyWhenClosed => _isSceneTopView;
+		protected override bool IsDestroyWhenClosed => _isSceneTopView || _fromPrefab;
 
 		//シーンに最初からRootに置かれてるビューかどうか
 		[SerializeField] bool _isSceneTopView;
 
 		//BackSceneで戻る/戻られる場合にトランジションを変更したい場合に指定する
-		[SerializeField] List<Reopnable> _forwardTransitions;
-		[SerializeField] List<Reopnable> _rewindTransitions;
+		[SerializeField] List<Reopenable> _forwardTransitions;
+		[SerializeField] List<Reopenable> _rewindTransitions;
 
 		//このビューが有効な時に開いたポップアップのリスト
 		[SerializeField] List<UIViewPopup> _openedPopupList = new List<UIViewPopup>();

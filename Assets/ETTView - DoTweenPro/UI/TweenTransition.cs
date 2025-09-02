@@ -8,7 +8,7 @@ using ETTView;
 
 namespace ETTView.UI
 {
-	public class TweenTransition : Reopnable
+	public class TweenTransition : Reopenable
 	{
 		[SerializeField] public DOTweenAnimations _startTween;
 		[SerializeField] public DOTweenAnimations _endTween;

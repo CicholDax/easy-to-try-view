@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace ETTView.UI
 {
-	public class AnimatorTransition : Reopnable
+	public class AnimatorTransition : Reopenable
 	{
 		[SerializeField] Animator _animator;
 		[SerializeField] string _openStateName = "open";

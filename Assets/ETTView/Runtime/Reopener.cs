@@ -34,17 +34,17 @@ namespace ETTView
 
 		public PhaseType Phase { get; private set; } = PhaseType.Loading;
 
-		Reopnable[] _reopnables;
-		Reopnable[] Reopnables
+		Reopenable[] _reopenables;
+		Reopenable[] Reopenables
 		{
 			get
 			{
-				if (_reopnables == null)
+				if (_reopenables == null)
 				{
 					//TODO　動的にAddComponentされた場合が考慮できてない
-					_reopnables = GetComponents<Reopnable>();
+					_reopenables = GetComponents<Reopenable>();
 				}
-				return _reopnables;
+				return _reopenables;
 			}
 		}
 
@@ -97,12 +97,12 @@ namespace ETTView
 
                 linkedTs.Token.ThrowIfCancellationRequested();
                 Phase = PhaseType.Preopening;
-				await ExecutePhaseAction((reopnable) => reopnable.Preopning(linkedTs.Token), linkedTs.Token, "Preopning");
+				await ExecutePhaseAction((reopenable) => reopenable.Preopning(linkedTs.Token), linkedTs.Token, "Preopning");
 
                 linkedTs.Token.ThrowIfCancellationRequested();
                 Phase = PhaseType.Opening;
 				_onOpened?.Invoke();
-				await ExecutePhaseAction((reopnable) => reopnable.Opening(linkedTs.Token), linkedTs.Token, "Opening");
+				await ExecutePhaseAction((reopenable) => reopenable.Opening(linkedTs.Token), linkedTs.Token, "Opening");
 
                 linkedTs.Token.ThrowIfCancellationRequested();
                 Phase = PhaseType.Opened;
@@ -153,13 +153,13 @@ namespace ETTView
         }
 
 
-        async UniTask ExecutePhaseAction(Func<Reopnable, UniTask> action, CancellationToken token, string logMessage)
+        async UniTask ExecutePhaseAction(Func<Reopenable, UniTask> action, CancellationToken token, string logMessage)
         {
             token.ThrowIfCancellationRequested();
             //Debug.Log(name + " " + logMessage + " Start");
 
             var tasks = new List<UniTask>();
-            foreach (var reopnable in Reopnables)
+            foreach (var reopnable in Reopenables)
             {
                 if (reopnable.enabled)
                     tasks.Add(action(reopnable));

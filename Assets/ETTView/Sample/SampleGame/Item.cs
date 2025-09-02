@@ -6,7 +6,7 @@ using Cysharp.Threading.Tasks;
 namespace ETTView.SampleGame
 {
     [RequireComponent(typeof(Collider))]
-    public class Item : ReopnablePrefab
+    public class Item : ReopenablePrefab
     {
         public static UniTask<Item> Create(Transform parent)
         {

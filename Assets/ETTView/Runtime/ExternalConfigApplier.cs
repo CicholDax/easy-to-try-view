@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 namespace ETTView
 {
-    public abstract class ExternalConfigApplier : Reopnable
+    public abstract class ExternalConfigApplier : Reopenable
 	{
 		public interface IConfigData
 		{

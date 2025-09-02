@@ -5,13 +5,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BackableReopnablePrefab : ReopnablePrefab
+public class BackableReopenablePrefab : ReopenablePrefab
 {
 	public void BackForget()
 	{
 		UIViewManager.Instance.Back(this).Forget();
 	}
-	public void BackForget(Reopnable target)
+	public void BackForget(Reopenable target)
 	{
 		UIViewManager.Instance.Back(target).Forget();
 	}
@@ -21,7 +21,7 @@ public class BackableReopnablePrefab : ReopnablePrefab
 		return UIViewManager.Instance.Back(this);
 	}
 
-	public UniTask Back(Reopnable target)
+	public UniTask Back(Reopenable target)
 	{
 		return UIViewManager.Instance.Back(target);
 	}

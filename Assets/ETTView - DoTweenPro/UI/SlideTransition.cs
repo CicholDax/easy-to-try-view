@@ -9,7 +9,7 @@ using ETTView;
 
 namespace ETTView.UI
 {
-	public class SlideTransition : Reopnable
+	public class SlideTransition : Reopenable
 	{
 		enum WAY
 		{

@@ -6,7 +6,7 @@ using ETTView.Data;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 
-public class CubeController : Reopnable
+public class CubeController : Reopenable
 {
 
 	[SerializeField] string _test;

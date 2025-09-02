@@ -6,7 +6,7 @@ using ETTView;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 
-public class UIViewState : BackableReopnablePrefab
+public class UIViewState : BackableReopenablePrefab
 {
 	[SerializeField] UIView _view;
 	[SerializeField] bool _awaitCloseState = false;

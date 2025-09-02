@@ -9,7 +9,7 @@ using ETTView;
 
 namespace ETTView.UI
 {
-	public class ScaleTransition : Reopnable
+	public class ScaleTransition : Reopenable
 	{
 		[SerializeField] float _duration = 1.0f;
 

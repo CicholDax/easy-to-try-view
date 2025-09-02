@@ -6,7 +6,7 @@ using Cysharp.Threading.Tasks;
 
 namespace ETTView.SampleGame
 {
-    public class PlayerNode : ReopnablePrefab
+    public class PlayerNode : ReopenablePrefab
     {
         float _deadTime = float.MaxValue;
 
