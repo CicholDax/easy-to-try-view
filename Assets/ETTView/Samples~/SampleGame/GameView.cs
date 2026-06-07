@@ -5,10 +5,8 @@ using ETTView.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 
 namespace ETTView.SampleGame
 {

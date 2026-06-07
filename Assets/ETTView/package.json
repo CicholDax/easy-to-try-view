@@ -11,5 +11,13 @@
 
     "dependencies": {
     	"com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.4.1"
-    }
+    },
+
+    "samples": [
+        {
+            "displayName": "Samples",
+            "description": "ETTView のサンプルシーン・スクリプト一式",
+            "path": "Samples~"
+        }
+    ]
 }
