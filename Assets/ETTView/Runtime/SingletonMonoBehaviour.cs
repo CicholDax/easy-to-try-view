@@ -21,34 +21,44 @@ namespace ETTView
 					return _instance;
 				}
 
-				var type = typeof(T);
-
 				lock (_lock)
 				{
 					if (_instance == null)
 					{
-						//同名プレハブがResourceにあるか確認
-						var prefab = Resources.Load<T>(type.Name);
+						var prefab = Resources.Load<T>(typeof(T).Name);
 						if (prefab != null)
-						{
-							//プレハブが指定されてたら生成
-							_instance = Instantiate(prefab);
-						}
+							Instantiate(prefab);
 						else
-						{
-							var go = new GameObject(type.Name, type);
-							_instance = go.GetComponent<T>();
-						}
-
-						if (_instance.IsDontDestroy)
-						{
-							DontDestroyOnLoad(_instance.gameObject);
-						}
+							new GameObject(typeof(T).Name, typeof(T));
+						// _instance は Awake でセットされる
 					}
 				}
 
 				return _instance;
 			}
 		}
+
+		protected void Awake()
+		{
+			if (_instance != null && _instance != this as T)
+			{
+				Destroy(gameObject);
+				return;
+			}
+
+			_instance = this as T;
+
+			if (_instance.IsDontDestroy)
+			{
+				DontDestroyOnLoad(gameObject);
+			}
+
+			OnAwake();
+		}
+
+		/// <summary>
+		/// Awakeの代わりに派生クラスでオーバーライドする。
+		/// </summary>
+		protected virtual void OnAwake() { }
 	}
 }

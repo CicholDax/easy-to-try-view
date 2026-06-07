@@ -70,14 +70,17 @@ namespace ETTView
 		}
 
 
-		protected virtual async void Awake()
+		async void Awake()
 		{
             _destroyCts = new CancellationTokenSource();
+            OnAwake();
 
             await ExecutePhaseAction((reopnable) => reopnable.Loading(_destroyCts.Token), _destroyCts.Token, "Loading");
             Phase = PhaseType.Loaded;
             _onLoaded?.Invoke();
         }
+
+		protected virtual void OnAwake() { }
 
 		protected async void OnEnable()
 		{

@@ -68,6 +68,13 @@ namespace ETTView
 			Close(destroy).Forget();
 		}
 
+		void Awake()
+		{
+			OnAwake();
+		}
+
+		protected virtual void OnAwake() { }
+
 		//生成時に一度だけ実行する処理
 		//Ex.付随するプレハブの生成、初期化とか
 		public virtual async UniTask Loading(CancellationToken token)

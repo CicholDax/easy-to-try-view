@@ -10,7 +10,7 @@ public class CanvasGroupReflector : Reopenable
 {
 	CanvasGroup _canvasGroup;
 
-	public void Awake()
+	protected override void OnAwake()
 	{
 		_canvasGroup = GetComponent<CanvasGroup>();
 	}

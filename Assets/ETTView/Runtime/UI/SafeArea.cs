@@ -15,12 +15,6 @@ namespace ETTView.UI
 		private int prevScreenWidth;
 		private int prevScreenHeight;
 		private Rect prevSafeArea;
-		/// <summary>
-		/// 初期化処理
-		/// </summary>
-		public void Awake()
-		{
-		}
 		public void Update()
 		{
 			if (isSafeAreaChanged)
