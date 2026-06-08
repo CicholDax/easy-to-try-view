@@ -42,7 +42,7 @@ namespace ETTView
         void BuildCanvas()
         {
             var root = new GameObject("LowResDisplay");
-            DontDestroyOnLoad(root);
+            root.transform.SetParent(transform);
 
             var canvas = root.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
