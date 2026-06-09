@@ -24,8 +24,8 @@ namespace ETTView
         {
             _rt = new RenderTexture(_renderWidth, _renderHeight, 24) { filterMode = _filterMode };
             BuildCanvas();
+            BuildDummyCamera();
             RenderPipelineManager.beginCameraRendering += OnBeginCamera;
-            RenderPipelineManager.endCameraRendering   += OnEndCamera;
         }
 
         /// <summary>
@@ -35,16 +35,6 @@ namespace ETTView
         {
             if (cam.CompareTag("MainCamera"))
                 cam.targetTexture = _rt;
-        }
-
-        /// <summary>
-        /// 描画完了後にtargetTextureをnullに戻す。
-        /// nullのままにしておくことでUnityの「Display1にカメラなし」警告を回避する。
-        /// </summary>
-        void OnEndCamera(ScriptableRenderContext ctx, Camera cam)
-        {
-            if (cam.CompareTag("MainCamera"))
-                cam.targetTexture = null;
         }
 
         /// <summary>
@@ -72,6 +62,21 @@ namespace ETTView
             raw.texture = _rt;
             raw.transform.SetParent(root.transform, false);
             _display = raw;
+        }
+
+        /// <summary>
+        /// 何も描画しないダミーカメラを生成する。
+        /// Display1に「カメラあり」と認識させることで「Display1NoCamerasRendering」警告を抑制する。
+        /// </summary>
+        void BuildDummyCamera()
+        {
+            var go = new GameObject("LowResDummyCam");
+            go.transform.SetParent(transform);
+            var cam = go.AddComponent<Camera>();
+            cam.cullingMask  = 0;
+            cam.clearFlags   = CameraClearFlags.Nothing;
+            cam.depth        = -100;
+            cam.targetTexture = null;
         }
 
         /// <summary>
@@ -104,7 +109,6 @@ namespace ETTView
         void OnDestroy()
         {
             RenderPipelineManager.beginCameraRendering -= OnBeginCamera;
-            RenderPipelineManager.endCameraRendering   -= OnEndCamera;
             if (_rt != null) _rt.Release();
         }
     }
