@@ -25,6 +25,7 @@ namespace ETTView
             _rt = new RenderTexture(_renderWidth, _renderHeight, 24) { filterMode = _filterMode };
             BuildCanvas();
             RenderPipelineManager.beginCameraRendering += OnBeginCamera;
+            RenderPipelineManager.endCameraRendering   += OnEndCamera;
         }
 
         /// <summary>
@@ -34,6 +35,16 @@ namespace ETTView
         {
             if (cam.CompareTag("MainCamera"))
                 cam.targetTexture = _rt;
+        }
+
+        /// <summary>
+        /// 描画完了後にtargetTextureをnullに戻す。
+        /// nullのままにしておくことでUnityの「Display1にカメラなし」警告を回避する。
+        /// </summary>
+        void OnEndCamera(ScriptableRenderContext ctx, Camera cam)
+        {
+            if (cam.CompareTag("MainCamera"))
+                cam.targetTexture = null;
         }
 
         /// <summary>
@@ -93,6 +104,7 @@ namespace ETTView
         void OnDestroy()
         {
             RenderPipelineManager.beginCameraRendering -= OnBeginCamera;
+            RenderPipelineManager.endCameraRendering   -= OnEndCamera;
             if (_rt != null) _rt.Release();
         }
     }
