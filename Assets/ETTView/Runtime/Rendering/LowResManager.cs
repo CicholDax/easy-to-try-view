@@ -6,6 +6,7 @@ namespace ETTView
 {
     /// <summary>
     /// 固定解像度のRenderTextureにシーンを描画し、レターボックス付きで画面に表示するマネージャ。
+    /// UIを作る場合は DisplayCamera を Screen Space - Camera キャンバスのカメラに設定すること。
     /// </summary>
     public class LowResManager : SingletonMonoBehaviour<LowResManager>, ISingletonMono
     {
@@ -17,19 +18,26 @@ namespace ETTView
 
         RenderTexture _rt;
         RawImage _display;
+        Camera _displayCam;
         int _prevScreenWidth;
         int _prevScreenHeight;
+
+        /// <summary>
+        /// UIキャンバス（Screen Space - Camera）に設定するカメラ。
+        /// このカメラは targetTexture=null で動作するためレイキャスト座標が正しく機能する。
+        /// </summary>
+        public Camera DisplayCamera => _displayCam;
 
         protected override void OnAwake()
         {
             _rt = new RenderTexture(_renderWidth, _renderHeight, 24) { filterMode = _filterMode };
+            BuildDisplayCamera();
             BuildCanvas();
-            BuildDummyCamera();
             RenderPipelineManager.beginCameraRendering += OnBeginCamera;
         }
 
         /// <summary>
-        /// メインカメラの描画先をRenderTextureに差し替える。
+        /// MainCamera の描画先を RT に差し替える。DisplayCamera は対象外。
         /// </summary>
         void OnBeginCamera(ScriptableRenderContext ctx, Camera cam)
         {
@@ -38,7 +46,23 @@ namespace ETTView
         }
 
         /// <summary>
-        /// レターボックス表示用のCanvasとRawImageをコードで生成する。
+        /// 画面出力専用カメラを生成する。
+        /// 3Dオブジェクトは描画せず黒でクリアするだけなので、レターボックスの背景色になる。
+        /// </summary>
+        void BuildDisplayCamera()
+        {
+            var go = new GameObject("LowResDisplayCam");
+            go.transform.SetParent(transform);
+            _displayCam = go.AddComponent<Camera>();
+            _displayCam.clearFlags       = CameraClearFlags.SolidColor;
+            _displayCam.backgroundColor  = Color.black;
+            _displayCam.cullingMask      = 0;
+            _displayCam.depth            = 10;
+            _displayCam.targetTexture    = null;
+        }
+
+        /// <summary>
+        /// RTを表示するキャンバスとRawImageを生成する。
         /// </summary>
         void BuildCanvas()
         {
@@ -46,37 +70,16 @@ namespace ETTView
             root.transform.SetParent(transform);
 
             var canvas = root.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 999;
+            canvas.renderMode  = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = _displayCam;
+            canvas.sortingOrder = 0;
             root.AddComponent<CanvasScaler>();
 
-            var bg = new GameObject("BG").AddComponent<Image>();
-            bg.color = Color.black;
-            bg.transform.SetParent(root.transform, false);
-            var bgRect = bg.GetComponent<RectTransform>();
-            bgRect.anchorMin = Vector2.zero;
-            bgRect.anchorMax = Vector2.one;
-            bgRect.offsetMin = bgRect.offsetMax = Vector2.zero;
-
             var raw = new GameObject("View").AddComponent<RawImage>();
-            raw.texture = _rt;
+            raw.texture       = _rt;
+            raw.raycastTarget = false;
             raw.transform.SetParent(root.transform, false);
             _display = raw;
-        }
-
-        /// <summary>
-        /// 何も描画しないダミーカメラを生成する。
-        /// Display1に「カメラあり」と認識させることで「Display1NoCamerasRendering」警告を抑制する。
-        /// </summary>
-        void BuildDummyCamera()
-        {
-            var go = new GameObject("LowResDummyCam");
-            go.transform.SetParent(transform);
-            var cam = go.AddComponent<Camera>();
-            cam.cullingMask  = 0;
-            cam.clearFlags   = CameraClearFlags.Nothing;
-            cam.depth        = -100;
-            cam.targetTexture = null;
         }
 
         /// <summary>
@@ -85,7 +88,7 @@ namespace ETTView
         void Update()
         {
             if (Screen.width == _prevScreenWidth && Screen.height == _prevScreenHeight) return;
-            _prevScreenWidth = Screen.width;
+            _prevScreenWidth  = Screen.width;
             _prevScreenHeight = Screen.height;
 
             float targetAspect = (float)_renderWidth / _renderHeight;
