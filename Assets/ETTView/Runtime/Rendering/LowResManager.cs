@@ -27,6 +27,9 @@ namespace ETTView
         /// <summary>画面への最終出力を行うカメラ（MainCamera）。</summary>
         public Camera        DisplayCamera => _displayCam;
 
+        /// <summary>シーン・UIを低解像度RTに描画するカメラ。</summary>
+        public Camera        LowResCam     => _lowResCam;
+
         /// <summary>スクリーン座標を低解像度仮想座標に変換する。</summary>
         public Vector2 ScreenToLowResPoint(Vector2 screenPos)
         {
