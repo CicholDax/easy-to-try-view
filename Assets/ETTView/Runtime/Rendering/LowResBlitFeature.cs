@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.Universal;
 
 namespace ETTView
@@ -16,17 +17,14 @@ namespace ETTView
         public override void Create()
         {
             _pass = new LowResBlitPass();
-            // PostProcessing 後・Screen Space Overlay UI 描画前のタイミング
             _pass.renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            // LowResManager の DisplayCamera でのみ動作する
-            var manager = LowResManager.Instance;
-            if (manager == null) return;
+            var manager = LowResManager.InstanceOrNull;
+            if (manager == null || manager.DisplayCamera == null) return;
             if (renderingData.cameraData.camera != manager.DisplayCamera) return;
-
             renderer.EnqueuePass(_pass);
         }
 
@@ -39,15 +37,20 @@ namespace ETTView
 
         class LowResBlitPass : ScriptableRenderPass, IDisposable
         {
-            RTHandle _sourceHandle;
+            RTHandle      _sourceHandle;
             RenderTexture _cachedRT;
 
-            public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
+            class PassData
             {
-                var manager = LowResManager.Instance;
-                if (manager == null || manager.LowResRT == null) return;
+                public RTHandle Source;
+                public int ScreenW, ScreenH, RTW, RTH;
+            }
 
-                // RenderTexture → RTHandle のラッパーを更新
+            public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
+            {
+                var manager = LowResManager.InstanceOrNull;
+                if (manager?.LowResRT == null) return;
+
                 if (manager.LowResRT != _cachedRT)
                 {
                     _sourceHandle?.Release();
@@ -55,24 +58,29 @@ namespace ETTView
                     _cachedRT     = manager.LowResRT;
                 }
 
-                var cmd    = CommandBufferPool.Get("LowResBlit");
-                var color  = renderingData.cameraData.renderer.cameraColorTargetHandle;
-                var desc   = renderingData.cameraData.cameraTargetDescriptor;
-                int sw = desc.width;
-                int sh = desc.height;
+                var resourceData = frameData.Get<UniversalResourceData>();
+                var cameraData   = frameData.Get<UniversalCameraData>();
+                var desc         = cameraData.cameraTargetDescriptor;
 
-                // レターボックス矩形を計算（ピクセル座標）
-                Rect vp = CalcLetterbox(manager.LowResRT.width, manager.LowResRT.height, sw, sh);
+                using (var builder = renderGraph.AddRasterRenderPass<PassData>("LowResBlit", out var passData))
+                {
+                    passData.Source  = _sourceHandle;
+                    passData.ScreenW = desc.width;
+                    passData.ScreenH = desc.height;
+                    passData.RTW     = manager.LowResRT.width;
+                    passData.RTH     = manager.LowResRT.height;
 
-                // 低解像度RT → DisplayCamera の出力（画面）にアップスケールBlit
-                // bilinear=false でポイントフィルタリング（ドット絵維持）
-                Blitter.BlitCameraTexture(cmd, _sourceHandle, color, vp, 0, false);
+                    // ReadWrite: DisplayCamera のクリア済み黒背景を保持しつつ書き込む
+                    builder.SetRenderAttachment(resourceData.activeColorTexture, 0, AccessFlags.ReadWrite);
+                    // 外部 RT はレンダーグラフ外でカメラが書き込み済みのため ImportTexture 不要
+                    builder.AllowPassCulling(false);
 
-                // 次のパスのためにビューポートをフル解像度に戻す
-                cmd.SetViewport(new Rect(0, 0, sw, sh));
-
-                context.ExecuteCommandBuffer(cmd);
-                CommandBufferPool.Release(cmd);
+                    builder.SetRenderFunc(static (PassData data, RasterGraphContext ctx) =>
+                    {
+                        ctx.cmd.SetViewport(CalcLetterbox(data.RTW, data.RTH, data.ScreenW, data.ScreenH));
+                        Blitter.BlitTexture(ctx.cmd, data.Source, new Vector4(1, 1, 0, 0), 0, false);
+                    });
+                }
             }
 
             static Rect CalcLetterbox(int rtW, int rtH, int sw, int sh)
