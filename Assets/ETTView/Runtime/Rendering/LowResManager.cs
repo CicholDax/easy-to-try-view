@@ -27,6 +27,19 @@ namespace ETTView
         /// <summary>画面への最終出力を行うカメラ（MainCamera）。</summary>
         public Camera        DisplayCamera => _displayCam;
 
+        /// <summary>スクリーン座標を低解像度仮想座標に変換する。</summary>
+        public Vector2 ScreenToLowResPoint(Vector2 screenPos)
+        {
+            float ta = (float)_renderWidth / _renderHeight;
+            float sa = (float)Screen.width / Screen.height;
+            float w, h, x, y;
+            if (sa > ta) { h = Screen.height; w = h * ta; x = (Screen.width - w) / 2f; y = 0; }
+            else         { w = Screen.width;  h = w / ta; x = 0; y = (Screen.height - h) / 2f; }
+            return new Vector2(
+                (screenPos.x - x) / w * _renderWidth,
+                (screenPos.y - y) / h * _renderHeight);
+        }
+
         protected override void OnAwake()
         {
             _displayCam = Camera.main;
@@ -41,7 +54,7 @@ namespace ETTView
             // MainCamera の元設定を引き継いで LowResCam を先に作る
             CreateLowResCam();
 
-            // MainCamera を表示専用に変更（LowResBlitFeature がここに Blit する）
+            // MainCamera は Blit 出力専用に変更（シーン・UIはすべて LowResCam が _rt に描画する）
             _displayCam.cullingMask     = 0;
             _displayCam.clearFlags      = CameraClearFlags.SolidColor;
             _displayCam.backgroundColor = Color.black;
@@ -72,7 +85,7 @@ namespace ETTView
             go.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 
             _lowResCam                 = go.AddComponent<Camera>();
-            _lowResCam.cullingMask     = _displayCam.cullingMask;
+            _lowResCam.cullingMask     = _displayCam.cullingMask; // UI含む全レイヤーを低解像度で描画
             _lowResCam.clearFlags      = _displayCam.clearFlags;
             _lowResCam.backgroundColor = _displayCam.backgroundColor;
             _lowResCam.fieldOfView     = _displayCam.fieldOfView;
