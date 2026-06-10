@@ -17,7 +17,7 @@ namespace ETTView
         public override void Create()
         {
             _pass = new LowResBlitPass();
-            _pass.renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
+            _pass.renderPassEvent = RenderPassEvent.BeforeRenderingTransparents;
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
