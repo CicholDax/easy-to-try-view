@@ -17,6 +17,11 @@ namespace ETTView
         [SerializeField] int _renderWidth  = 256;
         [SerializeField] int _renderHeight = 192;
 
+        [Header("LowResCam クリア設定")]
+        [Tooltip("LowResCam のクリアモード。ゲーム側が背景を自前で描画する場合は SolidColor にする。")]
+        [SerializeField] CameraClearFlags _clearFlags      = CameraClearFlags.SolidColor;
+        [SerializeField] Color            _backgroundColor = Color.black;
+
         RenderTexture _rt;
         Camera        _displayCam;  // MainCamera（targetTexture=null、画面出力担当）
         Camera        _lowResCam;   // 動的生成、targetTexture=_rt でシーンを描画
@@ -89,8 +94,8 @@ namespace ETTView
 
             _lowResCam                 = go.AddComponent<Camera>();
             _lowResCam.cullingMask     = _displayCam.cullingMask; // UI含む全レイヤーを低解像度で描画
-            _lowResCam.clearFlags      = _displayCam.clearFlags;
-            _lowResCam.backgroundColor = _displayCam.backgroundColor;
+            _lowResCam.clearFlags      = _clearFlags;
+            _lowResCam.backgroundColor = _backgroundColor;
             _lowResCam.fieldOfView     = _displayCam.fieldOfView;
             _lowResCam.nearClipPlane   = _displayCam.nearClipPlane;
             _lowResCam.farClipPlane    = _displayCam.farClipPlane;
