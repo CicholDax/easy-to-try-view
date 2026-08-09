@@ -48,3 +48,20 @@ Thumbs.db
 
 #python bytecode cache, for some plugins.
 *.pyc
+
+# JetBrains Rider / IntelliJ
+.idea/
+*.iml
+
+# Unity Editor & tooling logs (incl. unity-mcp / Unity AI Assistant traces: relay.txt, traces.jsonl)
+/[Ll]ogs/
+
+# Per-user editor state (layouts, search index, AI generator settings, etc.)
+/[Uu]serSettings/
+
+# Unity AI Assistant per-package settings
+/ProjectSettings/Packages/com.unity.ai.assistant/
+
+# TMP Essential Resources — imported per-project, not part of the ETTView package
+/[Aa]ssets/TextMesh Pro/
+/[Aa]ssets/TextMesh Pro.meta
