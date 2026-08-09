@@ -18,7 +18,13 @@ namespace ETTView
             base.Start();
             var manager = LowResManager.Instance;
             if (manager != null)
-                GetComponent<Canvas>().worldCamera = manager.LowResCam;
+            {
+                // ゲームシーンにカメラを置かない構成だとエディタ保存時に Canvas が
+                // Screen Space - Overlay へ戻されてしまうため、実行時に Camera モードへ強制する。
+                var canvas = GetComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceCamera;
+                canvas.worldCamera = manager.LowResCam;
+            }
         }
 
         public override void Raycast(PointerEventData eventData, List<RaycastResult> resultAppendList)

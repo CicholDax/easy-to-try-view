@@ -15,9 +15,14 @@
 
     "samples": [
         {
-            "displayName": "Samples",
-            "description": "ETTView のサンプルシーン・スクリプト一式",
-            "path": "Samples~"
+            "displayName": "Showcase",
+            "description": "View遷移/Back・Popup・State・コードトランジションを1シーンで通し見せ",
+            "path": "Samples~/Showcase"
+        },
+        {
+            "displayName": "Sample Game (Boot + Game)",
+            "description": "Boot から Game を起動する最小実戦構成",
+            "path": "Samples~/SampleGame"
         }
     ]
 }

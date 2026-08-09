@@ -6,6 +6,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using JetBrains.Annotations;
+using UnityEngine.InputSystem;
 
 namespace ETTView.UI
 {
@@ -167,7 +168,8 @@ namespace ETTView.UI
 		public virtual bool IsBackInput()
 		{
 			//デフォルトだとエスケープで戻る
-			return Input.GetKeyDown(KeyCode.Escape);
+			var kb = Keyboard.current;
+			return kb != null && kb.escapeKey.wasPressedThisFrame;
 		}
 
 		/// <summary>
